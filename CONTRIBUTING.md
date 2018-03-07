@@ -90,7 +90,19 @@ git commit -s
 
 ## JavaScript Style
 
-This project follows the
-[Hack Reactor Style Guide](https://github.com/hackreactor-labs/eslint-config-hackreactor).
-It is recommended that any contributors set up ESLint with their text editor
-to automatically check style as they work.
+This project follows the basic
+[Hack Reactor Style Guide](https://github.com/hackreactor-labs/eslint-config-hackreactor),
+with the addition that lines should be limited to 80 characters in length. An
+`.eslintrc.json` file with these rules is included in the root project
+directory. Any contributor writing JavaScript code should
+[install ESLint](https://eslint.org/docs/user-guide/getting-started)
+and run it on their code before submitting a PR. The easiest way to do this is
+simply to run:
+
+```bash
+npm install -g eslint
+```
+
+```bash
+eslint ./
+```
