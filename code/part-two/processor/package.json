@@ -1,0 +1,23 @@
+{
+  "name": "cryptomoji-processor",
+  "version": "1.0.0",
+  "description": "A Sawtooth transaction processor for the Cryptomoji app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hyperledger/education-cryptomoji.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/hyperledger/education-cryptomoji/issues"
+  },
+  "homepage": "https://github.com/hyperledger/education-cryptomoji#readme",
+  "dependencies": {
+    "sawtooth-sdk": "^1.0.1"
+  }
+}
