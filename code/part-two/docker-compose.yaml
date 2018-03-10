@@ -1,6 +1,19 @@
 version: '2.1'
 
 services:
+  client:
+    image: client
+    container_name: client
+    build: ./client
+    volumes:
+      - ./client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8000:80'
+    depends_on:
+      - rest-api
+
   validator:
     image: hyperledger/sawtooth-validator:1.0
     container_name: validator
