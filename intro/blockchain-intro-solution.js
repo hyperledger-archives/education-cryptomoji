@@ -1,4 +1,4 @@
-let SHA256 = require('crypto-js/sha256');
+let SHA512 = require('crypto-js/sha512');
 
 class Block {
   constructor(index, timestamp, data, previousHash = '') {
@@ -12,7 +12,7 @@ class Block {
 
   // Calculate a hash based on data supplied to block
   calculateHash() {
-    return SHA256(`${this.index}${this.previousHash}${this.timestamp}${JSON.stringify(this.data)}${this._nonce}`).toString();
+    return SHA512(`${this.index}${this.previousHash}${this.timestamp}${JSON.stringify(this.data)}${this._nonce}`).toString();
   }
 
   // Mine block by difficulty
