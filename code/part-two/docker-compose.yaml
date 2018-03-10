@@ -14,6 +14,18 @@ services:
     depends_on:
       - rest-api
 
+  processor:
+    image: processor
+    container_name: processor
+    build: ./processor
+    volumes:
+      - ./processor:/processor
+      - /processor/node_modules
+    depends_on:
+      - validator
+    environment:
+      - VALIDATOR_URL=tcp://validator:4004
+
   validator:
     image: hyperledger/sawtooth-validator:1.0
     container_name: validator
