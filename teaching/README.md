@@ -1,0 +1,1 @@
+This directory, if needed, is where the teaching materials for the sprint(s) will be saved. This can include any lecture material, code snippets, etc. The directory structure, file names, and content of this `/teaching` directory, if needed, is up to the discretion of the team creating the curriculum content.
