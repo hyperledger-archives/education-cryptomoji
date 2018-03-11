@@ -18,8 +18,11 @@ class Block {
   // Calculate a hash based on data supplied to block
   calculateHash() {
     /*
-      Add functionality to return a hash by passing a compiled string into the SHA256 hashing function
-      The string that is passed in should contain specific data about the block that would be impossible to replicate
+      Add functionality to return a hash by passing a compiled string
+      into the SHA256 hashing function
+
+      The string that is passed in should contain specific data
+      about the block that would be impossible to replicate
 
       **Hint**
       Unreplicable data can include
@@ -27,7 +30,7 @@ class Block {
         - the previous hash
         - the block timestamp
     */
-   return SHA512('hash');
+    return SHA512('hash');
   }
 
   // Mine block by difficulty
@@ -35,9 +38,13 @@ class Block {
     let mined = false;
     while (!mined) {
       /*
-          In order to mine using proof of work the calculateHash function needs to incorporate the nonce
-          The nonce should increase everytime the function loops until the number of zeros at the beginning of the hash
+          In order to mine using proof of work the calculateHash function
+          needs to incorporate the nonce
+
+          The nonce should increase everytime the function loops
+          until the number of zeros at the beginning of the hash
           matches the number that is passed in (difficulty)
+
           The stored hash should be updated everytime the nonce increases
       */
       mined = true;
@@ -74,7 +81,7 @@ class Blockchain {
 
   // Check if the chain is valid
   isValidChain() {
-     /*
+    /*
       Add functionality that determines that:
         - Each block's hash in the chain is valid
         - Each block's previous hash property matches the previous block's hash

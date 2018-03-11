@@ -12,13 +12,21 @@ class Block {
 
   // Calculate a hash based on data supplied to block
   calculateHash() {
-    return SHA512(`${this.index}${this.previousHash}${this.timestamp}${JSON.stringify(this.data)}${this._nonce}`).toString();
+    return SHA512(`
+      ${this.index}
+      ${this.previousHash}
+      ${this.timestamp}
+      ${JSON.stringify(this.data)}
+      ${this._nonce}
+    `).toString();
   }
 
   // Mine block by difficulty
   mineBlock(difficulty) {
     console.log('Mining block...');
-    while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
+    while (
+      this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')
+    ) {
       this._nonce++;
       this.hash = this.calculateHash();
     }
@@ -51,19 +59,14 @@ class Blockchain {
 
   // Check if the chain is valid
   isValidChain() {
-    let validity = true;
-
-    this.chain.forEach((block, i) => {
+    return this.chain.every((block, i) => {
       const previousBlock = this.chain[i - 1];
 
-      if (
-        block.hash !== block.calculateHash() ||
-        block.previousHash !== previousBlock.hash
-      ) {
-        validity = false;
-      }
+      return (
+        !previousBlock ||
+        block.hash === block.calculateHash() ||
+        block.previousHash === previousBlock.hash
+      );
     });
-
-    return validity;
   }
 }
