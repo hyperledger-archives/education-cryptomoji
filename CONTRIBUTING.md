@@ -49,7 +49,7 @@ repo but progress will still be tracked here
 force-pushing to your branch.
 
 Pull requests can be merged once all requests for change have been addressed,
-and when approved by at least two other developers. Project maintainers will
+and when approved by at least one other developer. Project maintainers will
 personally merge their own PRs, as well as those of external contributors which
 have received the necessary approvals. When merging someone else's PR,
 maintainers should use the _"Create a merge commit"_ option, but when merging
