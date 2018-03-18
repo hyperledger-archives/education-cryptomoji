@@ -1,1 +1,1 @@
-# education-cryptobunnies
+# education-cryptomoji
