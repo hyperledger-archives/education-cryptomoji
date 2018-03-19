@@ -3,7 +3,8 @@
 const { TransactionHeader } = require('sawtooth-sdk/protobuf');
 const secp256k1 = require('sawtooth-sdk/signing/secp256k1');
 const context = new secp256k1.Secp256k1Context();
-const utils = require('./utils');
+const constants = require('../../utils/constants');
+const { hash, encode } = require('../../utils/helpers');
 
 const getRandomString = () => (Math.random() * 10 ** 18).toString(36);
 
@@ -14,16 +15,16 @@ class Txn {
     const publicKey = context.getPublicKey(privateKey).asHex();
 
     this.contextId = getRandomString();
-    this.payload = utils.encode(payload);
+    this.payload = encode(payload);
     this.header = TransactionHeader.create({
       signerPublicKey: publicKey,
       batcherPublicKey: publicKey,
-      familyName: utils.FAMILY_NAME,
-      familyVersion: utils.FAMILY_VERSION,
+      familyName: constants.FAMILY_NAME,
+      familyVersion: constants.FAMILY_VERSION,
       nonce: getRandomString(),
-      inputs: [ utils.NAMESPACE ],
-      outputs: [ utils.NAMESPACE ],
-      payloadSha512: utils.hash(this.payload)
+      inputs: [ constants.NAMESPACE ],
+      outputs: [ constants.NAMESPACE ],
+      payloadSha512: hash(this.payload)
     });
     const encodedHeader = TransactionHeader.encode(this.header).finish();
     this.signature = context.sign(encodedHeader, privateKey);

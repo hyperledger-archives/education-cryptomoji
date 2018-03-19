@@ -4,10 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const Txn = require('./helpers/mock_txn');
-const Context = require('./helpers/mock_context');
-const { NAMESPACE, hash, decode } = require('./helpers/utils');
-
+const { NAMESPACE } = require('../utils/constants');
+const { hash, decode } = require('../utils/helpers');
+const Txn = require('./mocks/txn');
+const Context = require('./mocks/context');
 
 const getCollectionAddress = publicKey => {
   return NAMESPACE + '01' + hash(publicKey, 62);
