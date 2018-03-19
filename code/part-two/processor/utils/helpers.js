@@ -2,25 +2,23 @@
 
 const { createHash } = require('crypto');
 
+
+// Returns the first characters of a SHA-512 hash of a string
 const hash = (str, length = 128) => {
   return createHash('sha512').update(str).digest('hex').slice(0, length);
 };
 
-const FAMILY_NAME = 'cryptomoji';
-const FAMILY_VERSION = '1.0';
-const NAMESPACE = hash(FAMILY_NAME, 6);
-
+// Encodes an object as a Buffer of sorted JSON string
+// Only works with objects with a depth of 1
 const encode = obj => {
   const jsonString = JSON.stringify(obj, Object.keys(obj).sort());
   return Buffer.from(jsonString);
 };
 
+// Decodes JSON Buffers back into objects
 const decode = encoded => JSON.parse(encoded.toString());
 
 module.exports = {
-  FAMILY_NAME,
-  FAMILY_VERSION,
-  NAMESPACE,
   hash,
   encode,
   decode
