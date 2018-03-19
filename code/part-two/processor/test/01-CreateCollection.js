@@ -1,12 +1,61 @@
 'use strict';
 
 const { expect } = require('chai');
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
-describe('Mocha/Chai', function() {
-  it('should test equality', function() {
-    expect(1).to.equal(1);
+const MojiHandler = require('../handler');
+const Txn = require('./helpers/mock_txn');
+const Context = require('./helpers/mock_context');
+const { NAMESPACE, hash, decode } = require('./helpers/utils');
+
+
+const getCollectionAddress = publicKey => {
+  return NAMESPACE + '01' + hash(publicKey, 62);
+};
+
+describe('Create Collection', function() {
+  let handler = null;
+  let context = null;
+
+  before(function() {
+    handler = new MojiHandler();
   });
-  it('should test inequality', function() {
-    expect(1).to.not.equal(2);
+
+  beforeEach(function() {
+    context = new Context();
+  });
+
+  it('should create a Collection at the correct address', function() {
+    const txn = new Txn({ action: 'CREATE_COLLECTION' });
+    const publicKey = txn.header.signerPublicKey;
+    const address = getCollectionAddress(publicKey);
+
+    return handler.apply(txn, context)
+      .then(() => {
+        expect(context.state[address], 'Collection should exist').to.exist;
+        const collection = decode(context.state[address]);
+
+        expect(collection.key, 'Collection should have a public key')
+          .to.equal(publicKey);
+        expect(collection.moji, 'Collection should have a moji array')
+          .to.deep.equal([]);
+      });
+  });
+
+  it('should reject a public key that has already been used', function() {
+    const txn = new Txn({ action: 'CREATE_COLLECTION' });
+
+    return handler.apply(txn, context)
+      .then(() => handler.apply(txn, context))
+      .catch(err => {
+        expect(err, 'Error should be an InvalidTransaction')
+          .to.be.instanceOf(InvalidTransaction);
+        expect(err.message, 'Error message should include a public key')
+          .to.include(txn.header.signerPublicKey);
+        return true;
+      })
+      .then(wasRejected => {
+        expect(wasRejected, 'Transaction should be rejected').to.be.true;
+      });
   });
 });
