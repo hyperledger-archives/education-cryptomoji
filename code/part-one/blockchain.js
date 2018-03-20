@@ -110,7 +110,8 @@ class Blockchain {
       - Creates new pending transaction for mining reward
   */
   minePendingTransactions(miningRewardAddress) {
-    let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
+    let block = new Block(
+      Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
     block.mineBlock(this._difficulty);
 
     console.log('Block has been mined.');
@@ -118,11 +119,32 @@ class Blockchain {
     
     this.pendingTransactions = [
       /*
-        Mining rewards do not come from any specific address and instead are awarded
-        directly from the chain itself.
+        Mining rewards do not come from any specific address
+        and instead are awarded directly from the chain itself.
       */
       new Transaction(null, miningRewardAddress, this.miningReward)
     ];
+  }
+
+  /*
+    Takes in an address and should return the balance of that address based on
+    the mined transactions in the blockchain.
+  */
+  getBalanceOfAddress(address) {
+    let balance = 0;
+
+    for (const block of this.chain) {
+      for (const transaction of block.transactions) {
+        if (transaction.fromAddress === address) {
+          balance -= transaction.amount;
+        }
+        if (transaction.toAddress === address) {
+          balance += transaction.amount;
+        }
+      }
+    }
+
+    return balance;
   }
 
   /*
