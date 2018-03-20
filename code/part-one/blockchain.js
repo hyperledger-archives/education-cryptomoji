@@ -14,19 +14,17 @@ class Block {
 
     **Note**
     The block should be initiated with
-      - an index
       - a timestamp
-      - the stored data
+      - transactions
       - the previous block's hash
   */
-  constructor(index, timestamp, data, previousHash = '') {
-    this.index = index;
-    this.timestamp = timestamp;
-    this.data = data;
-    this.previousHash = previousHash;
-    this.hash = this.calculateHash();
-    this._nonce = 0;
-  }
+ constructor(timestamp, transactions, previousHash = '') {
+  this.timestamp = timestamp;
+  this.transactions = transactions;
+  this.previousHash = previousHash;
+  this.hash = this.calculateHash();
+  this._nonce = 0;
+}
 
   /*
     Calculate a hash based on data supplied to block:
