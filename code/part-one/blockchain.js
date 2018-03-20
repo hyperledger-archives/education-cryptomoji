@@ -1,5 +1,13 @@
 let SHA512 = require('crypto-js/sha512');
 
+class Transaction {
+  constructor(fromAddress, toAddress, amount) {
+    this.fromAddress = fromAddress;
+    this.toAddress = toAddress;
+    this.amount = amount;
+  }
+}
+
 class Block {
   /*
     Initialize the block constructor
