@@ -88,7 +88,7 @@ class Blockchain {
     - Add functionality to create an initial block
   */
   _createGenesisBlock() {
-    return new Block(0, (new Date()).toString(), 'Genesis Block', '0');
+    return new Block((new Date()).toString(), 'Genesis Block', '0');
   }
 
   /*
