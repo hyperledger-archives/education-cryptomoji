@@ -101,17 +101,28 @@ class Blockchain {
   }
 
   /*
-    Add a new block to the blockchain:
+    Add a new block to the blockchain based on pending transactions:
 
     Create function that:
       - Adds previousHash property to new block
       - Create hash (or mine block)
       - Adds block to the chain
+      - Creates new pending transaction for mining reward
   */
-  addBlock(newBlock) {
-    newBlock.previousHash = this.getLatestBlock().hash;
-    newBlock.mineBlock(this._difficulty);
-    this.chain.push(newBlock);
+  minePendingTransactions(miningRewardAddress) {
+    let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
+    block.mineBlock(this._difficulty);
+
+    console.log('Block has been mined.');
+    this.chain.push(block);
+    
+    this.pendingTransactions = [
+      /*
+        Mining rewards do not come from any specific address and instead are awarded
+        directly from the chain itself.
+      */
+      new Transaction(null, miningRewardAddress, this.miningReward)
+    ];
   }
 
   /*
