@@ -27,7 +27,7 @@ class Block {
 }
 
   /*
-    Calculate a hash based on data supplied to block:
+    Calculate a hash based on transactions supplied to block:
 
     - Add functionality to return a hash by passing a compiled string
     into the SHA256 hashing function
@@ -37,19 +37,18 @@ class Block {
 
     **Hint**
     Unreplicable data can include
-      - the block index
+      - transactions
       - the previous hash
       - the block timestamp
   */
-  calculateHash() {
-    return SHA512(`
-      ${this.index}
-      ${this.previousHash}
-      ${this.timestamp}
-      ${JSON.stringify(this.data)}
-      ${this._nonce}
-    `).toString();
-  }
+ calculateHash() {
+  return SHA512(`
+    ${this.previousHash}
+    ${this.timestamp}
+    ${JSON.stringify(this.transactions)}
+    ${this._nonce}
+  `).toString();
+}
 
   /*
     Mine block by difficulty:
