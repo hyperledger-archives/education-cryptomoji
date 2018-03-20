@@ -18,13 +18,13 @@ class Block {
       - transactions
       - the previous block's hash
   */
- constructor(timestamp, transactions, previousHash = '') {
-  this.timestamp = timestamp;
-  this.transactions = transactions;
-  this.previousHash = previousHash;
-  this.hash = this.calculateHash();
-  this._nonce = 0;
-}
+  constructor(timestamp, transactions, previousHash = '') {
+    this.timestamp = timestamp;
+    this.transactions = transactions;
+    this.previousHash = previousHash;
+    this.hash = this.calculateHash();
+    this._nonce = 0;
+  }
 
   /*
     Calculate a hash based on transactions supplied to block:
@@ -41,14 +41,14 @@ class Block {
       - the previous hash
       - the block timestamp
   */
- calculateHash() {
-  return SHA512(`
-    ${this.previousHash}
-    ${this.timestamp}
-    ${JSON.stringify(this.transactions)}
-    ${this._nonce}
-  `).toString();
-}
+  calculateHash() {
+    return SHA512(`
+      ${this.previousHash}
+      ${this.timestamp}
+      ${JSON.stringify(this.transactions)}
+      ${this._nonce}
+    `).toString();
+  }
 
   /*
     Mine block by difficulty:
@@ -78,6 +78,8 @@ class Blockchain {
   constructor() {
     this.chain = [this._createGenesisBlock()];
     this._difficulty = 3;
+    this.pendingTransactions = [];
+    this.miningReward = 100;
   }
 
   /*
