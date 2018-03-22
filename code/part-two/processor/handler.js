@@ -1,20 +1,16 @@
 'use strict';
 
-const crypto = require('crypto');
-const handler = require('sawtooth-sdk/processor/handler');
+const { createHash } = require('crypto');
+const { TransactionHandler } = require('sawtooth-sdk/processor/handler');
 
 const getAddress = (key, length) => {
-  return crypto
-    .createHash('sha512')
-    .update(key)
-    .digest('hex')
-    .slice(0, length);
+  return createHash('sha512').update(key).digest('hex').slice(0, length);
 };
 
 const FAMILY = 'cryptomoji';
 const NAMESPACE = getAddress(FAMILY, 6);
 
-class MojiHandler extends handler.TransactionHandler {
+class MojiHandler extends TransactionHandler {
   constructor () {
     console.log('Initializing cryptomoji handler with namespace:', NAMESPACE);
     super(FAMILY, ['1.0'], [NAMESPACE]);
@@ -26,6 +22,4 @@ class MojiHandler extends handler.TransactionHandler {
   }
 }
 
-module.exports = {
-  MojiHandler: MojiHandler
-};
+module.exports = MojiHandler;
