@@ -4,6 +4,7 @@ node_modules
 # Built Code
 build/
 dist/
+bundle.js
 
 # Logs
 *.log
