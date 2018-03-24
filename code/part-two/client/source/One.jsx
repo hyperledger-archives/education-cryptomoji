@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const One = () => (
-  <div>This is <code>One</code> component.</div>
-);
+export function One() {
+  return <div>This is <code>One</code> component.</div>;
+}

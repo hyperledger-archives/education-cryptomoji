@@ -5,20 +5,22 @@ import { BrowserRouter, Link, Route } from 'react-router-dom';
 import { All } from './All';
 import { One } from './One';
 
-const App = () => (
-  <BrowserRouter>
-    <div>
-      <nav>
-        <Link to="/all">All</Link>&nbsp;|&nbsp;
-        <Link to="/one">One</Link>
-      </nav>
+function App() {
+  return (
+    <BrowserRouter>
       <div>
-        Hello world! This will show up always.
-        <Route path="/all" component={All} />
-        <Route path="/one" component={One} />
+        <nav>
+          <Link to="/all">All</Link>&nbsp;|&nbsp;
+          <Link to="/one">One</Link>
+        </nav>
+        <div>
+          Hello world! This will show up always.
+          <Route path="/all" component={All} />
+          <Route path="/one" component={One} />
+        </div>
       </div>
-    </div>
-  </BrowserRouter>
-);
+    </BrowserRouter>
+  );
+}
 
 ReactDOM.render(<App />, document.getElementById('app'));
