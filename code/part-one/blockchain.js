@@ -1,6 +1,6 @@
 let SHA512 = require('crypto-js/sha512');
 
-export class Transaction {
+class Transaction {
   constructor(fromAddress, toAddress, amount) {
     this.fromAddress = fromAddress;
     this.toAddress = toAddress;
@@ -8,7 +8,7 @@ export class Transaction {
   }
 }
 
-export class Block {
+class Block {
   /*
     Initialize the block constructor
 
@@ -22,8 +22,8 @@ export class Block {
     this.timestamp = timestamp;
     this.transactions = transactions;
     this.previousHash = previousHash;
-    this.hash = this.calculateHash();
     this._nonce = 0;
+    this.hash = this.calculateHash();
   }
 
   /*
@@ -42,12 +42,8 @@ export class Block {
       - the block timestamp
   */
   calculateHash() {
-    return SHA512(`
-      ${this.previousHash}
-      ${this.timestamp}
-      ${JSON.stringify(this.transactions)}
-      ${this._nonce}
-    `).toString();
+    return SHA512(this.previousHash + this.timestamp +
+      JSON.stringify(this.transactions) + this._nonce.toString()).toString();
   }
 
   /*
@@ -74,7 +70,7 @@ export class Block {
   }
 }
 
-export class Blockchain {
+class Blockchain {
   constructor() {
     this.chain = [this._createGenesisBlock()];
     this._difficulty = 3;
@@ -170,3 +166,9 @@ export class Blockchain {
     });
   }
 }
+
+module.exports = {
+  Transaction,
+  Block,
+  Blockchain
+};
