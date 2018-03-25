@@ -1,6 +1,6 @@
 let SHA512 = require('crypto-js/sha512');
 
-class Transaction {
+export class Transaction {
   constructor(fromAddress, toAddress, amount) {
     this.fromAddress = fromAddress;
     this.toAddress = toAddress;
@@ -8,7 +8,7 @@ class Transaction {
   }
 }
 
-class Block {
+export class Block {
   /*
     Initialize the block constructor
 
@@ -74,7 +74,7 @@ class Block {
   }
 }
 
-class Blockchain {
+export class Blockchain {
   constructor() {
     this.chain = [this._createGenesisBlock()];
     this._difficulty = 3;
@@ -124,6 +124,10 @@ class Blockchain {
       */
       new Transaction(null, miningRewardAddress, this.miningReward)
     ];
+  }
+
+  createTransaction(transaction) {
+    this.pendingTransactions.push(transaction);
   }
 
   /*
