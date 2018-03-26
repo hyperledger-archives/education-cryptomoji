@@ -87,7 +87,7 @@ class Blockchain {
   /*
     Get the last created block:
 
-    - Add functionality to get the latest block in the chain 
+    - Add functionality to get the latest block in the chain
   */
   getLatestBlock() {
     return this.chain[this.chain.length - 1];
@@ -126,3 +126,5 @@ class Blockchain {
     });
   }
 }
+
+module.exports = { Blockchain, Block };
