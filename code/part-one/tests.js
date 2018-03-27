@@ -1,27 +1,17 @@
 const chai = require('chai');
 const expect = chai.expect;
-
-
+const SHA512 = require('crypto-js/sha512');
 const { Block, Blockchain } = require('./blockchain.js');
 
 describe('Blockchain', () => {
-
   const blockchain = new Blockchain();
   const now = new Date().toString();
   const genesisBlock = blockchain.chain[0];
-
-  it('Should create a blockchain with all initial values', done => {
-    expect(blockchain).to.have.property('chain').with.lengthOf(1);
-    expect(blockchain).to.have.property('_difficulty');
-    expect(blockchain).to.have.property('_createGenesisBlock');
-    expect(blockchain).to.have.property('getLatestBlock');
-    expect(blockchain).to.have.property('addBlock');
-    expect(blockchain).to.have.property('isValidChain');
-    done();
-  });
+  const newBlock = new Block();
 
   it('Should create a blockchain with a genesis block', done => {
     expect(blockchain).to.have.property('_createGenesisBlock');
+    expect(blockchain).to.have.property('chain').with.lengthOf(1);
     expect(genesisBlock.index).to.equal(0);
     expect(genesisBlock.data).to.equal('Genesis Block');
     expect(genesisBlock.previousHash).to.equal('0');
@@ -29,24 +19,62 @@ describe('Blockchain', () => {
     done();
   });
 
+  it('Should create a blockchain that can add blocks', done => {
+    blockchain.addBlock(newBlock);
+
+    expect(blockchain).to.have.property('addBlock');
+    expect(blockchain).to.have.property('_difficulty');
+    expect(blockchain.chain).to.have.lengthOf(2);
+    expect(blockchain.chain[1]).to.equal(newBlock);
+    done();
+  });
+
   it('Should create a valid blockchain', done => {
+    expect(blockchain).to.have.property('isValidChain');
     expect(blockchain.isValidChain()).to.be.true;
     done();
   });
 
   it('Should create a blockchain that can retrieve the latest block', done => {
-    expect(blockchain.getLatestBlock()).to.equal(genesisBlock);
+    expect(blockchain).to.have.property('getLatestBlock');
+    expect(blockchain.getLatestBlock()).to.equal(newBlock);
+    done();
+  });
+});
+
+describe('Block', () => {
+  const now = new Date().toString();
+  const testIndex = 7;
+  const testData = { test: 'TEST_DATA' };
+  const testHash = '0123TESTHASH';
+  const testNonce = 0;
+
+  const block = new Block(testIndex, now, testData, testHash);
+
+  const testDataHash = SHA512(testIndex + testHash + now +
+    JSON.stringify(testData) + testNonce).toString();
+
+  it('Should create a block with all initial values', done => {
+    expect(block.index).to.equal(testIndex);
+    expect(block.timestamp).to.equal(now);
+    expect(block.data).to.equal(testData);
+    expect(block.previousHash).to.equal(testHash);
     done();
   });
 
-  it('Should create a blockchain that can add blocks', done => {
-
-    const block = new Block();
-    blockchain.addBlock(block);
-
-    expect(blockchain.chain).to.have.lengthOf(2);
-    expect(blockchain.chain[1]).to.equal(block);
+  it('Should create a block that calculates hashes', done => {
+    expect(block).to.have.property('calculateHash');
+    expect(block.hash).to.equal(testDataHash);
     done();
   });
 
+  it('Should create a block than can be mined', done => {
+    expect(block).to.have.property('mineBlock');
+
+    block.mineBlock(1);
+
+    expect(block.hash).to.not.equal(testDataHash);
+    expect(block._nonce).to.not.equal(testNonce);
+    done();
+  });
 });
