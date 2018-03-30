@@ -1,26 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Link, Route } from 'react-router-dom';
+import { HashRouter, Link, Route } from 'react-router-dom';
 
-import { All } from './All';
-import { One } from './One';
+import { Collection } from './Collection';
+import { Search } from './Search';
 
-function App() {
-  return (
-    <BrowserRouter>
+import { api } from './utils/fakeApi';
+
+
+class App extends React.Component {
+  render() {
+    return (
       <div>
         <nav>
-          <Link to="/all">All</Link>&nbsp;|&nbsp;
-          <Link to="/one">One</Link>
+          <Link to="/">Home</Link>
+          <Link to="/browse">Browse</Link>
         </nav>
-        <div>
-          Hello world! This will show up always.
-          <Route path="/all" component={All} />
-          <Route path="/one" component={One} />
-        </div>
+        <Route path="/browse" component={Search} />
+        <Route
+          path="/browse/:collectionAddr/:mojiAddr?"
+          component={Collection}
+        />
       </div>
-    </BrowserRouter>
-  );
+    );
+  }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render((
+  <HashRouter>
+    <App />
+  </HashRouter>
+), document.getElementById('app'));
