@@ -6,7 +6,7 @@ From this directory,
 
 ```bash
 npm install
-npm build:dev
+npm run build:dev
 ```
 
 In another terminal instance,
