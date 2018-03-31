@@ -1,27 +1,33 @@
 let SHA512 = require('crypto-js/sha512');
 
+class Transaction {
+  constructor(fromAddress, toAddress, amount) {
+    this.fromAddress = fromAddress;
+    this.toAddress = toAddress;
+    this.amount = amount;
+  }
+}
+
 class Block {
   /*
     Initialize the block constructor
 
     **Note**
     The block should be initiated with
-      - an index
       - a timestamp
-      - the stored data
+      - transactions
       - the previous block's hash
   */
-  constructor(index, timestamp, data, previousHash = '') {
-    this.index = index;
+  constructor(timestamp, transactions, previousHash = '') {
     this.timestamp = timestamp;
-    this.data = data;
+    this.transactions = transactions;
     this.previousHash = previousHash;
-    this.hash = this.calculateHash();
     this._nonce = 0;
+    this.hash = this.calculateHash();
   }
 
   /*
-    Calculate a hash based on data supplied to block:
+    Calculate a hash based on transactions supplied to block:
 
     - Add functionality to return a hash by passing a compiled string
     into the SHA256 hashing function
@@ -31,18 +37,13 @@ class Block {
 
     **Hint**
     Unreplicable data can include
-      - the block index
+      - transactions
       - the previous hash
       - the block timestamp
   */
   calculateHash() {
-    return SHA512(`
-      ${this.index}
-      ${this.previousHash}
-      ${this.timestamp}
-      ${JSON.stringify(this.data)}
-      ${this._nonce}
-    `).toString();
+    return SHA512(this.previousHash + this.timestamp +
+      JSON.stringify(this.transactions) + this._nonce.toString()).toString();
   }
 
   /*
@@ -73,6 +74,8 @@ class Blockchain {
   constructor() {
     this.chain = [this._createGenesisBlock()];
     this._difficulty = 3;
+    this.pendingTransactions = [];
+    this.miningReward = 100;
   }
 
   /*
@@ -81,7 +84,7 @@ class Blockchain {
     - Add functionality to create an initial block
   */
   _createGenesisBlock() {
-    return new Block(0, (new Date()).toString(), 'Genesis Block', '0');
+    return new Block((new Date()).toString(), 'Genesis Block', '0');
   }
 
   /*
@@ -94,17 +97,54 @@ class Blockchain {
   }
 
   /*
-    Add a new block to the blockchain:
+    Add a new block to the blockchain based on pending transactions:
 
     Create function that:
       - Adds previousHash property to new block
       - Create hash (or mine block)
       - Adds block to the chain
+      - Creates new pending transaction for mining reward
   */
-  addBlock(newBlock) {
-    newBlock.previousHash = this.getLatestBlock().hash;
-    newBlock.mineBlock(this._difficulty);
-    this.chain.push(newBlock);
+  minePendingTransactions(miningRewardAddress) {
+    let block = new Block(
+      Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
+    block.mineBlock(this._difficulty);
+
+    console.log('Block has been mined.');
+    this.chain.push(block);
+    
+    this.pendingTransactions = [
+      /*
+        Mining rewards do not come from any specific address
+        and instead are awarded directly from the chain itself.
+      */
+      new Transaction(null, miningRewardAddress, this.miningReward)
+    ];
+  }
+
+  createTransaction(transaction) {
+    this.pendingTransactions.push(transaction);
+  }
+
+  /*
+    Takes in an address and should return the balance of that address based on
+    the mined transactions in the blockchain.
+  */
+  getBalanceOfAddress(address) {
+    let balance = 0;
+
+    for (const block of this.chain) {
+      for (const transaction of block.transactions) {
+        if (transaction.fromAddress === address) {
+          balance -= transaction.amount;
+        }
+        if (transaction.toAddress === address) {
+          balance += transaction.amount;
+        }
+      }
+    }
+
+    return balance;
   }
 
   /*
@@ -126,3 +166,9 @@ class Blockchain {
     });
   }
 }
+
+module.exports = {
+  Transaction,
+  Block,
+  Blockchain
+};
