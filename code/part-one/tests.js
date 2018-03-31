@@ -1,12 +1,12 @@
 const chai = require('chai');
 const expect = chai.expect;
-const SHA512 = require('crypto-js/sha512');
+const { hash } = require('./utils/helpers.js');
 const { Block, Blockchain, Transaction } = require('./blockchain.js');
 
 
 // Test transaction data
-const testFromAddress = SHA512('testFromAddress').toString();
-const testToAddress = SHA512('testToAddress').toString();
+const testFromAddress = hash('testFromAddress');
+const testToAddress = hash('testToAddress');
 const testAmount = '10.00';
 const transaction = new Transaction(
   testFromAddress,
@@ -16,20 +16,20 @@ const transaction = new Transaction(
 
 // Test blockchain data
 const blockchain = new Blockchain();
-const now = new Date().toString();
 const genesisBlock = blockchain.chain[0];
 const newBlock = new Block();
-const miningAddress = SHA512('miningAddress').toString();
+const miningAddress = hash('miningAddress');
 let timesMined = 0;
 
 // Test block data
 const testHash = '0123TESTHASH';
 const testTransactions = [];
 const testNonce = 0;
+const now = Date.now();
 const block = new Block(now, testTransactions, testHash);
-const testDataHash = SHA512(
+const testDataHash = hash(
   testHash + now + JSON.stringify(testTransactions) + testNonce
-).toString();
+);
 
 
 // Transaction tests
@@ -47,8 +47,8 @@ describe('Blockchain', () => {
   it('Should create a blockchain with a genesis block', done => {
     expect(blockchain).to.have.property('_createGenesisBlock');
     expect(blockchain).to.have.property('chain').with.lengthOf(1);
-    expect(genesisBlock.previousHash).to.equal('0');
-    expect(genesisBlock.timestamp).to.equal(now);
+    expect(genesisBlock.previousHash).to.be.null;
+    expect(genesisBlock.timestamp).is.not.null;
     done();
   });
 
@@ -108,13 +108,22 @@ describe('Block', () => {
     done();
   });
 
-  it('Should create a block than can be mined', done => {
+  it('Should create a block that can be mined', done => {
     expect(block).to.have.property('mineBlock');
 
-    block.mineBlock(1);
+    // If the initial hash meets the proof of work requirement
+    if (block.hash[0] === '0') {
+      expect(block.hash).to.equal(testDataHash);
+      expect(block._nonce).to.equal(testNonce);
 
-    expect(block.hash).to.not.equal(testDataHash);
-    expect(block._nonce).to.not.equal(testNonce);
+    // If not uses nonce to generate proof of work
+    } else {
+      block.mineBlock(1);
+
+      expect(block.hash).to.not.equal(testDataHash);
+      expect(block._nonce).to.not.equal(testNonce);
+    }
+
     done();
   });
 });

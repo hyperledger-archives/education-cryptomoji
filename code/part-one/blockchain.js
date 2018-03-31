@@ -1,4 +1,4 @@
-const SHA512 = require('crypto-js/sha512');
+const { hash } = require('./utils/helpers.js');
 
 class Transaction {
   constructor(fromAddress, toAddress, amount) {
@@ -18,7 +18,7 @@ class Block {
       - transactions
       - the previous block's hash
   */
-  constructor(timestamp, transactions, previousHash = '') {
+  constructor(timestamp, transactions, previousHash) {
     this.timestamp = timestamp;
     this.transactions = transactions;
     this.previousHash = previousHash;
@@ -42,8 +42,8 @@ class Block {
       - the block timestamp
   */
   calculateHash() {
-    return SHA512(this.previousHash + this.timestamp +
-      JSON.stringify(this.transactions) + this._nonce.toString()).toString();
+    return hash(this.previousHash + this.timestamp +
+      JSON.stringify(this.transactions) + this._nonce.toString());
   }
 
   /*
@@ -84,7 +84,7 @@ class Blockchain {
     - Add functionality to create an initial block
   */
   _createGenesisBlock() {
-    return new Block((new Date()).toString(), 'Genesis Block', '0');
+    return new Block(Date.now(), [], null);
   }
 
   /*
