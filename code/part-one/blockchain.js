@@ -73,7 +73,7 @@ class Block {
 class Blockchain {
   constructor() {
     this.chain = [this._createGenesisBlock()];
-    this._difficulty = 3;
+    this._difficulty = 2;
     this.pendingTransactions = [];
     this.miningReward = 100;
   }
@@ -107,22 +107,25 @@ class Blockchain {
   */
   minePendingTransactions(miningRewardAddress) {
     let block = new Block(
-      Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
+      Date.now(), this.pendingTransactions, this.getLatestBlock().hash
+    );
+
+    /*
+      Mining rewards do not come from any specific address
+      and instead are awarded directly from the chain itself.
+    */
+    block.transactions.push(
+      new Transaction(null, miningRewardAddress, this.miningReward)
+    );
+
     block.mineBlock(this._difficulty);
 
-    console.log('Block has been mined.');
     this.chain.push(block);
-
-    this.pendingTransactions = [
-      /*
-        Mining rewards do not come from any specific address
-        and instead are awarded directly from the chain itself.
-      */
-      new Transaction(null, miningRewardAddress, this.miningReward)
-    ];
+    this.pendingTransactions = [];
+    console.log('Block has been mined.');
   }
 
-  createTransaction(transaction) {
+  addPendingTransaction(transaction) {
     this.pendingTransactions.push(transaction);
   }
 
