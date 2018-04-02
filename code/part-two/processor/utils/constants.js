@@ -14,9 +14,16 @@ const TYPE_PREFIXES = {
   SIRE_LISTING: '03'
 };
 
+const NEW_MOJI_COUNT = 3;
+const DNA_LENGTH = 9;
+const GENE_SIZE = 2 ** (8 * 2);
+
 module.exports = {
   FAMILY_NAME,
   FAMILY_VERSION,
   NAMESPACE,
-  TYPE_PREFIXES
+  TYPE_PREFIXES,
+  NEW_MOJI_COUNT,
+  DNA_LENGTH,
+  GENE_SIZE
 };
