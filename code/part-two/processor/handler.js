@@ -23,8 +23,10 @@ class MojiHandler extends TransactionHandler {
     }
 
     const action = payload.action;
+    const publicKey = txn.header.signerPublicKey;
+
     if (action === 'CREATE_COLLECTION') {
-      return createCollection(context, txn.header.signerPublicKey);
+      return createCollection(context, publicKey, txn.signature);
     } else {
       return reject('Unknown action: ' + action);
     }
