@@ -4,14 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const { NAMESPACE } = require('../utils/constants');
+const getAddress = require('../utils/addressing');
 const { hash, decode } = require('../utils/helpers');
 const Txn = require('./mocks/txn');
 const Context = require('./mocks/context');
-
-const getCollectionAddress = publicKey => {
-  return NAMESPACE + '01' + hash(publicKey, 62);
-};
 
 describe('Create Collection', function() {
   let handler = null;
@@ -28,7 +24,7 @@ describe('Create Collection', function() {
     context = new Context();
     txn = new Txn({ action: 'CREATE_COLLECTION' });
     publicKey = txn.header.signerPublicKey;
-    address = getCollectionAddress(publicKey);
+    address = getAddress.collection(publicKey);
   });
 
   it('should create a Collection at the correct address', function() {
