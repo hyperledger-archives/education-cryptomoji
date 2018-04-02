@@ -16,6 +16,9 @@ const getCollectionAddress = publicKey => {
 describe('Create Collection', function() {
   let handler = null;
   let context = null;
+  let txn = null;
+  let publicKey = null;
+  let address = null;
 
   before(function() {
     handler = new MojiHandler();
@@ -23,13 +26,12 @@ describe('Create Collection', function() {
 
   beforeEach(function() {
     context = new Context();
+    txn = new Txn({ action: 'CREATE_COLLECTION' });
+    publicKey = txn.header.signerPublicKey;
+    address = getCollectionAddress(publicKey);
   });
 
   it('should create a Collection at the correct address', function() {
-    const txn = new Txn({ action: 'CREATE_COLLECTION' });
-    const publicKey = txn.header.signerPublicKey;
-    const address = getCollectionAddress(publicKey);
-
     return handler.apply(txn, context)
       .then(() => {
         expect(context.state[address], 'Collection should exist').to.exist;
@@ -43,8 +45,6 @@ describe('Create Collection', function() {
   });
 
   it('should reject a public key that has already been used', function() {
-    const txn = new Txn({ action: 'CREATE_COLLECTION' });
-
     return handler.apply(txn, context)
       .then(() => handler.apply(txn, context))
       .catch(err => {
