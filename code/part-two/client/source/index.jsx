@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Link, Route } from 'react-router-dom';
+import { BrowserRouter, Link, Route } from 'react-router-dom';
 
 import { Collection } from './Collection';
 import { Search } from './Search';
@@ -27,7 +27,7 @@ class App extends React.Component {
 }
 
 ReactDOM.render((
-  <HashRouter>
+  <BrowserRouter>
     <App />
-  </HashRouter>
+  </BrowserRouter>
 ), document.getElementById('app'));
