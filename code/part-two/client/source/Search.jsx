@@ -25,7 +25,7 @@ export class Search extends React.Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
-          Enter a (collection) address you would like to browse:
+          Enter a collection or moji address you would like to browse:
           <input
             name="address"
             value={this.state.value}
