@@ -4,7 +4,7 @@
   },
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 6,
+    "ecmaVersion": 2016,
     "ecmaFeatures": {
       "jsx": true
     }
