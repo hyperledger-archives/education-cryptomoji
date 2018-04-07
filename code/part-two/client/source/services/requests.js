@@ -19,6 +19,7 @@ const PREFIXES = {
   OFFER: '02',
   SIRE_LISTING: '03'
 };
+const ADDRESS_LENGTH = 70;
 
 // Parses a state entity, combining its address with its decoded data
 const decode = (address, data) => {
@@ -123,7 +124,32 @@ export const getMoji = (filterOrAddress = null) => {
  *   { owner: string, moji: string[] } - returns the single matching Offer
  */
 export const getOffers = (filterOrAddress = null) => {
-  throw Error('Method not implemented: getOffers');
+  const prefix = NAMESPACE + PREFIXES.OFFER;
+
+  if (filterOrAddress === null) {
+    return fetchMany(prefix);
+  }
+
+  if (typeof filterOrAddress === 'string') {
+    return fetchOne(filterOrAddress);
+  }
+
+  const { owner, moji } = filterOrAddress;
+  const ownerHash = hash(owner, 8);
+  const ownerPrefix = prefix + ownerHash;
+
+  if (!moji) {
+    return fetchMany(ownerPrefix);
+  }
+
+  const addresses = moji.map(addressOrDna => {
+    if (addressOrDna.length === ADDRESS_LENGTH) {
+      return addressOrDna;
+    }
+    return NAMESPACE + PREFIXES.MOJI + ownerHash + hash(addressOrDna, 54);
+  });
+
+  return fetchOne(ownerPrefix + hash(addresses.join(''), 54));
 };
 
 /**
