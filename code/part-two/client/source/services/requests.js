@@ -10,7 +10,7 @@ const hash = (str, length = 128) => {
   return createHash('sha512').update(str).digest('hex').slice(0, length);
 };
 
-// Address constants
+// Constants
 const FAMILY_NAME = 'cryptomoji';
 const NAMESPACE = hash(FAMILY_NAME, 6);
 const PREFIXES = {
@@ -20,6 +20,7 @@ const PREFIXES = {
   SIRE_LISTING: '03'
 };
 const ADDRESS_LENGTH = 70;
+const MAX_HTTP_REQUESTS = 10;
 
 // Parses a state entity, combining its address with its decoded data
 const decode = (address, data) => {
@@ -153,12 +154,31 @@ export const getOffers = (filterOrAddress = null) => {
 };
 
 /**
- * Fetches one or more Sires.
+ * Fetches one or more sires.
  *
  * Accepts a single optional public key parameter:
- *   null - if not set, all Sires are returned in an array
- *   string - if a key, the Sire owned by that public key is returned
+ *   null - if not set, all sires are returned in an array
+ *   string - if a key, the sire owned by that public key is returned
  */
 export const getSires = (ownerKey = null) => {
-  throw Error('Method not implemented: getSires');
+  const prefix = NAMESPACE + PREFIXES.SIRE_LISTING;
+
+  if (ownerKey !== null) {
+    return fetchOne(prefix + hash(ownerKey, 62))
+      .then(({ sire }) => getMoji(sire));
+  }
+
+  return fetchMany(prefix).then(listings => {
+    const addresses = listings.map(listing => listing.sire);
+
+    // If only a few sires, fetch each individually
+    if (listings.length < MAX_HTTP_REQUESTS - 1) {
+      const sireRequests = addresses.map(address => getMoji(address));
+      return Promise.all(sireRequests);
+    }
+
+    // If many sires, fetch all moji in one request and filter
+    return getMoji()
+      .then(moji => moji.filter(addresses.includes(moji.address)));
+  });
 };
