@@ -20,14 +20,17 @@ const PREFIXES = {
   SIRE_LISTING: '03'
 };
 
-// Parses a state entity from a base64 string
-const decode = item => {
-  return JSON.parse(Buffer.from(item.data, 'base64').toString());
+// Parses a state entity, combining its address with its decoded data
+const decode = (address, data) => {
+  const decoded = JSON.parse(Buffer.from(data, 'base64').toString());
+  decoded.address = address;
+  return decoded;
 };
 
 // Fetches one state entity by address
 const fetchOne = address => {
-  return axios.get(`api/state/${address}`).then(res => decode(rest.data));
+  return axios.get(`api/state/${address}`)
+    .then(({ data }) => decode(address, data.data));
 };
 
 // Fetches many state entities by address prefix,
@@ -35,7 +38,9 @@ const fetchOne = address => {
 const fetchMany = prefix => {
   const doFetch = url => {
     return axios.get(url).then(({ data }) => {
-      const resources = data.data.map(decode);
+      const resources = data.data.map(({ address, data }) => {
+        return decode(address, data);
+      });
 
       if (!data.paging.next) {
         return resources;
@@ -49,6 +54,16 @@ const fetchMany = prefix => {
   return doFetch(`api/state?address=${prefix}`);
 };
 
+// Drops the address key from a state entity
+const dropAddress = entity => {
+  return Object.keys(entity)
+    .filter(key => key !== 'address')
+    .reduce((dropped, key) => {
+      dropped[key] = entity[key];
+      return dropped;
+    }, {});
+};
+
 /**
  * Fetches one or more Collections.
  *
@@ -60,10 +75,10 @@ export const getCollections = (key = null) => {
   const prefix = NAMESPACE + PREFIXES.COLLECTION;
 
   if (key === null) {
-    return fetchMany(prefix);
+    return fetchMany(prefix).then(collections => collections.map(dropAddress));
   }
 
-  return fetchOne(prefix + hash(key, 62));
+  return fetchOne(prefix + hash(key, 62)).then(dropAddress);
 };
 
 /**
@@ -77,7 +92,24 @@ export const getCollections = (key = null) => {
  *   { owner: string, dna: string } -
  */
 export const getMoji = (filterOrAddress = null) => {
-  throw Error('Method not implemented: getMoji');
+  const prefix = NAMESPACE + PREFIXES.MOJI;
+
+  if (filterOrAddress === null) {
+    return fetchMany(prefix);
+  }
+
+  if (typeof filterOrAddress === 'string') {
+    return fetchOne(filterOrAddress);
+  }
+
+  const { owner, dna } = filterOrAddress;
+  const ownerPrefix = prefix + hash(owner, 8);
+
+  if (!dna) {
+    return fetchMany(ownerPrefix);
+  }
+
+  return fetchOne(ownerPrefix + hash(dna, 54));
 };
 
 /**
