@@ -2,6 +2,7 @@
 'use strict';
 
 import { createHash } from 'crypto';
+import secp256k1 from 'sawtooth-sdk/signing/secp256k1';
 
 
 const hash = str => createHash('sha512').update(str).digest('hex');
@@ -9,20 +10,26 @@ const hash = str => createHash('sha512').update(str).digest('hex');
 const FAMILY_NAME = 'cryptomoji';
 const FAMILY_VERSION = '1.0';
 const NAMESPACE = hash(FAMILY_NAME).slice(0, 6);
+const CONTEXT = new secp256k1.Secp256k1Context();
 
 /**
  * Creates a new public/private key pair, and returns them as an object
  * with the keys "public", and "private".
  */
 export const createKeys = () => {
-  throw new Error('Method not implemented: createKeys');
+  const privateWrapper = CONTEXT.newRandomPrivateKey();
+  const privateKey = privateWrapper.asHex();
+  const publicKey = CONTEXT.getPublicKey(privateWrapper).asHex();
+
+  return { privateKey, publicKey };
 };
 
 /**
  * Takes a private key and returns its public pair.
  */
 export const getPublicKey = privateKey => {
-  throw new Error('Method not implemented: getPublicKey');
+  const privateWrapper = secp256k1.Secp256k1PrivateKey.fromHex(privateKey);
+  return CONTEXT.getPublicKey(privateWrapper).asHex();
 };
 
 /**
