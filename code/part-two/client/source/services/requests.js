@@ -20,6 +20,35 @@ const PREFIXES = {
   SIRE_LISTING: '03'
 };
 
+// Parses a state entity from a base64 string
+const decode = item => {
+  return JSON.parse(Buffer.from(item.data, 'base64').toString());
+};
+
+// Fetches one state entity by address
+const fetchOne = address => {
+  return axios.get(`api/state/${address}`).then(res => decode(rest.data));
+};
+
+// Fetches many state entities by address prefix,
+// concatenating all available pages as needed
+const fetchMany = prefix => {
+  const doFetch = url => {
+    return axios.get(url).then(({ data }) => {
+      const resources = data.data.map(decode);
+
+      if (!data.paging.next) {
+        return resources;
+      }
+
+      return doFetch(data.paging.next)
+        .then(nextPage => resources.concat(nextPage));
+    });
+  };
+
+  return doFetch(`api/state?address=${prefix}`);
+};
+
 /**
  * Fetches one or more Collections.
  *
@@ -28,7 +57,13 @@ const PREFIXES = {
  *   string - if a key, that particular Collection is returned
  */
 export const getCollections = (key = null) => {
-  throw Error('Method not implemented: getCollections');
+  const prefix = NAMESPACE + PREFIXES.COLLECTION;
+
+  if (key === null) {
+    return fetchMany(prefix);
+  }
+
+  return fetchOne(prefix + hash(key, 62));
 };
 
 /**
