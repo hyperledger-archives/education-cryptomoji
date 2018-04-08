@@ -143,6 +143,37 @@ const spaceParts = (part, i, parts) => {
   return part;
 };
 
+// Combines an array of parts into a single kaomoji string
+const combineParts = parts => {
+  const armIndex = GENE_TYPES
+    .filter(type => type !== 'WHITESPACE')
+    .findIndex(type => type === 'arm');
+
+  const combined = parts.reduce((combined, part, i) => {
+    if (i !== armIndex) {
+      return part.replace('%', combined);
+    }
+
+    const isOffRight = part.length === 3
+      && part[0] === '%'
+      && parts[1] === parts[2];
+    if (isOffRight) {
+      return combined[0] + part[1] + combined.slice(1) + part[2];
+    }
+
+    const isOffLeft = parts.arms.length === 3 &&
+      parts.arms[2] === '%' &&
+      parts.arms[0] === parts.arms[1];
+    if (isOffLeft) {
+      return part[0] + combined.slice(0, -1) + part[1] + combined.slice(-1);
+    }
+
+    return part.replace('%', combined);
+  });
+
+  return combined.trim();
+};
+
 /**
  * Takes a hexadecimal DNA string and parses it into an object
  * with two keys:
@@ -165,6 +196,6 @@ export default const parseDna = dna => {
 
   return {
     tags,
-    view: parts
+    view: combineParts(parts)
   };
 };
