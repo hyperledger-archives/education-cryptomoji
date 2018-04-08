@@ -44,6 +44,11 @@ const flatten = (flattened, itemOrArray) => {
   return flattened.concat(itemOrArray);
 };
 
+// A predicate function for use with filter
+const unique = (item, i, items) => {
+  return !items.slice(0, i).includes(item);
+};
+
 // Transform the part definitions into arrays of tuples, where each part
 // gets one entry per appearance. The first index of the tuple is the part,
 // the second is the tags associated with the part.
@@ -63,6 +68,81 @@ const PARTS = Object.keys(definitions).reduce((parts, type) => {
     return parts;
 }, {});
 
+// Converts a hexadecimal string into an array of integers
+const hexToInts = hexString => {
+  return hexString
+    .match(RegExp(`[0-9a-f]{${HEX_COUNT},${HEX_COUNT}}`, 'g'))
+    .map(hex => parseInt(hex, 16));
+};
+
+// Converts an integer into an array of booleans
+const intToSpacingGuide = (spacingInt) => {
+  const bits = spacingInt.toString(2);
+  const padding = emptyArray(DNA_BITS).map(() => '0').join('');
+
+  return (padding + bits).slice(-DNA_BITS)
+    .split('')
+    .map(bit => !Number(bit))
+    .map((space, i, spaces) => {
+      const tooManySpaces = i >= MAX_WHITESPACE
+        && spaces.slice(i - MAX_WHITESPACE, i).every(s => s);
+      return tooManySpaces
+        ? [ false, space ]
+        : space;
+    })
+    .reduce(flatten, []);
+};
+
+// Convert an array of integers to part tuples
+const intsToParts = ints => {
+  return ints.map((int, i) => {
+    const type = GENE_TYPES[i];
+    if (type === 'WHITESPACE') {
+      return [ intToSpacingGuide(int), [] ];
+    }
+
+    const index = Math.floor(int * (PARTS[type].length / DNA_SIZE));
+    return PARTS[type][index];
+  });
+};
+
+// Pad the characters of a part with whitespace
+const spacePart = (partChars, spacingGuide) => {
+  const chars = partChars.split('').reverse();
+  let spacedPart = '';
+
+  for (let i = 0; true; i++) {
+    if (i >= spacingGuide.length) {
+      i = 0;
+    }
+
+    if (spacingGuide[i]) {
+      spacedPart += ' ';
+    } else {
+      const char = chars.pop();
+
+      if (!char) {
+        return spacedPart;
+      }
+
+      spacedPart += char;
+    }
+  }
+};
+
+// A function to be used with map, which spaces out parts
+const spaceParts = (part, i, parts) => {
+  if (Array.isArray(parts[i])) {
+    return null;
+  }
+
+  if (Array.isArray(parts[i + 1])) {
+    return spacePart(part, parts[i + 1]);
+  }
+
+  return part;
+};
+
 /**
  * Takes a hexadecimal DNA string and parses it into an object
  * with two keys:
@@ -70,5 +150,21 @@ const PARTS = Object.keys(definitions).reduce((parts, type) => {
  *   - tags: an array of strings, tags associated with this moji
  */
 export default const parseDna = dna => {
-  throw new Error('Method not implemented: parseDna');
+  const dnaArray = hexToInts(dna);
+  const partsAndTags = intsToParts(dnaArray);
+
+  const parts = partsAndTags
+    .map(([ part, _ ]) => part)
+    .map(spaceParts)
+    .filter(part => part !== null);
+
+  const tags = partsAndTags
+    .map(([ _, tags ]) => tags)
+    .reduce(flatten, [])
+    .filter(unique);
+
+  return {
+    tags,
+    view: parts
+  };
 };
