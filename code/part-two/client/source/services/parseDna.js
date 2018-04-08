@@ -34,6 +34,35 @@ const GENE_TYPES = [
   'WHITESPACE'
 ];
 
+// Creates an empty array of a given length
+const emptyArray = length => {
+  return Array.apply(null, Array(length));
+};
+
+// A shallow non-recursive flatten to use with reduce
+const flatten = (flattened, itemOrArray) => {
+  return flattened.concat(itemOrArray);
+};
+
+// Transform the part definitions into arrays of tuples, where each part
+// gets one entry per appearance. The first index of the tuple is the part,
+// the second is the tags associated with the part.
+//
+// The final object will follow this format:
+//   {
+//     mouths: [[<part>, [<tags>]], [<part>, [<tags>]]],
+//     eyes: [ ... ],
+//     ...
+//   }
+const PARTS = Object.keys(definitions).reduce((parts, type) => {
+  parts[type] = Object.keys(definitions[type]).map(part => {
+    const { count, tags } = definitions[type][part];
+    return emptyArray(count).map(() => [part, tags]);
+  }).reduce(flatten, []);
+
+    return parts;
+}, {});
+
 /**
  * Takes a hexadecimal DNA string and parses it into an object
  * with two keys:
