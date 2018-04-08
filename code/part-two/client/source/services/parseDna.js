@@ -1,6 +1,22 @@
 // A parseDna function to display cryptomoji
 'use strict';
 
+// An object with a listing of parts, including a count of their appearances.
+// Follows this format:
+// {
+//   mouths: {
+//     <part>: {
+//       count: <number>,
+//       tags: [ <tags> ]
+//     },
+//     ...
+//   },
+//   eyes: { ... },
+//   ...
+// }
+import definitions from './part_definitions.json';
+
+
 const DNA_BITS = 2 * 8;
 const MAX_WHITESPACE = 4;
 const HEX_COUNT = DNA_BITS / 4;
