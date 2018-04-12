@@ -13,6 +13,13 @@ ProxyPass /api http://rest-api:8008\n\
 ProxyPassReverse /api http://rest-api:8008\n\
 RequestHeader set X-Forwarded-Path \"/api\"\n\
 \n\
+LoadModule rewrite_module modules/mod_rewrite.so\n\
+RewriteEngine On\n\
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]\n\
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d\n\
+RewriteRule ^ - [L]\n\
+RewriteRule ^ /index.html\n\
+\n\
 " >>/usr/local/apache2/conf/httpd.conf
 
 EXPOSE 80/tcp

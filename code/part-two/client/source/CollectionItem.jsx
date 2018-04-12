@@ -1,19 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export function CollectionItem(props) {
   console.log('RENDERING: <CollectionItem />');
-  const isSelected = props.match.params.mojiAddr === props.address;
   return (
-    <div
-      onClick={() => {
-        props.history.push(
-          '/browse/' + props.match.params.collectionAddr
-          + '/' + props.address
-        );
-      }}
-      style={{ fontWeight: isSelected ? 'bold' : 'normal' }}
-    >
-      {props.address}, gen {props.generation}
+    <div>
+      <Link to={"/browse/" + props.address}>
+        {props.address}
+      </Link>, gen {props.generation}
     </div>
   );
 }
