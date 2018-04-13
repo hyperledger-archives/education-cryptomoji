@@ -21,8 +21,8 @@ export class Moji extends React.Component {
             <tr><td>address</td><td>{moji.address}</td></tr>
             <tr><td>dna</td><td>{moji.dna}</td></tr>
             <tr>
-              <td>collection</td>
-              <td><Link to={'/browse/' + moji.collection}>{moji.collection}</Link></td>
+              <td>owner</td>
+              <td><Link to={'/browse/' + moji.owner}>{moji.owner}</Link></td>
             </tr>
             <tr>
               <td>sire</td>
