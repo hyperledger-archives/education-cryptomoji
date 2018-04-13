@@ -27,7 +27,7 @@ const GET_CRYPTOMOJI = (address = '', detailed) => {
   if (address.split('_')[0] === 'moji') {
     moji = utils.copy(blockchain[address]);
     if (moji && detailed) {
-      moji.collection = GET_COLLECTION(moji.collection, true);
+      moji.owner = GET_COLLECTION(moji.owner, true);
     }
   }
   return utils.delay(moji, 1000, 'Failed GET_CRYPTOMOJI!');

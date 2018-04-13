@@ -16,7 +16,7 @@ const makeDna = prng => {
 const makeMoji = (publicKey, prng) => {
   return emptyArray(NEW_MOJI_COUNT).map(() => ({
     dna: makeDna(prng),
-    collection: publicKey,
+    owner: publicKey,
     sire: null,
     breeder: null,
     sired: [],
