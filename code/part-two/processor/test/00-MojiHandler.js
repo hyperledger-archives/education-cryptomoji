@@ -22,8 +22,12 @@ describe('Core MojiHandler Behavior', function() {
 
   it('should return a Promise', function() {
     const txn = new Txn({ hello: 'world' });
-    expect(handler.apply(txn, context), 'Apply should return a promise')
+    const applyResult = handler.apply(txn, context);
+
+    expect(applyResult, 'Apply should return a promise')
       .to.be.an.instanceOf(Promise);
+
+    applyResult.catch(() => {});
   });
 
   it('should reject a poorly encoded payload', function() {
