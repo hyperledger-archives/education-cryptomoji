@@ -10,15 +10,18 @@ const getRandomString = () => (Math.random() * 10 ** 18).toString(36);
 
 // A mock Transaction Process Request or "txn"
 class Txn {
-  constructor(payload) {
-    const privateKey = context.newRandomPrivateKey();
-    const publicKey = context.getPublicKey(privateKey).asHex();
+  constructor(payload, privateKey = null) {
+    const privateWrapper = privateKey === null
+      ? context.newRandomPrivateKey()
+      : secp256k1.Secp256k1PrivateKey.fromHex(privateKey);
+    this._privateKey = privateWrapper.asHex();
+    this._publicKey = context.getPublicKey(privateWrapper).asHex();
 
     this.contextId = getRandomString();
     this.payload = encode(payload);
     this.header = TransactionHeader.create({
-      signerPublicKey: publicKey,
-      batcherPublicKey: publicKey,
+      signerPublicKey: this._publicKey,
+      batcherPublicKey: this._publicKey,
       familyName: constants.FAMILY_NAME,
       familyVersion: constants.FAMILY_VERSION,
       nonce: getRandomString(),
@@ -27,7 +30,7 @@ class Txn {
       payloadSha512: hash(this.payload)
     });
     const encodedHeader = TransactionHeader.encode(this.header).finish();
-    this.signature = context.sign(encodedHeader, privateKey);
+    this.signature = context.sign(encodedHeader, privateWrapper);
   }
 }
 
