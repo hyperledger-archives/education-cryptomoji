@@ -30,6 +30,6 @@
     "one-var": [1, { "uninitialized": "never", "initialized": "never" }],
     "no-use-before-define": 2,
     "comma-style": [2, "last"],
-    "quotes": [1, "single"]
+    "quotes": [1, "single", { "avoidEscape": true }]
   }
 }
