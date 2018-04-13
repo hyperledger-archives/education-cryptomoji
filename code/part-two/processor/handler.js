@@ -19,7 +19,7 @@ class MojiHandler extends TransactionHandler {
     try {
       payload = decode(txn.payload);
     } catch (err) {
-      return reject('Failed to decode payload: ' + err);
+      return reject('Failed to decode payload:', err);
     }
 
     const action = payload.action;
@@ -28,7 +28,7 @@ class MojiHandler extends TransactionHandler {
     if (action === 'CREATE_COLLECTION') {
       return createCollection(context, publicKey, txn.signature);
     } else {
-      return reject('Unknown action: ' + action);
+      return reject('Unknown action:', action);
     }
   }
 }

@@ -31,7 +31,7 @@ const createCollection = (context, publicKey, signature) => {
   return context.getState([ address ])
     .then(state => {
       if (state[address].length > 0) {
-        return reject('Collection already exists with key: ' + publicKey);
+        return reject('Collection already exists with key:', publicKey);
       }
 
       const updates = {};

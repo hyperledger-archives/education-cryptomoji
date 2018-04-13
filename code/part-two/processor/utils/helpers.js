@@ -20,9 +20,9 @@ const encode = obj => {
 const decode = encoded => JSON.parse(encoded.toString());
 
 // Returns a rejected promise with an InvalidTransaction
-const reject = message => {
+const reject = (...messages) => {
   return new Promise((_, reject) => {
-    reject(new InvalidTransaction(message));
+    reject(new InvalidTransaction(messages.join(' ')));
   });
 };
 
