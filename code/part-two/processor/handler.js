@@ -6,6 +6,7 @@ const { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } = require('./utils/constants');
 const { decode, reject } = require('./utils/helpers');
 
 const createCollection = require('./actions/create_collection');
+const selectSire = require('./actions/select_sire');
 
 
 class MojiHandler extends TransactionHandler {
@@ -27,6 +28,8 @@ class MojiHandler extends TransactionHandler {
 
     if (action === 'CREATE_COLLECTION') {
       return createCollection(context, publicKey, txn.signature);
+    } else if (action === 'SELECT_SIRE') {
+      return selectSire(context, publicKey, payload);
     } else {
       return reject('Unknown action:', action);
     }
