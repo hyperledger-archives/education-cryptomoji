@@ -23,7 +23,7 @@ describe('Create Collection', function() {
   beforeEach(function() {
     context = new Context();
     txn = new Txn({ action: 'CREATE_COLLECTION' });
-    publicKey = txn.header.signerPublicKey;
+    publicKey = txn._publicKey;
     address = getAddress.collection(publicKey);
   });
 
@@ -115,7 +115,7 @@ describe('Create Collection', function() {
         expect(err, 'Error should be an InvalidTransaction')
           .to.be.instanceOf(InvalidTransaction);
         expect(err.message, 'Error message should include a public key')
-          .to.include(txn.header.signerPublicKey);
+          .to.include(publicKey);
         return true;
       })
       .then(wasRejected => {
