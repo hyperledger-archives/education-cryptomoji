@@ -3,13 +3,13 @@
 // A mock state context object for testing
 class Context {
   constructor() {
-    this.state = {};
+    this._state = {};
   }
 
   getState(addresses) {
     return new Promise(resolve => {
       resolve(addresses.reduce((results, addr) => {
-        results[addr] = this.state[addr] || [];
+        results[addr] = this._state[addr] || [];
         return results;
       }, {}));
     });
@@ -18,7 +18,7 @@ class Context {
   setState (changes) {
     return new Promise(resolve => {
       const addresses = Object.keys(changes);
-      addresses.forEach(addr => { this.state[addr] = changes[addr]; });
+      addresses.forEach(addr => { this._state[addr] = changes[addr]; });
       resolve(addresses);
     });
   }

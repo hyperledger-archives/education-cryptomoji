@@ -30,8 +30,8 @@ describe('Create Collection', function() {
   it('should create a Collection at the correct address', function() {
     return handler.apply(txn, context)
       .then(() => {
-        expect(context.state[address], 'Collection should exist').to.exist;
-        const collection = decode(context.state[address]);
+        expect(context._state[address], 'Collection should exist').to.exist;
+        const collection = decode(context._state[address]);
 
         expect(collection.key, 'Collection should have a public key')
           .to.equal(publicKey);
@@ -43,15 +43,15 @@ describe('Create Collection', function() {
   it('should create three moji for each new collection', function() {
     return handler.apply(txn, context)
       .then(() => {
-        const collection = decode(context.state[address]);
+        const collection = decode(context._state[address]);
         const mojiAddress = collection.moji[0];
 
         expect(collection.moji, 'Collection should have three moji addresses')
           .to.have.lengthOf(3);
         expect(mojiAddress, 'Moji address should be 70 hex characters')
           .to.match(/^[0-9a-f]{70}$/);
-        expect(context.state[mojiAddress], 'Moji should exist').to.exist;
-        const moji = decode(context.state[mojiAddress]);
+        expect(context._state[mojiAddress], 'Moji should exist').to.exist;
+        const moji = decode(context._state[mojiAddress]);
 
         expect(moji.dna, 'Moji DNA should be 36 hex characters')
           .to.match(/^[0-9a-f]{36}$/);
@@ -65,16 +65,16 @@ describe('Create Collection', function() {
 
     return handler.apply(txn, context)
       .then(() => {
-        const collection = decode(context.state[address]);
+        const collection = decode(context._state[address]);
         oldMoji = collection.moji;
 
         // Delete the created collection and cryptomoji
-        oldMoji.concat(address).forEach(addr => delete context.state[addr] );
+        oldMoji.concat(address).forEach(addr => delete context._state[addr] );
 
         return handler.apply(txn, context);
       })
       .then(() => {
-        const collection = decode(context.state[address]);
+        const collection = decode(context._state[address]);
 
         expect(collection.moji, 'New moji should match old moji')
           .to.deep.equal(oldMoji);
@@ -86,11 +86,11 @@ describe('Create Collection', function() {
 
     return handler.apply(txn, context)
       .then(() => {
-        const collection = decode(context.state[address]);
+        const collection = decode(context._state[address]);
         oldMoji = collection.moji;
 
         // Delete the created collection and cryptomoji
-        oldMoji.concat(address).forEach(addr => delete context.state[addr] );
+        oldMoji.concat(address).forEach(addr => delete context._state[addr] );
 
         // Modify a character in the signature to change the prng seed
         const firstSig = txn.signature[0] !== 'f'
@@ -101,7 +101,7 @@ describe('Create Collection', function() {
         return handler.apply(txn, context);
       })
       .then(() => {
-        const collection = decode(context.state[address]);
+        const collection = decode(context._state[address]);
 
         expect(collection.moji, 'Moji should not match when signature changes')
           .to.not.deep.equal(oldMoji);
