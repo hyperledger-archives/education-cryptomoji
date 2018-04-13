@@ -49,8 +49,6 @@ describe('Core MojiHandler Behavior', function() {
       .catch(err => {
         expect(err, 'Error should be an InvalidTransaction')
           .to.be.instanceOf(InvalidTransaction);
-        expect(err.message, 'Error message should include unknown action')
-          .to.include('BAD');
         return true;
       })
       .then(wasRejected => {

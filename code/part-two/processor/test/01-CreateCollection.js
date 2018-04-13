@@ -114,8 +114,6 @@ describe('Create Collection', function() {
       .catch(err => {
         expect(err, 'Error should be an InvalidTransaction')
           .to.be.instanceOf(InvalidTransaction);
-        expect(err.message, 'Error message should include a public key')
-          .to.include(publicKey);
         return true;
       })
       .then(wasRejected => {
