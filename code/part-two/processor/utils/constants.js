@@ -16,7 +16,10 @@ const TYPE_PREFIXES = {
 
 const NEW_MOJI_COUNT = 3;
 const DNA_LENGTH = 9;
-const GENE_SIZE = 2 ** (8 * 2);
+const DNA_BITS = 2 * 8;
+const GENE_SIZE = 2 ** DNA_BITS;
+const AVERAGE_CHANCE = 200;
+const SIRE_CHANCE = 600;
 
 module.exports = {
   FAMILY_NAME,
@@ -25,5 +28,8 @@ module.exports = {
   TYPE_PREFIXES,
   NEW_MOJI_COUNT,
   DNA_LENGTH,
-  GENE_SIZE
+  DNA_BITS,
+  GENE_SIZE,
+  AVERAGE_CHANCE,
+  SIRE_CHANCE
 };
