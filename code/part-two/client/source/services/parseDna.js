@@ -78,9 +78,8 @@ const hexToInts = hexString => {
 // Converts an integer into an array of booleans
 const intToSpacingGuide = (spacingInt) => {
   const bits = spacingInt.toString(2);
-  const padding = emptyArray(DNA_BITS).map(() => '0').join('');
 
-  return (padding + bits).slice(-DNA_BITS)
+  return ('0'.repeat(DNA_BITS) + bits).slice(-DNA_BITS)
     .split('')
     .map(bit => !Number(bit))
     .map((space, i, spaces) => {
