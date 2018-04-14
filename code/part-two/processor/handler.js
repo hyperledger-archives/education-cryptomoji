@@ -9,6 +9,7 @@ const createCollection = require('./actions/create_collection');
 const selectSire = require('./actions/select_sire');
 const breedMoji = require('./actions/breed_moji');
 const createOffer = require('./actions/create_offer');
+const cancelOffer = require('./actions/cancel_offer');
 
 
 class MojiHandler extends TransactionHandler {
@@ -36,6 +37,8 @@ class MojiHandler extends TransactionHandler {
       return breedMoji(context, publicKey, payload, txn.signature);
     } else if (action === 'CREATE_OFFER') {
       return createOffer(context, publicKey, payload);
+    } else if (action === 'CANCEL_OFFER') {
+      return cancelOffer(context, publicKey, payload);
     } else {
       return reject('Unknown action:', action);
     }
