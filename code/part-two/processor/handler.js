@@ -11,6 +11,7 @@ const breedMoji = require('./actions/breed_moji');
 const createOffer = require('./actions/create_offer');
 const cancelOffer = require('./actions/cancel_offer');
 const addResponse = require('./actions/add_response');
+const acceptResponse = require('./actions/accept_response');
 
 
 class MojiHandler extends TransactionHandler {
@@ -42,6 +43,8 @@ class MojiHandler extends TransactionHandler {
       return cancelOffer(context, publicKey, payload);
     } else if (action === 'ADD_RESPONSE') {
       return addResponse(context, publicKey, payload);
+    } else if (action === 'ACCEPT_RESPONSE') {
+      return acceptResponse(context, publicKey, payload);
     } else {
       return reject('Unknown action:', action);
     }
