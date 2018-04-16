@@ -37,7 +37,7 @@ getAddress.offer = ownerKey => {
     return NAMESPACE +
       TYPE_PREFIXES.OFFER +
       ownerHash +
-      hash(offeredAddresses.join(''), 54);
+      hash(offeredAddresses.sort().join(''), 54);
   };
 };
 
