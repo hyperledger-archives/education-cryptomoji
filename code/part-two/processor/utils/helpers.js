@@ -9,10 +9,21 @@ const hash = (str, length = 128) => {
   return createHash('sha512').update(str).digest('hex').slice(0, length);
 };
 
+// Recursively returns all the keys of an object and nested objects;
+const deepKeys = obj => {
+  if (!obj || typeof obj !== 'object') {
+    return [];
+  }
+
+  const keys = Array.isArray(obj) ? [] : Object.keys(obj);
+  const values = Array.isArray(obj) ? obj : Object.values(obj);
+
+  return values.reduce((keys, value) => keys.concat(deepKeys(value)), keys);
+};
+
 // Encodes an object as a Buffer of sorted JSON string
-// Only works with objects with a depth of 1
 const encode = obj => {
-  const jsonString = JSON.stringify(obj, Object.keys(obj).sort());
+  const jsonString = JSON.stringify(obj, deepKeys(obj).sort());
   return Buffer.from(jsonString);
 };
 
