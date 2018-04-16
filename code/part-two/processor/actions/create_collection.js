@@ -47,7 +47,7 @@ const createCollection = (context, publicKey, signature) => {
 
       updates[address] = encode({
         key: publicKey,
-        moji: mojiAddresses
+        moji: mojiAddresses.sort()
       });
 
       return context.setState(updates);
