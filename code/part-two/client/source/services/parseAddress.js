@@ -1,23 +1,17 @@
-// Constants
-const FAMILY_NAME = 'cryptomoji';
-const NAMESPACE = hash(FAMILY_NAME, 6);
-const PREFIXES = {
-  COLLECTION: '00',
-  MOJI: '01',
-  OFFER: '02',
-  SIRE_LISTING: '03'
-};
+'use strict';
+
+import { FAMILY_NAME, NAMESPACE, TYPE_PREFIXES } from '../utils/constants';
 
 export const addressToType = (address = '') => {
   if (address.slice(0, 6) === NAMESPACE) {
     const resource = address.slice(6, 8);
-    if (resource === PREFIXES.COLLECTION) {
+    if (resource === TYPE_PREFIXES.COLLECTION) {
       return 'collection';
-    } else if (resource === PREFIXES.MOJI) {
+    } else if (resource === TYPE_PREFIXES.MOJI) {
       return 'moji';
-    } else if (resource === PREFIXES.OFFER) {
+    } else if (resource === TYPE_PREFIXES.OFFER) {
       return 'offer';
-    } else if (resource === PREFIXES.SIRE_LISTING) {
+    } else if (resource === TYPE_PREFIXES.SIRE_LISTING) {
       return 'sire';
     }
   }
