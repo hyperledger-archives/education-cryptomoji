@@ -16,8 +16,9 @@ RequestHeader set X-Forwarded-Path \"/api\"\n\
 \n\
 LoadModule rewrite_module modules/mod_rewrite.so\n\
 RewriteEngine On\n\
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f [OR]\n\
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d\n\
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]\n\
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d\n\
+RewriteRule ^ - [L]\n\
 RewriteCond %{REQUEST_FILENAME} !^/api\n\
 RewriteRule ^ /index.html\n\
 \n\
