@@ -15,12 +15,12 @@
 //   ...
 // }
 import definitions from './part_definitions.json';
-
-
-const DNA_BITS = 2 * 8;
-const MAX_WHITESPACE = 4;
-const HEX_COUNT = DNA_BITS / 4;
-const DNA_SIZE = 2 ** DNA_BITS;
+import {
+  DNA_BITS,
+  MAX_WHITESPACE,
+  HEX_COUNT,
+  GENE_SIZE
+} from '../utils/constants';
 
 const GENE_TYPES = [
   'mouths',
@@ -100,7 +100,7 @@ const intsToParts = ints => {
       return [ intToSpacingGuide(int), [] ];
     }
 
-    const index = Math.floor(int * (PARTS[type].length / DNA_SIZE));
+    const index = Math.floor(int * (PARTS[type].length / GENE_SIZE));
     return PARTS[type][index];
   });
 };

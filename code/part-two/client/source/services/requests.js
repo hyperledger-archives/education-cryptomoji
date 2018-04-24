@@ -2,25 +2,15 @@
 'use strict';
 
 import axios from 'axios';
-import { createHash } from 'crypto';
 
-
-// SHA-512 hash, optionally sliced to a particular length
-const hash = (str, length = 128) => {
-  return createHash('sha512').update(str).digest('hex').slice(0, length);
-};
-
-// Constants
-const FAMILY_NAME = 'cryptomoji';
-const NAMESPACE = hash(FAMILY_NAME, 6);
-const PREFIXES = {
-  COLLECTION: '00',
-  MOJI: '01',
-  OFFER: '02',
-  SIRE_LISTING: '03'
-};
-const ADDRESS_LENGTH = 70;
-const MAX_HTTP_REQUESTS = 10;
+import { hash } from '../utils/helpers';
+import {
+  FAMILY_NAME,
+  FAMILY_VERSION,
+  TYPE_PREFIXES,
+  ADDRESS_LENGTH,
+  MAX_HTTP_REQUESTS
+} from '../utils/constants';
 
 // Parses a state entity, combining its address with its decoded data
 const decode = (address, data) => {
@@ -74,7 +64,7 @@ const dropAddress = entity => {
  *   string - if a key, that particular Collection is returned
  */
 export const getCollections = (key = null) => {
-  const prefix = NAMESPACE + PREFIXES.COLLECTION;
+  const prefix = NAMESPACE + TYPE_PREFIXES.COLLECTION;
 
   if (key === null) {
     return fetchMany(prefix).then(collections => collections.map(dropAddress));
@@ -94,7 +84,7 @@ export const getCollections = (key = null) => {
  *   { owner: string, dna: string } -
  */
 export const getMoji = (filterOrAddress = null) => {
-  const prefix = NAMESPACE + PREFIXES.MOJI;
+  const prefix = NAMESPACE + TYPE_PREFIXES.MOJI;
 
   if (filterOrAddress === null) {
     return fetchMany(prefix);
@@ -125,7 +115,7 @@ export const getMoji = (filterOrAddress = null) => {
  *   { owner: string, moji: string[] } - returns the single matching Offer
  */
 export const getOffers = (filterOrAddress = null) => {
-  const prefix = NAMESPACE + PREFIXES.OFFER;
+  const prefix = NAMESPACE + TYPE_PREFIXES.OFFER;
 
   if (filterOrAddress === null) {
     return fetchMany(prefix);
@@ -147,7 +137,7 @@ export const getOffers = (filterOrAddress = null) => {
     if (addressOrDna.length === ADDRESS_LENGTH) {
       return addressOrDna;
     }
-    return NAMESPACE + PREFIXES.MOJI + ownerHash + hash(addressOrDna, 54);
+    return NAMESPACE + TYPE_PREFIXES.MOJI + ownerHash + hash(addressOrDna, 54);
   });
 
   return fetchOne(ownerPrefix + hash(addresses.join(''), 54));
@@ -161,7 +151,7 @@ export const getOffers = (filterOrAddress = null) => {
  *   string - if a key, the sire owned by that public key is returned
  */
 export const getSires = (ownerKey = null) => {
-  const prefix = NAMESPACE + PREFIXES.SIRE_LISTING;
+  const prefix = NAMESPACE + TYPE_PREFIXES.SIRE_LISTING;
 
   if (ownerKey !== null) {
     return fetchOne(prefix + hash(ownerKey, 62))

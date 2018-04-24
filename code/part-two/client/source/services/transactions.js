@@ -2,7 +2,6 @@
 'use strict';
 
 import axios from 'axios';
-import { createHash } from 'crypto';
 import secp256k1 from 'sawtooth-sdk/signing/secp256k1';
 import {
   Transaction,
@@ -12,12 +11,8 @@ import {
   BatchList
 } from 'sawtooth-sdk/protobuf';
 
-
-const hash = str => createHash('sha512').update(str).digest('hex');
-
-const FAMILY_NAME = 'cryptomoji';
-const FAMILY_VERSION = '1.0';
-const NAMESPACE = hash(FAMILY_NAME).slice(0, 6);
+import { hash } from '../utils/helpers';
+import { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } from '../utils/constants';
 const CONTEXT = new secp256k1.Secp256k1Context();
 
 // Returns a random 1-12 character string
