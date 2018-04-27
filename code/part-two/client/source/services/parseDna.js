@@ -144,25 +144,27 @@ const spaceParts = (part, i, parts) => {
 
 // Combines an array of parts into a single kaomoji string
 const combineParts = parts => {
-  const armIndex = GENE_TYPES
+  const armsIndex = GENE_TYPES
     .filter(type => type !== 'WHITESPACE')
-    .findIndex(type => type === 'arm');
+    .findIndex(type => type === 'arms');
+
 
   const combined = parts.reduce((combined, part, i) => {
-    if (i !== armIndex) {
+    if (i !== armsIndex) {
       return part.replace('%', combined);
     }
 
     const isOffRight = part.length === 3
       && part[0] === '%'
-      && parts[1] === parts[2];
+      && part[1] === part[2];
     if (isOffRight) {
       return combined[0] + part[1] + combined.slice(1) + part[2];
     }
 
-    const isOffLeft = parts.arms.length === 3 &&
-      parts.arms[2] === '%' &&
-      parts.arms[0] === parts.arms[1];
+    const isOffLeft = part.length === 3 &&
+      part[2] === '%' &&
+      part[0] === part[1];
+
     if (isOffLeft) {
       return part[0] + combined.slice(0, -1) + part[1] + combined.slice(-1);
     }
