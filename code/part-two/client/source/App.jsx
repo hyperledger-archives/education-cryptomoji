@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 
 import { Collection } from './Collection';
+import { CollectionList } from './CollectionList';
 import { Moji } from './Moji';
 import { Offer } from './Offer';
 import { OfferList } from './OfferList';
@@ -12,9 +13,15 @@ export class App extends React.Component {
       <div>
         <nav>
           <Link to="/">Home</Link>&ensp;
+          <Link to="/collection">View Collections</Link>&ensp;
           <Link to="/offer">View Offers</Link>&ensp;
         </nav>
         <Switch>
+          <Route
+            exact
+            path="/collection/"
+            component={CollectionList}
+          />
           <Route
             exact
             path="/collection/:publicKey"
