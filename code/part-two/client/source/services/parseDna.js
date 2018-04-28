@@ -181,7 +181,7 @@ const combineParts = parts => {
  *   - view: a string, the actual characters of the moji to display
  *   - tags: an array of strings, tags associated with this moji
  */
-export default const parseDna = dna => {
+export const parseDna = dna => {
   const dnaArray = hexToInts(dna);
   const partsAndTags = intsToParts(dnaArray);
 
