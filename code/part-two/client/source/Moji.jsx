@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { getMoji } from './services/requests';
+import { getMojis } from './services/requests';
 
 export class Moji extends React.Component {
   constructor(props) {
@@ -34,7 +34,7 @@ export class Moji extends React.Component {
 
   fetchMoji(address) {
     console.log('fetchMoji');
-    return getMoji(address)
+    return getMojis(address)
       .then(moji => this.setState({ moji }))
       .catch(err => {
         console.error(`Fetch moji failed for ${address}`, err);
