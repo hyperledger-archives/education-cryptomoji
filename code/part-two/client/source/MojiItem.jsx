@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export function CollectionItem(props) {
-  console.log('RENDERING: <CollectionItem />');
+export function MojiItem(props) {
+  console.log('RENDERING: <MojiItem />');
   return (
     <div>
       <Link to={'/moji/' + props.address}>

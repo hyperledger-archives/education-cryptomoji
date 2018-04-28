@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CollectionItem } from './CollectionItem';
+import { MojiItem } from './MojiItem';
 import { getCollections } from './services/requests';
 
 export class Collection extends React.Component {
@@ -56,7 +56,7 @@ export class Collection extends React.Component {
       <div>
         <h1>This is <code>{publicKey}</code>'s collection!</h1>
         {collection.moji.map(address => (
-          <CollectionItem
+          <MojiItem
             key={address}
             address={address}
           />
