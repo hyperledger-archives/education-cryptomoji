@@ -4,6 +4,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { Collection } from './Collection';
 import { CreateOffer } from './CreateOffer';
 import { Moji } from './Moji';
+import { Offer } from './Offer';
 import { OfferList } from './OfferList';
 
 export class App extends React.Component {
@@ -35,6 +36,11 @@ export class App extends React.Component {
             exact
             path="/offer"
             component={OfferList}
+          />
+          <Route
+            exact
+            path="/offer/:address"
+            component={Offer}
           />
         </Switch>
       </div>
