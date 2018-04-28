@@ -5,9 +5,9 @@ export function CollectionItem(props) {
   console.log('RENDERING: <CollectionItem />');
   return (
     <div>
-      <Link to={"/browse/" + props.address}>
+      <Link to={'/moji/' + props.address}>
         {props.address}
-      </Link>, gen {props.generation}
+      </Link>
     </div>
   );
 }

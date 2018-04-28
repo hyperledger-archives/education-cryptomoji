@@ -1,25 +1,67 @@
 import React from 'react';
 
 import { CollectionItem } from './CollectionItem';
+import { getCollections } from './services/requests';
 
-export function Collection ({address, collection}) {
-  console.log('RENDERING: <Collection />');
-  if (!collection) {
+export class Collection extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      publicKey: null,
+      collection: null
+    };
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    console.log('GETDERIVEDSTATEFROMPROPS: <Collection />');
+    const publicKey = nextProps.match.params.publicKey;
+    return {
+      publicKey
+    };
+  }
+
+  componentDidMount() {
+    console.log('COMPONENTDIDMOUNT: <Collection />');
+    this.fetchCollection(this.state.publicKey);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('COMPONENTDIDUPDATE: <Collection />');
+    if (this.state.publicKey !== prevState.publicKey) {
+      this.fetchCollection(this.state.publicKey);
+    }
+  }
+
+  fetchCollection(publicKey) {
+    console.log('fetchCollection');
+    return getCollections(publicKey)
+      .then(collection => this.setState({ collection }))
+      .catch(err => {
+        console.error(`Fetch collection failed for ${publicKey}`, err);
+        this.setState({ collection: null });
+      });
+  }
+
+  render() {
+    console.log('RENDERING: <Collection />');
+    const { publicKey, collection } = this.state;
+    if (!collection) {
+      return (
+        <div>
+          We can't find anything for a collection at <code>{publicKey}</code>!
+        </div>
+      );
+    }
     return (
       <div>
-        We can't find anything for a collection at <code>{address}</code>!
+        <h1>This is <code>{publicKey}</code>'s collection!</h1>
+        {collection.moji.map(address => (
+          <CollectionItem
+            key={address}
+            address={address}
+          />
+        ))}
       </div>
     );
   }
-  return (
-    <div>
-      <h1>This is the <code>{address}</code> collection!</h1>
-      {collection.moji.map(moji => (
-        <CollectionItem
-          key={moji.address}
-          {...moji}
-        />
-      ))}
-    </div>
-  );
 }

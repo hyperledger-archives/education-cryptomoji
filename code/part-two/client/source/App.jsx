@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 
+import { Collection } from './Collection';
 import { CreateOffer } from './CreateOffer';
 import { Moji } from './Moji';
 
@@ -13,6 +14,11 @@ export class App extends React.Component {
           <Link to="/createOffer">Create Offer</Link>&ensp;
         </nav>
         <Switch>
+          <Route
+            exact
+            path="/collection/:publicKey"
+            component={Collection}
+          />
           <Route
             exact
             path="/createOffer"
