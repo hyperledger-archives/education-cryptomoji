@@ -1,32 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { ResponseListItem } from './ResponseListItem';
+import { MojiItem } from './MojiItem';
 
 export function ResponseList({ offer }) {
   console.log('RENDERING: <ResponseList />');
   let list;
   if (offer.responses.length) {
     list = offer.responses.map(response => {
-      if (response.isRequest) {
-        return (
-          <div>
-            <Link to={'/browse/' + offer.owner}>{offer.owner}</Link> is willing
-            to trade for
-            <Link to={'/browse/' + response.owner}>{response.owner}</Link>'s
-            following moji in return!:
-            <ul>
-              {response.moji.map(moji => <ResponseListItem moji={moji} />)}
-            </ul>
-          </div>
-        );
+      let message;
+      if (response.approver !== offer.owner) {
+        message = 'The creator of the offer is requesting the following moji in return:';
+      } else {
+        message = 'The following mojis are being responded in return:';
       }
       return (
         <div>
-          <Link to={'/browse/' + response.owner}>{response.owner}</Link> is
-          responding with their following moji in return!:
+          {message}
           <ul>
-            {response.moji.map(moji => <ResponseListItem moji={moji} />)}
+            {response.moji.map(moji => (
+              <li key={moji}>
+                <MojiItem address={moji} />
+              </li>
+            ))}
           </ul>
         </div>
       );
