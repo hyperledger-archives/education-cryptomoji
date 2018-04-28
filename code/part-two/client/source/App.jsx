@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 
 import { Collection } from './Collection';
-import { CreateOffer } from './CreateOffer';
 import { Moji } from './Moji';
 import { Offer } from './Offer';
 import { OfferList } from './OfferList';
@@ -13,7 +12,6 @@ export class App extends React.Component {
       <div>
         <nav>
           <Link to="/">Home</Link>&ensp;
-          <Link to="/createOffer">Create Offer</Link>&ensp;
           <Link to="/offer">View Offers</Link>&ensp;
         </nav>
         <Switch>
@@ -21,11 +19,6 @@ export class App extends React.Component {
             exact
             path="/collection/:publicKey"
             component={Collection}
-          />
-          <Route
-            exact
-            path="/createOffer"
-            component={CreateOffer}
           />
           <Route
             exact
