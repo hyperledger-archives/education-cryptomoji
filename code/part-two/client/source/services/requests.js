@@ -12,18 +12,13 @@ import {
   ADDRESS_LENGTH,
   MAX_HTTP_REQUESTS
 } from '../utils/constants';
+import { decode } from './encoding.js';
 
-// Parses a state entity, combining its address with its decoded data
-const decode = (address, data) => {
-  const decoded = JSON.parse(Buffer.from(data, 'base64').toString());
-  decoded.address = address;
-  return decoded;
-};
 
 // Fetches one state entity by address
 const fetchOne = address => {
-  return axios.get(`/api/state/${address}`)
-    .then(({ data }) => decode(address, data.data));
+  return axios.get(`api/state/${address}`)
+    .then(({ data }) => Object.assign({ address } , decode(data.data)));
 };
 
 // Fetches many state entities by address prefix,
@@ -32,7 +27,7 @@ const fetchMany = prefix => {
   const doFetch = url => {
     return axios.get(url).then(({ data }) => {
       const resources = data.data.map(({ address, data }) => {
-        return decode(address, data);
+        return Object.assign({ address }, decode(data));
       });
 
       if (!data.paging.next) {

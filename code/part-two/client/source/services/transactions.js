@@ -16,31 +16,6 @@ import { encode } from './encoding.js';
 // Returns a random 1-12 character string
 const getNonce = () => (Math.random() * 10 ** 18).toString(36);
 
-// Recursively fetches all of the keys in nested objects
-const listKeys = obj => {
-  if (!obj || typeof obj !== 'object') {
-    return [];
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.reduce((keys, item) => {
-      return keys.concat(listKeys(item));
-    }, []);
-  }
-
-  const topKeys = Object.keys(obj);
-  const nestedKeys = topKeys.reduce((keys, key) => {
-    return keys.concat(listKeys(obj[key]));
-  }, []);
-  return topKeys.concat(nestedKeys);
-};
-
-// Encode payload as a sorted JSON buffer
-const encodePayload = payload => {
-  const sortedKeys = listKeys(payload).sort();
-  return Buffer.from(JSON.stringify(payload, sortedKeys));
-};
-
 // Returns a function to create new Transactions
 const getTxnCreator = (privateKey, publicKey) => encodedPayload => {
   const header = TransactionHeader.encode({
@@ -127,7 +102,7 @@ export const getSubmitter = privateKey => {
     }
 
     const txns = payloads
-      .map(encodePayload)
+      .map(encode)
       .map(createTxn);
     const batch = createBatch(txns);
     const batchList = encodeBatch(batch);
