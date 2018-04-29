@@ -1,8 +1,4 @@
-// Functions for creating private keys and submitting transactions
-'use strict';
-
 import axios from 'axios';
-import secp256k1 from 'sawtooth-sdk/signing/secp256k1';
 import {
   Transaction,
   TransactionHeader,
@@ -13,7 +9,9 @@ import {
 
 import { hash } from '../utils/helpers';
 import { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } from '../utils/constants';
-const CONTEXT = new secp256k1.Secp256k1Context();
+import { getPublicKey, sign } from './signing.js';
+import { encode } from './encoding.js';
+
 
 // Returns a random 1-12 character string
 const getNonce = () => (Math.random() * 10 ** 18).toString(36);
@@ -44,7 +42,7 @@ const encodePayload = payload => {
 };
 
 // Returns a function to create new Transactions
-const getTxnCreator = (privateWrapper, publicKey) => encodedPayload => {
+const getTxnCreator = (privateKey, publicKey) => encodedPayload => {
   const header = TransactionHeader.encode({
     signerPublicKey: publicKey,
     batcherPublicKey: publicKey,
@@ -59,12 +57,12 @@ const getTxnCreator = (privateWrapper, publicKey) => encodedPayload => {
   return Transaction.create({
     header,
     payload: encodedPayload,
-    headerSignature: CONTEXT.sign(header, privateWrapper)
+    headerSignature: sign(privateKey, header)
   });
 };
 
 // Returns a function to create batches
-const getBatchCreator = (privateWrapper, publicKey) => txns => {
+const getBatchCreator = (privateKey, publicKey) => txns => {
   const header = BatchHeader.encode({
     signerPublicKey: publicKey,
     transactionIds: txns.map(txn => txn.headerSignature)
@@ -72,7 +70,7 @@ const getBatchCreator = (privateWrapper, publicKey) => txns => {
 
   return Batch.create({
     header,
-    headerSignature: CONTEXT.sign(header, privateWrapper),
+    headerSignature: sign(privateKey, header),
     transactions: txns
   });
 };
@@ -110,26 +108,6 @@ const submitBatchList = (batchList, shouldWait) => {
 };
 
 /**
- * Creates a new public/private key pair, and returns them as an object
- * with the keys "public", and "private".
- */
-export const createKeys = () => {
-  const privateWrapper = CONTEXT.newRandomPrivateKey();
-  const privateKey = privateWrapper.asHex();
-  const publicKey = CONTEXT.getPublicKey(privateWrapper).asHex();
-
-  return { privateKey, publicKey };
-};
-
-/**
- * Takes a private key and returns its public pair.
- */
-export const getPublicKey = privateKey => {
-  const privateWrapper = secp256k1.Secp256k1PrivateKey.fromHex(privateKey);
-  return CONTEXT.getPublicKey(privateWrapper).asHex();
-};
-
-/**
  * Takes a private key and returns a submit function which can be used
  * to submit transactions signed by this private key.
  *
@@ -139,10 +117,9 @@ export const getPublicKey = privateKey => {
  * to resolve until the transaction is committed to the blockchain.
  */
 export const getSubmitter = privateKey => {
-  const privateWrapper = secp256k1.Secp256k1PrivateKey.fromHex(privateKey);
-  const publicKey = CONTEXT.getPublicKey(privateWrapper).asHex();
-  const createTxn = getTxnCreator(privateWrapper, publicKey);
-  const createBatch = getBatchCreator(privateWrapper, publicKey);
+  const publicKey = getPublicKey(privateKey);
+  const createTxn = getTxnCreator(privateKey, publicKey);
+  const createBatch = getBatchCreator(privateKey, publicKey);
 
   return (payloads, shouldWait = true) => {
     if (!Array.isArray(payloads)) {
