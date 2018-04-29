@@ -1,4 +1,5 @@
 import * as secp256k1 from 'secp256k1';
+import { randomBytes, createHash } from 'crypto';
 import * as signing from '../source/services/signing.js';
 
 
@@ -67,6 +68,36 @@ describe('Signing module', function() {
         .toString('hex');
 
       expect(publicKey).to.equal(generatedPublicKey);
+    });
+
+  });
+
+  describe('sign', function() {
+    const message = randomBytes(16);
+    let publicKey = null;
+    let signature = null;
+
+    beforeEach(function() {
+      const keys = signing.createKeys();
+      publicKey = keys.publicKey;
+      signature = signing.sign(keys.privateKey, message);
+    });
+
+    it('should return a hex string', function() {
+      expect(signature).to.be.a.hexString;
+    });
+
+    it('should create a valid signature', function() {
+      const publicKeyBytes = Buffer.from(publicKey, 'hex');
+      const signatureBytes = Buffer.from(signature, 'hex');
+      const messageHash = createHash('sha256').update(message).digest();
+      const isValid = secp256k1.verify(
+        messageHash,
+        signatureBytes,
+        publicKeyBytes
+      );
+
+      expect(isValid).to.be.true;
     });
 
   });
