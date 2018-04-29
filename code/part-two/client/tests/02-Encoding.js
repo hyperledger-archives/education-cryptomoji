@@ -37,4 +37,23 @@ describe('Encoding module', function() {
 
   });
 
+  describe('decode', function() {
+    const toEncode = { hello: 'world', foo: 'bar' };
+    let decoded = null;
+
+    beforeEach(function() {
+      const encoded = encoding.encode(toEncode).toString('base64');
+      decoded = encoding.decode(encoded);
+    });
+
+    it('should take a base64 encoded Buffer and return an object', function() {
+      expect(decoded).to.be.an('object');
+    });
+
+    it('should return an object that matches the encoded object', function() {
+      expect(decoded).to.deep.equal(toEncode);
+    });
+
+  });
+
 });
