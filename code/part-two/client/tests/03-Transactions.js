@@ -217,4 +217,45 @@ describe('Transactions module', function() {
 
   });
 
+  describe('encodeAll', function() {
+    let keys = null;
+    let payload = null;
+    let encoded = null;
+
+    beforeEach(function() {
+      keys = createKeys();
+      payload = { hello: 'world' };
+      encoded = transactions.encodeAll(keys.privateKey, payload);
+    });
+
+    it('should return a Buffer or Uint8Array', function() {
+      expect(encoded).to.be.bytes;
+    });
+
+    it('should be decodeable into the original payload', function() {
+      expect(() => BatchList.decode(encoded)).to.not.throw();
+      const decodedList = BatchList.decode(encoded);
+      const encodedPayload = decodedList.batches[0].transactions[0].payload;
+
+      expect(() => decode(encodedPayload)).to.not.throw();
+      const decodedPayload = decode(encodedPayload);
+
+      expect(decodedPayload).to.deep.equal(payload);
+    });
+
+    it('should encode multiple payloads', function() {
+      const payloads = [ payload, { foo: 'bar' } ];
+      const encoded = transactions.encodeAll(keys.privateKey, payloads);
+
+      const decodedPayloads = BatchList
+        .decode(encoded)
+        .batches[0]
+        .transactions
+        .map(t => decode(t.payload));
+
+      expect(decodedPayloads).to.deep.equal(payloads);
+    });
+
+  });
+
 });
