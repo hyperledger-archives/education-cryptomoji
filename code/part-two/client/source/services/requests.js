@@ -2,7 +2,8 @@ import axios from 'axios';
 
 import { MAX_HTTP_REQUESTS } from '../utils/constants';
 import { decode } from './encoding.js';
-import * from './addressing.js';
+import { encodeAll } from './transactions.js';
+import * as addressing from './addressing.js';
 
 
 /**
@@ -10,7 +11,7 @@ import * from './addressing.js';
  * Adds the address and resource type to the entity.
  */
 export const fetchOne = address => {
-  const type = addressToType(address);
+  const type = addressing.addressToType(address);
   return axios.get(`api/state/${address}`)
     .then(({ data }) => Object.assign({ address, type } , decode(data.data)));
 };
@@ -23,7 +24,7 @@ export const fetchMany = (prefix = null) => {
   const doFetch = url => {
     return axios.get(url).then(({ data }) => {
       const resources = data.data.map(({ address, data }) => {
-        const type = addressToType(address);
+        const type = addressing.addressToType(address);
         return Object.assign({ address, type }, decode(data));
       });
 
@@ -83,7 +84,7 @@ export const submitBatch = (encodedBatch, shouldWait = true) => {
  *   string - if a key, that particular Collection is returned
  */
 export const getCollections = (publicKey = null) => {
-  const address = getCollectionAddress(publicKey);
+  const address = addressing.getCollectionAddress(publicKey);
 
   if (publicKey === null) {
     return fetchMany(address);
@@ -102,7 +103,7 @@ export const getCollections = (publicKey = null) => {
  *   - if all parameters are set, returns the one matching Cryptomoji
  */
 export const getMoji = (ownerKey = null, dna = null) => {
-  const address = getMojiAddress(ownerKey, dna);
+  const address = addressing.getMojiAddress(ownerKey, dna);
 
   if (!dna) {
     return fetchMany(address);
@@ -119,7 +120,7 @@ export const getMoji = (ownerKey = null, dna = null) => {
  *   string - if a key, the sire owned by that public key is returned
  */
 export const getSires = (ownerKey = null) => {
-  const address = getSireAddress(ownerKey);
+  const address = addressing.getSireAddress(ownerKey);
 
   if (ownerKey !== null) {
     return fetchOne(address)
@@ -151,7 +152,7 @@ export const getSires = (ownerKey = null) => {
  *   - if all parameters are set, returns the one matching Offer
  */
 export const getOffers = (ownerKey = null, moji = null) => {
-  const address = getOfferAddress(ownerKey, moji);
+  const address = addressing.getOfferAddress(ownerKey, moji);
 
   if (!moji) {
     return fetchMany(address);
