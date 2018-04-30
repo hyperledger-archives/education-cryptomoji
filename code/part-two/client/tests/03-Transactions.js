@@ -116,4 +116,81 @@ describe('Transactions module', function() {
 
   });
 
+  describe('createBatch', function() {
+    let keys = null;
+    let transaction = null;
+    let batch = null;
+
+    beforeEach(function() {
+      keys = createKeys();
+      const payload = { hello: 'world' };
+      transaction = transactions.createTransaction(keys.privateKey, payload);
+      batch = transactions.createBatch(keys.privateKey, transaction);
+    });
+
+    it('should return a valid Batch message', function() {
+      expect(batch).to.be.instanceOf(Message);
+      // Batch.verify returns an error message if it fails
+      expect(Batch.verify(batch)).to.be.null;
+    });
+
+    it('should return a Batch with the correct properties', function() {
+      expect(batch.header)
+        .to.be.set
+        .and.be.bytes;
+      expect(batch.headerSignature)
+        .to.be.set
+        .and.be.a.hexString;
+      expect(batch.transactions)
+        .to.be.set
+        .and.be.an('array');
+    });
+
+    it('should include a BatchHeader with the correct properties', function() {
+      expect(() => BatchHeader.decode(batch.header)).to.not.throw();
+      const header = BatchHeader.decode(batch.header);
+
+      expect(header.signerPublicKey)
+        .to.be.set
+        .and.be.a.hexString
+        .and.equal(keys.publicKey);
+      expect(header.transactionIds)
+        .to.be.set
+        .and.be.an('array')
+        .and.deep.equal([transaction.headerSignature]);
+    });
+
+    it('should include a valid signature of the header', function() {
+      const publicKeyBytes = Buffer.from(keys.publicKey, 'hex');
+      const signatureBytes = Buffer.from(batch.headerSignature, 'hex');
+      const headerHash = createHash('sha256').update(batch.header).digest();
+      const isValid = secp256k1.verify(
+        headerHash,
+        signatureBytes,
+        publicKeyBytes
+      );
+
+      expect(isValid).to.be.true;
+    });
+
+    it('should include the passed Transaction', function() {
+      expect(batch.transactions).to.deep.equal([transaction]);
+    });
+
+    it('should create a Batch with multiple transactions', function() {
+      const transactionArray = [
+        transaction,
+        transactions.createTransaction(keys.privateKey, { foo: 'bar' })
+      ]
+      batch = transactions.createBatch(keys.privateKey, transactionArray);
+      const header = BatchHeader.decode(batch.header);
+
+      expect(batch.transactions)
+        .to.deep.equal(transactionArray);
+      expect(header.transactionIds)
+        .to.deep.equal(transactionArray.map(t => t.headerSignature));
+    });
+
+  });
+
 });
