@@ -10,8 +10,9 @@ import * from './addressing.js';
 
 // Fetches one state entity by address
 const fetchOne = address => {
+  const type = addressToType(address);
   return axios.get(`api/state/${address}`)
-    .then(({ data }) => Object.assign({ address } , decode(data.data)));
+    .then(({ data }) => Object.assign({ address, type } , decode(data.data)));
 };
 
 // Fetches many state entities by address prefix,
@@ -20,7 +21,8 @@ const fetchMany = prefix => {
   const doFetch = url => {
     return axios.get(url).then(({ data }) => {
       const resources = data.data.map(({ address, data }) => {
-        return Object.assign({ address }, decode(data));
+        const type = addressToType(address);
+        return Object.assign({ address, type }, decode(data));
       });
 
       if (!data.paging.next) {
