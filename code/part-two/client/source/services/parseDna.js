@@ -15,13 +15,12 @@
 //   ...
 // }
 import definitions from './part_definitions.json';
-import {
-  DNA_BITS,
-  MAX_WHITESPACE,
-  HEX_COUNT,
-  GENE_SIZE
-} from '../utils/constants';
 
+
+const DNA_BITS = 2 * 8;
+const GENE_SIZE = 2 ** DNA_BITS;
+const HEX_COUNT = DNA_BITS / 4;
+const MAX_WHITESPACE = 4;
 const GENE_TYPES = [
   'mouths',
   'WHITESPACE',
