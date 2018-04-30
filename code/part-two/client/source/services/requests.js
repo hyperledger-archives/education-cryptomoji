@@ -3,16 +3,9 @@
 
 import axios from 'axios';
 
-import { hash } from '../utils/helpers';
-import {
-  FAMILY_NAME,
-  FAMILY_VERSION,
-  NAMESPACE,
-  TYPE_PREFIXES,
-  ADDRESS_LENGTH,
-  MAX_HTTP_REQUESTS
-} from '../utils/constants';
+import { MAX_HTTP_REQUESTS } from '../utils/constants';
 import { decode } from './encoding.js';
+import * from './addressing.js';
 
 
 // Fetches one state entity by address
@@ -91,14 +84,14 @@ export const submitBatch = (encodedBatch, shouldWait = true) => {
  *   null - if not set, all Collections are returned in an array
  *   string - if a key, that particular Collection is returned
  */
-export const getCollections = (key = null) => {
-  const prefix = NAMESPACE + TYPE_PREFIXES.COLLECTION;
+export const getCollections = (publicKey = null) => {
+  const address = getCollectionAddress(publicKey);
 
-  if (key === null) {
-    return fetchMany(prefix).then(collections => collections.map(dropAddress));
+  if (publicKey === null) {
+    return fetchMany(address).then(collections => collections.map(dropAddress));
   }
 
-  return fetchOne(prefix + hash(key, 62)).then(dropAddress);
+  return fetchOne(address).then(dropAddress);
 };
 
 /**
@@ -112,10 +105,8 @@ export const getCollections = (key = null) => {
  *   { owner: string, dna: string } -
  */
 export const getMoji = (filterOrAddress = null) => {
-  const prefix = NAMESPACE + TYPE_PREFIXES.MOJI;
-
   if (filterOrAddress === null) {
-    return fetchMany(prefix);
+    return fetchMany(getMojiAddress());
   }
 
   if (typeof filterOrAddress === 'string') {
@@ -123,13 +114,13 @@ export const getMoji = (filterOrAddress = null) => {
   }
 
   const { owner, dna } = filterOrAddress;
-  const ownerPrefix = prefix + hash(owner, 8);
+  const address = getMojiAddress(owner, dna);
 
   if (!dna) {
-    return fetchMany(ownerPrefix);
+    return fetchMany(address);
   }
 
-  return fetchOne(ownerPrefix + hash(dna, 54));
+  return fetchOne(address);
 };
 
 /**
@@ -140,14 +131,14 @@ export const getMoji = (filterOrAddress = null) => {
  *   string - if a key, the sire owned by that public key is returned
  */
 export const getSires = (ownerKey = null) => {
-  const prefix = NAMESPACE + TYPE_PREFIXES.SIRE_LISTING;
+  const address = getSireAddress(ownerKey);
 
   if (ownerKey !== null) {
-    return fetchOne(prefix + hash(ownerKey, 62))
+    return fetchOne(address)
       .then(({ sire }) => getMoji(sire));
   }
 
-  return fetchMany(prefix).then(listings => {
+  return fetchMany(address).then(listings => {
     const addresses = listings.map(listing => listing.sire);
 
     // If only a few sires, fetch each individually
@@ -173,10 +164,8 @@ export const getSires = (ownerKey = null) => {
  *   { owner: string, moji: string[] } - returns the single matching Offer
  */
 export const getOffers = (filterOrAddress = null) => {
-  const prefix = NAMESPACE + TYPE_PREFIXES.OFFER;
-
   if (filterOrAddress === null) {
-    return fetchMany(prefix);
+    return fetchMany(getOfferAddress());
   }
 
   if (typeof filterOrAddress === 'string') {
@@ -184,19 +173,11 @@ export const getOffers = (filterOrAddress = null) => {
   }
 
   const { owner, moji } = filterOrAddress;
-  const ownerHash = hash(owner, 8);
-  const ownerPrefix = prefix + ownerHash;
+  const address = getOfferAddress(owner, moji);
 
   if (!moji) {
-    return fetchMany(ownerPrefix);
+    return fetchMany(address);
   }
 
-  const addresses = moji.map(addressOrDna => {
-    if (addressOrDna.length === ADDRESS_LENGTH) {
-      return addressOrDna;
-    }
-    return NAMESPACE + TYPE_PREFIXES.MOJI + ownerHash + hash(addressOrDna, 54);
-  });
-
-  return fetchOne(ownerPrefix + hash(addresses.join(''), 54));
+  return fetchOne(address);
 };
