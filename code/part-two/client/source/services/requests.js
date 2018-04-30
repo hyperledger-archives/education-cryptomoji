@@ -1,6 +1,3 @@
-// Functions to fetch state data from the blockchain
-'use strict';
-
 import axios from 'axios';
 
 import { MAX_HTTP_REQUESTS } from '../utils/constants';

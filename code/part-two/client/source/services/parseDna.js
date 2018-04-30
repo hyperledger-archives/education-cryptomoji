@@ -1,7 +1,6 @@
-// A parseDna function to display cryptomoji
-'use strict';
-
-// An object with a listing of parts, including a count of their appearances.
+// Imports a JSON object with a listing of parts,
+// including a count of their appearances.
+//
 // Follows this format:
 // {
 //   mouths: {
