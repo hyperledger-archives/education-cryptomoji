@@ -193,4 +193,28 @@ describe('Transactions module', function() {
 
   });
 
+  describe('encodeBatch', function() {
+    let batch = null;
+    let encoded = null;
+
+    beforeEach(function() {
+      const keys = createKeys();
+      const payload = { hello: 'world' };
+      const txn = transactions.createTransaction(keys.privateKey, payload);
+      batch = transactions.createBatch(keys.privateKey, txn);
+      encoded = transactions.encodeBatch(batch);
+    });
+
+    it('should return a Buffer or Uint8Array', function() {
+      expect(encoded).to.be.bytes;
+    });
+
+    it('should return a decodeable BatchList', function() {
+      expect(() => BatchList.decode(encoded)).to.not.throw();
+      const decoded = BatchList.decode(encoded);
+      expect(decoded.batches[0]).to.deep.equal(batch);
+    });
+
+  });
+
 });
