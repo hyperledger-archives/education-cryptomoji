@@ -141,7 +141,7 @@ export const getSires = (ownerKey = null) => {
 
     // If many sires, fetch all moji in one request and filter
     return getMoji()
-      .then(moji => moji.filter(addresses.includes(moji.address)));
+      .then(moji => moji.filter(m => addresses.includes(m.address)));
   });
 };
 
