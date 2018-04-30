@@ -84,3 +84,17 @@ export const getOfferAddress = (ownerKey = null, moji = null) => {
 
   return collectionPrefix + hash(addresses.join(''), 54);
 };
+
+/**
+ * Takes an address returns a string corresponding to its type.
+ */
+export const addressToType = (address = '') => {
+  if (address.slice(0, 6) !== NAMESPACE) {
+    return null;
+  }
+
+  const type = Object.keys(TYPE_PREFIXES)
+    .find(type => TYPE_PREFIXES[type] === address.slice(6, 8));
+
+  return type || null;
+};
