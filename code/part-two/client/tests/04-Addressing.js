@@ -91,4 +91,54 @@ describe('Addressing module', function() {
 
   });
 
+  // Offers are a part of the extra credit portion of the sprint.
+  // Remove the `.skip` to run these tests.
+  describe.skip('getOfferAddress', function() {
+    let publicKey = null;
+    let keyHash = null;
+    let dna = null;
+    let mojiAddress = null;
+
+    beforeEach(function() {
+      publicKey = createKeys().publicKey;
+      keyHash = hash(publicKey).slice(0, 8);
+      dna = randomBytes(18).toString('hex');
+      mojiAddress = addressing.getMojiAddress(publicKey, dna);
+    });
+
+    it('should return a hexadecimal string', function() {
+      const address = addressing.getOfferAddress(publicKey, dna);
+      expect(address).to.be.a.hexString;
+    });
+
+    it('should return a correct Offer address', function() {
+      const address = addressing.getOfferAddress(publicKey, mojiAddress);
+      const addressHash = hash(mojiAddress).slice(0, 54);
+      expect(address).to.equal('5f4d76' + '03' + keyHash + addressHash);
+    });
+
+    it('should return a correct Offer address with multiple moji', function() {
+      const mojiAddresses = [
+        mojiAddress,
+        addressing.getMojiAddress(publicKey, randomBytes(18).toString('hex'))
+      ];
+
+      const address = addressing.getOfferAddress(publicKey, mojiAddresses);
+      const addressHash = hash(mojiAddress + mojiAddresses[1]).slice(0, 54);
+
+      expect(address).to.equal('5f4d76' + '03' + keyHash + addressHash);
+    });
+
+    it('should return the Collection prefix if not passed moji', function() {
+      const address = addressing.getOfferAddress(publicKey);
+      expect(address).to.equal('5f4d76' + '03' + keyHash);
+    });
+
+    it('should return the type prefix with no parameters', function() {
+      const address = addressing.getOfferAddress();
+      expect(address).to.equal('5f4d76' + '03');
+    });
+
+  });
+
 });
