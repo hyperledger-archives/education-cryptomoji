@@ -35,16 +35,6 @@ const fetchMany = prefix => {
   return doFetch(`/api/state?address=${prefix}`);
 };
 
-// Drops the address key from a state entity
-const dropAddress = entity => {
-  return Object.keys(entity)
-    .filter(key => key !== 'address')
-    .reduce((dropped, key) => {
-      dropped[key] = entity[key];
-      return dropped;
-    }, {});
-};
-
 /**
  * Takes an encoded Batch and submits it to the REST API, optionally waiting
  * until the batch is committed to resolve (waits by default).
@@ -88,10 +78,10 @@ export const getCollections = (publicKey = null) => {
   const address = getCollectionAddress(publicKey);
 
   if (publicKey === null) {
-    return fetchMany(address).then(collections => collections.map(dropAddress));
+    return fetchMany(address);
   }
 
-  return fetchOne(address).then(dropAddress);
+  return fetchOne(address);
 };
 
 /**
