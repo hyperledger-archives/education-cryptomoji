@@ -1,6 +1,7 @@
 import './01-Signing.js';
 import './02-Encoding.js';
 import './03-Transactions.js';
+import './04-Addressing.js';
 
 
 chai.Assertion.addProperty('hexString', function() {
