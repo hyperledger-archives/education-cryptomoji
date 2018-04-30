@@ -1,5 +1,3 @@
-'use strict';
-
 import { createHash } from 'crypto';
 
 // SHA-512 hash, optionally sliced to a particular length

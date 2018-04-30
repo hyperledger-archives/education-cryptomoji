@@ -1,5 +1,3 @@
-'use strict';
-
 import { hash } from './helpers';
 
 export const FAMILY_NAME = 'cryptomoji';
