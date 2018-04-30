@@ -9,6 +9,12 @@ const createOffer = (context, publicKey, { moji }) => {
     return reject('No moji specified');
   }
 
+  for (let mojiAddress of moji) {
+    if (!getAddress.isValid(mojiAddress)) {
+      return reject('Moji address must be a 70-char hex string:', mojiAddress);
+    }
+  }
+
   moji = moji.sort();
   const owner = getAddress.collection(publicKey);
   const offer = getAddress.offer(publicKey)(moji);

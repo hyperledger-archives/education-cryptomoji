@@ -48,5 +48,6 @@ getAddress.offer = ownerKey => {
   };
 };
 
+getAddress.isValid = address => /^[0-9a-f]{70}$/.test(address);
 
 module.exports = getAddress;

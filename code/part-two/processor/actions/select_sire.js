@@ -7,6 +7,9 @@ const selectSire = (context, publicKey, { sire }) => {
   if (!sire) {
     return reject('No sire specified');
   }
+  if (!getAddress.isValid(sire)) {
+    return reject('Sire address must be a 70-char hex string:', sire);
+  }
 
   const owner = getAddress.collection(publicKey);
   return context.getState([ owner, sire ])

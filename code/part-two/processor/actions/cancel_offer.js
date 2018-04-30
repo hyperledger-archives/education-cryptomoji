@@ -8,6 +8,9 @@ const cancelOffer = (context, publicKey, { offer }) => {
   if (!offer) {
     return reject('No offer specified');
   }
+  if (!getAddress.isValid(offer)) {
+    return reject('Offer address must be a 70-char hex string:', offer);
+  }
 
   const owner = getAddress.collection(publicKey);
 
