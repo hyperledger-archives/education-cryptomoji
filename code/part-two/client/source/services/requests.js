@@ -133,6 +133,36 @@ export const getMoji = (filterOrAddress = null) => {
 };
 
 /**
+ * Fetches one or more sires.
+ *
+ * Accepts a single optional public key parameter:
+ *   null - if not set, all sires are returned in an array
+ *   string - if a key, the sire owned by that public key is returned
+ */
+export const getSires = (ownerKey = null) => {
+  const prefix = NAMESPACE + TYPE_PREFIXES.SIRE_LISTING;
+
+  if (ownerKey !== null) {
+    return fetchOne(prefix + hash(ownerKey, 62))
+      .then(({ sire }) => getMoji(sire));
+  }
+
+  return fetchMany(prefix).then(listings => {
+    const addresses = listings.map(listing => listing.sire);
+
+    // If only a few sires, fetch each individually
+    if (listings.length < MAX_HTTP_REQUESTS - 1) {
+      const sireRequests = addresses.map(address => getMoji(address));
+      return Promise.all(sireRequests);
+    }
+
+    // If many sires, fetch all moji in one request and filter
+    return getMoji()
+      .then(moji => moji.filter(addresses.includes(moji.address)));
+  });
+};
+
+/**
  * Fetches one or more Offers.
  *
  * Accepts a single optional parameter which can be a string address or
@@ -169,34 +199,4 @@ export const getOffers = (filterOrAddress = null) => {
   });
 
   return fetchOne(ownerPrefix + hash(addresses.join(''), 54));
-};
-
-/**
- * Fetches one or more sires.
- *
- * Accepts a single optional public key parameter:
- *   null - if not set, all sires are returned in an array
- *   string - if a key, the sire owned by that public key is returned
- */
-export const getSires = (ownerKey = null) => {
-  const prefix = NAMESPACE + TYPE_PREFIXES.SIRE_LISTING;
-
-  if (ownerKey !== null) {
-    return fetchOne(prefix + hash(ownerKey, 62))
-      .then(({ sire }) => getMoji(sire));
-  }
-
-  return fetchMany(prefix).then(listings => {
-    const addresses = listings.map(listing => listing.sire);
-
-    // If only a few sires, fetch each individually
-    if (listings.length < MAX_HTTP_REQUESTS - 1) {
-      const sireRequests = addresses.map(address => getMoji(address));
-      return Promise.all(sireRequests);
-    }
-
-    // If many sires, fetch all moji in one request and filter
-    return getMoji()
-      .then(moji => moji.filter(addresses.includes(moji.address)));
-  });
 };

@@ -9,8 +9,8 @@ export const NAMESPACE = hash(FAMILY_NAME, 6);
 export const TYPE_PREFIXES = {
   COLLECTION: '00',
   MOJI: '01',
-  OFFER: '02',
-  SIRE_LISTING: '03'
+  SIRE_LISTING: '02',
+  OFFER: '03'
 };
 
 export const NEW_MOJI_COUNT = 3;
