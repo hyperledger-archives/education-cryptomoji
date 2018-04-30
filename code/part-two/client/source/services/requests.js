@@ -53,6 +53,38 @@ const dropAddress = entity => {
 };
 
 /**
+ * Takes an encoded Batch and submits it to the REST API, optionally waiting
+ * until the batch is committed to resolve (waits by default).
+ *
+ * Resolves to `true` if submission was successful, otherwise throws an error.
+ */
+export const submitBatch = (encodedBatch, shouldWait = true) => {
+  return axios({
+    method: 'POST',
+    url: 'api/batches',
+    data: encodedBatch,
+    headers: { 'Content-Type': 'application/octet-stream' }
+  }).then(({ data }) => {
+    if (!shouldWait) {
+      // There is nothing particularly interesting to return from the REST API
+      return true;
+    }
+
+    return axios.get(data.link + '&wait').then(({ data }) => {
+      const failed = data.data.find(({ status }) => status !== 'COMMITTED');
+      if (failed) {
+        const id = failed.id;
+        const status = failed.status;
+        const msg = failed.invalid_transactions[0].message;
+        throw new Error(`Batch "${id}" is ${status}, with message: ${msg}`);
+      }
+
+      return true;
+    });
+  });
+};
+
+/**
  * Fetches one or more Collections.
  *
  * Accepts a single optional public key parameter:
