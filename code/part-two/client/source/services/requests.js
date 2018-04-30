@@ -8,16 +8,21 @@ import { decode } from './encoding.js';
 import * from './addressing.js';
 
 
-// Fetches one state entity by address
-const fetchOne = address => {
+/**
+ * Takes a seventy character address, and fetches an entity from state.
+ * Adds the address and resource type to the entity.
+ */
+export const fetchOne = address => {
   const type = addressToType(address);
   return axios.get(`api/state/${address}`)
     .then(({ data }) => Object.assign({ address, type } , decode(data.data)));
 };
 
-// Fetches many state entities by address prefix,
-// concatenating all available pages as needed
-const fetchMany = prefix => {
+/**
+ * Takes a partial address (i.e. prefix), and fetches all matching entities
+ * from state. Adds the address and resource type to each.
+ */
+export const fetchMany = (prefix = null) => {
   const doFetch = url => {
     return axios.get(url).then(({ data }) => {
       const resources = data.data.map(({ address, data }) => {
@@ -34,7 +39,11 @@ const fetchMany = prefix => {
     });
   };
 
-  return doFetch(`/api/state?address=${prefix}`);
+  if (prefix === null) {
+    return doFetch('api/state');
+  }
+
+  return doFetch(`api/state?address=${prefix}`);
 };
 
 /**
@@ -89,24 +98,14 @@ export const getCollections = (publicKey = null) => {
 /**
  * Fetches one or more Cryptomoji.
  *
- * Accepts a single optional parameter which can be a string address or
- * a filter object:
- *   null - if not set, all moji are returned in an array
- *   string - if a string address is set, returns the moji a that address
- *   { owner: string } - an object with an owner returns moji owned by that key
- *   { owner: string, dna: string } -
+ * Accepts a pair of optional parameters, the owner's public key, and one or
+ * more moji dna strings.
+ *   - if nothing is set, all Cryptomoji are returned in an array
+ *   - if the owner's key is set, returns the moji belonging to that key
+ *   - if all parameters are set, returns the one matching Cryptomoji
  */
-export const getMoji = (filterOrAddress = null) => {
-  if (filterOrAddress === null) {
-    return fetchMany(getMojiAddress());
-  }
-
-  if (typeof filterOrAddress === 'string') {
-    return fetchOne(filterOrAddress);
-  }
-
-  const { owner, dna } = filterOrAddress;
-  const address = getMojiAddress(owner, dna);
+export const getMoji = (ownerKey = null, dna = null) => {
+  const address = getMojiAddress(ownerKey, dna);
 
   if (!dna) {
     return fetchMany(address);
@@ -127,7 +126,7 @@ export const getSires = (ownerKey = null) => {
 
   if (ownerKey !== null) {
     return fetchOne(address)
-      .then(({ sire }) => getMoji(sire));
+      .then(({ sire }) => fetchOne(sire));
   }
 
   return fetchMany(address).then(listings => {
@@ -135,7 +134,7 @@ export const getSires = (ownerKey = null) => {
 
     // If only a few sires, fetch each individually
     if (listings.length < MAX_HTTP_REQUESTS - 1) {
-      const sireRequests = addresses.map(address => getMoji(address));
+      const sireRequests = addresses.map(address => fetchOne(address));
       return Promise.all(sireRequests);
     }
 
@@ -148,24 +147,14 @@ export const getSires = (ownerKey = null) => {
 /**
  * Fetches one or more Offers.
  *
- * Accepts a single optional parameter which can be a string address or
- * a filter object:
- *   null - if not set, all Offers are returned in an array
- *   string - if a string address is set, returns the Offer a that address
- *   { owner: string } - returns the Offers owned by the specified key
- *   { owner: string, moji: string[] } - returns the single matching Offer
+ * Accepts a pair of optional parameters, the owner's public key, and one or
+ * more moji identifiers, which might be dna or addresses.
+ *   - if nothing is set, all Offers are returned in an array
+ *   - if the owner's key is set, returns the Offers belonging to that key
+ *   - if all parameters are set, returns the one matching Offer
  */
-export const getOffers = (filterOrAddress = null) => {
-  if (filterOrAddress === null) {
-    return fetchMany(getOfferAddress());
-  }
-
-  if (typeof filterOrAddress === 'string') {
-    return fetchOne(filterOrAddress);
-  }
-
-  const { owner, moji } = filterOrAddress;
-  const address = getOfferAddress(owner, moji);
+export const getOffers = (ownerKey = null, moji = null) => {
+  const address = getOfferAddress(ownerKey, moji);
 
   if (!moji) {
     return fetchMany(address);
