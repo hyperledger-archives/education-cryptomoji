@@ -45,12 +45,15 @@ export const fetchMany = (prefix = null) => {
 };
 
 /**
- * Takes an encoded Batch and submits it to the REST API, optionally waiting
- * until the batch is committed to resolve (waits by default).
+ * Takes a private key and one or more payloads, and submits them to the
+ * REST API as signed transactions. Unless shouldWait is set to false
+ * (true by default), will wait for transactions to commit before resolving.
  *
  * Resolves to `true` if submission was successful, otherwise throws an error.
  */
-export const submitBatch = (encodedBatch, shouldWait = true) => {
+export const submitPayloads = (privateKey, payloads, shouldWait = true) => {
+  const encodedBatch = encodeAll(privateKey, payloads);
+
   return axios({
     method: 'POST',
     url: 'api/batches',
