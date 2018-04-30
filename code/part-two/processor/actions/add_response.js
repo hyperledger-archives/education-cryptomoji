@@ -9,8 +9,17 @@ const addResponse = (context, publicKey, { moji, offer }) => {
     return reject('No moji specified');
   }
 
+  for (let mojiAddress of moji) {
+    if (!getAddress.isValid(mojiAddress)) {
+      return reject('Moji address must be a 70-char hex string:', mojiAddress);
+    }
+  }
+
   if (!offer) {
     return reject('No offer specified');
+  }
+  if (!getAddress.isValid(offer)) {
+    return reject('Offer address must be a 70-char hex string:', offer);
   }
 
   const signer = getAddress.collection(publicKey);

@@ -38,8 +38,15 @@ const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
   if (!sire) {
     return reject('No sire specified');
   }
+  if (!getAddress.isValid(sire)) {
+    return reject('Sire address must be a 70-char hex string:', sire);
+  }
+
   if (!breeder) {
     return reject('No breeder specified');
+  }
+  if (!getAddress.isValid(breeder)) {
+    return reject('Breeder address must be a 70-char hex string:', breeder);
   }
 
   const owner = getAddress.collection(publicKey);
