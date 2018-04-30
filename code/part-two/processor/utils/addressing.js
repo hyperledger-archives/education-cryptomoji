@@ -25,6 +25,13 @@ getAddress.moji = ownerKey => {
   };
 };
 
+// Returns the address of a sire listing by owner key
+getAddress.sireListing = ownerKey => {
+  return NAMESPACE +
+    TYPE_PREFIXES.SIRE_LISTING +
+    hash(ownerKey, 62);
+};
+
 // A curried function, fetching an offer address from owner key and
 // the addresses of cryptomoji being offered
 getAddress.offer = ownerKey => {
@@ -41,11 +48,5 @@ getAddress.offer = ownerKey => {
   };
 };
 
-// Returns the address of a sire listing by owner key
-getAddress.sireListing = ownerKey => {
-  return NAMESPACE +
-    TYPE_PREFIXES.SIRE_LISTING +
-    hash(ownerKey, 62);
-};
 
 module.exports = getAddress;
