@@ -7,6 +7,7 @@ import { hash } from '../utils/helpers';
 import {
   FAMILY_NAME,
   FAMILY_VERSION,
+  NAMESPACE,
   TYPE_PREFIXES,
   ADDRESS_LENGTH,
   MAX_HTTP_REQUESTS
@@ -21,7 +22,7 @@ const decode = (address, data) => {
 
 // Fetches one state entity by address
 const fetchOne = address => {
-  return axios.get(`api/state/${address}`)
+  return axios.get(`/api/state/${address}`)
     .then(({ data }) => decode(address, data.data));
 };
 
@@ -43,7 +44,7 @@ const fetchMany = prefix => {
     });
   };
 
-  return doFetch(`api/state?address=${prefix}`);
+  return doFetch(`/api/state?address=${prefix}`);
 };
 
 // Drops the address key from a state entity
