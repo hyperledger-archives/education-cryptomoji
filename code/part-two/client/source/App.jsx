@@ -6,6 +6,7 @@ import { CollectionList } from './CollectionList';
 import { Moji } from './Moji';
 import { Offer } from './Offer';
 import { OfferList } from './OfferList';
+import { Login } from './Login';
 import { Signup } from './Signup';
 
 export class App extends React.Component {
@@ -14,7 +15,8 @@ export class App extends React.Component {
       <div>
         <nav>
           <Link to="/">Home</Link>&ensp;
-          <Link to="/signup">Sign Up</Link>&ensp;          
+          <Link to="/signup">Sign Up</Link>&ensp;
+          <Link to="/login">Login</Link>&ensp;
           <Link to="/collection">View Collections</Link>&ensp;
           <Link to="/offer">View Offers</Link>&ensp;
         </nav>
@@ -48,6 +50,11 @@ export class App extends React.Component {
             exact
             path="/signup"
             component={Signup}
+          />
+          <Route
+            exact
+            path="/login"
+            component={Login}
           />
         </Switch>
       </div>
