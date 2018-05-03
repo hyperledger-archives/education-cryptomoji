@@ -84,7 +84,7 @@ export const getCollections = (key = null) => {
  *   { owner: string } - an object with an owner returns moji owned by that key
  *   { owner: string, dna: string } -
  */
-export const getMojis = (filterOrAddress = null) => {
+export const getMoji = (filterOrAddress = null) => {
   const prefix = NAMESPACE + TYPE_PREFIXES.MOJI;
 
   if (filterOrAddress === null) {
@@ -156,7 +156,7 @@ export const getSires = (ownerKey = null) => {
 
   if (ownerKey !== null) {
     return fetchOne(prefix + hash(ownerKey, 62))
-      .then(({ sire }) => getMojis(sire));
+      .then(({ sire }) => getMoji(sire));
   }
 
   return fetchMany(prefix).then(listings => {
@@ -164,12 +164,12 @@ export const getSires = (ownerKey = null) => {
 
     // If only a few sires, fetch each individually
     if (listings.length < MAX_HTTP_REQUESTS - 1) {
-      const sireRequests = addresses.map(address => getMojis(address));
+      const sireRequests = addresses.map(address => getMoji(address));
       return Promise.all(sireRequests);
     }
 
     // If many sires, fetch all moji in one request and filter
-    return getMojis()
+    return getMoji()
       .then(moji => moji.filter(addresses.includes(moji.address)));
   });
 };
