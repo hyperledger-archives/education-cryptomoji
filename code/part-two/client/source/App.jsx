@@ -10,6 +10,25 @@ import { Offer } from './Offer';
 import { OfferList } from './OfferList';
 
 export class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      privateKey: this.props.privateKey
+    }
+  }
+
+  set privateKey(key) {
+    this.setState({ privateKey: key });
+    localStorage.setItem('privateKey', key);
+  }
+
+  get privateKey() {
+    return this.state.privateKey 
+      ? this.state.privateKey
+      : localStorage.getItem('privateKey');
+  }
+  
   render() {
     return (
       <div>
@@ -23,7 +42,12 @@ export class App extends React.Component {
           <Route
             exact
             path="/signup-login"
-            component={SignupLogin}
+            component={() => { 
+              return (
+                <SignupLogin 
+                  privateKey={this.privateKey} 
+                  setPrivateKey={(key) => this.privateKey = key}/>) 
+            }}
           />
           <Route
             exact

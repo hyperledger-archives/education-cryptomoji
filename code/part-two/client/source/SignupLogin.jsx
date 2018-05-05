@@ -6,7 +6,7 @@ export class SignupLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      privateKey: localStorage.getItem('privateKey') || null,
+      privateKey: this.props.privateKey,
     };
 
     this.handlePrivateKeyChange = this.handlePrivateKeyChange.bind(this);
@@ -21,7 +21,7 @@ export class SignupLogin extends React.Component {
   login(event) {
     event.preventDefault();
     const { privateKey } = this.state;
-    localStorage.setItem('privateKey', privateKey);
+    this.props.setPrivateKey(privateKey);
   }
 
   generateNewPrivateKey() {
@@ -38,7 +38,7 @@ export class SignupLogin extends React.Component {
             Private Key
             <input
               name="privateKey"
-              value={this.state.privateKey}
+              value={this.state.privateKey || ''}
               onChange={this.handlePrivateKeyChange}
             />
           </label>
