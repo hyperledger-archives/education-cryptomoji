@@ -1,4 +1,4 @@
-let SHA512 = require('crypto-js/sha512');
+const { hash } = require('./utils/helpers.js');
 
 class Transaction {
   constructor(fromAddress, toAddress, amount) {
@@ -18,7 +18,7 @@ class Block {
       - transactions
       - the previous block's hash
   */
-  constructor(timestamp, transactions, previousHash = '') {
+  constructor(timestamp, transactions, previousHash) {
     this.timestamp = timestamp;
     this.transactions = transactions;
     this.previousHash = previousHash;
@@ -42,8 +42,8 @@ class Block {
       - the block timestamp
   */
   calculateHash() {
-    return SHA512(this.previousHash + this.timestamp +
-      JSON.stringify(this.transactions) + this._nonce.toString()).toString();
+    return hash(this.previousHash + this.timestamp +
+      JSON.stringify(this.transactions) + this._nonce.toString());
   }
 
   /*
@@ -73,7 +73,7 @@ class Block {
 class Blockchain {
   constructor() {
     this.chain = [this._createGenesisBlock()];
-    this._difficulty = 3;
+    this._difficulty = 2;
     this.pendingTransactions = [];
     this.miningReward = 100;
   }
@@ -84,13 +84,13 @@ class Blockchain {
     - Add functionality to create an initial block
   */
   _createGenesisBlock() {
-    return new Block((new Date()).toString(), 'Genesis Block', '0');
+    return new Block(Date.now(), [], null);
   }
 
   /*
     Get the last created block:
 
-    - Add functionality to get the latest block in the chain 
+    - Add functionality to get the latest block in the chain
   */
   getLatestBlock() {
     return this.chain[this.chain.length - 1];
@@ -107,22 +107,25 @@ class Blockchain {
   */
   minePendingTransactions(miningRewardAddress) {
     let block = new Block(
-      Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
+      Date.now(), this.pendingTransactions, this.getLatestBlock().hash
+    );
+
+    /*
+      Mining rewards do not come from any specific address
+      and instead are awarded directly from the chain itself.
+    */
+    block.transactions.push(
+      new Transaction(null, miningRewardAddress, this.miningReward)
+    );
+
     block.mineBlock(this._difficulty);
 
-    console.log('Block has been mined.');
     this.chain.push(block);
-    
-    this.pendingTransactions = [
-      /*
-        Mining rewards do not come from any specific address
-        and instead are awarded directly from the chain itself.
-      */
-      new Transaction(null, miningRewardAddress, this.miningReward)
-    ];
+    this.pendingTransactions = [];
+    console.log('Block has been mined.');
   }
 
-  createTransaction(transaction) {
+  addPendingTransaction(transaction) {
     this.pendingTransactions.push(transaction);
   }
 
