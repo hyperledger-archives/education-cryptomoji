@@ -12,7 +12,7 @@ const ADDRESS_LENGTH = 70;
 // Adds the address and resource type to the entity.
 const fetchOne = address => {
   const type = addressing.addressToType(address);
-  return axios.get(`api/state/${address}`)
+  return axios.get(`/api/state/${address}`)
     .then(({ data }) => Object.assign({ address, type } , decode(data.data)));
 };
 
@@ -35,7 +35,7 @@ const fetchMany = prefix => {
     });
   };
 
-  return doFetch(`api/state?address=${prefix}`);
+  return doFetch(`/api/state?address=${prefix}`);
 };
 
 /**
@@ -71,7 +71,7 @@ export const submitPayloads = (privateKey, payloads, shouldWait = true) => {
 
   return axios({
     method: 'POST',
-    url: 'api/batches',
+    url: '/api/batches',
     data: encodedBatch,
     headers: { 'Content-Type': 'application/octet-stream' }
   }).then(({ data }) => {
