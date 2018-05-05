@@ -110,14 +110,17 @@ export const getCollections = (publicKey = null) => {
 /**
  * Fetches one or more Cryptomoji.
  *
- * Accepts a pair of optional parameters, the owner's public key, and one or
- * more moji dna strings.
+ * Accepts a pair of optional parameters, an owner's public key or moji's
+ * address, and one or more moji dna strings.
  *   - if nothing is set, all Cryptomoji are returned in an array
  *   - if the owner's key is set, returns the moji belonging to that key
+ *   - if an address is set, returns the one matching Cryptomoji
  *   - if all parameters are set, returns the one matching Cryptomoji
  */
-export const getMoji = (ownerKey = null, dna = null) => {
-  const address = addressing.getMojiAddress(ownerKey, dna);
+export const getMoji = (ownerOrAddress = null, dna = null) => {
+  const address = ownerOrAddress && ownerOrAddress.length === ADDRESS_LENGTH
+    ? ownerOrAddress
+    : addressing.getMojiAddress(ownerOrAddress, dna);
 
   return fetchState(address);
 };
@@ -155,14 +158,17 @@ export const getSires = (ownerKey = null) => {
 /**
  * Fetches one or more Offers.
  *
- * Accepts a pair of optional parameters, the owner's public key, and one or
- * more moji identifiers, which might be dna or addresses.
+ * Accepts a pair of optional parameters, an owner's public key or Offer's
+ * address, and one or more moji identifiers, which might be dna or addresses.
  *   - if nothing is set, all Offers are returned in an array
  *   - if the owner's key is set, returns the Offers belonging to that key
+ *   - if an address is set, returns the one matching Offer
  *   - if all parameters are set, returns the one matching Offer
  */
-export const getOffers = (ownerKey = null, moji = null) => {
-  const address = addressing.getOfferAddress(ownerKey, moji);
+export const getOffers = (ownerOrAddress = null, moji = null) => {
+  const address = ownerOrAddress && ownerOrAddress.length === ADDRESS_LENGTH
+    ? ownerOrAddress
+    : addressing.getOfferAddress(ownerOrAddress, moji);
 
   return fetchState(address);
 };
