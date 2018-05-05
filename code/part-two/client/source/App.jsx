@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 
+import { SignupLogin } from './SignupLogin';
+
 import { Collection } from './Collection';
 import { CollectionList } from './CollectionList';
 import { Moji } from './Moji';
 import { Offer } from './Offer';
 import { OfferList } from './OfferList';
-import { Login } from './Login';
-import { Signup } from './Signup';
 
 export class App extends React.Component {
   render() {
@@ -15,12 +15,16 @@ export class App extends React.Component {
       <div>
         <nav>
           <Link to="/">Home</Link>&ensp;
-          <Link to="/signup">Sign Up</Link>&ensp;
-          <Link to="/login">Login</Link>&ensp;
+          <Link to="/signup-login">Sign Up/Login</Link>&ensp;
           <Link to="/collection">View Collections</Link>&ensp;
           <Link to="/offer">View Offers</Link>&ensp;
         </nav>
         <Switch>
+          <Route
+            exact
+            path="/signup-login"
+            component={SignupLogin}
+          />
           <Route
             exact
             path="/collection/"
@@ -45,16 +49,6 @@ export class App extends React.Component {
             exact
             path="/offer/:address"
             component={Offer}
-          />
-          <Route
-            exact
-            path="/signup"
-            component={Signup}
-          />
-          <Route
-            exact
-            path="/login"
-            component={Login}
           />
         </Switch>
       </div>
