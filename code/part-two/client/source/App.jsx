@@ -28,8 +28,14 @@ export class App extends React.Component {
       ? this.state.privateKey
       : localStorage.getItem('privateKey');
   }
+
+  logout() {
+    this.privateKey = null;
+    localStorage.removeItem('privateKey');
+  }
   
   render() {
+    const privateKey = this.privateKey
     return (
       <div>
         <nav>
@@ -37,6 +43,14 @@ export class App extends React.Component {
           <Link to="/signup-login">Sign Up/Login</Link>&ensp;
           <Link to="/collection">View Collections</Link>&ensp;
           <Link to="/offer">View Offers</Link>&ensp;
+
+          {/* public key view / logout */}
+          { privateKey &&
+            <div>
+              { privateKey }
+              <a href="#" onClick={() => this.logout()}>logout</a>
+            </div>
+          }
         </nav>
         <Switch>
           <Route
