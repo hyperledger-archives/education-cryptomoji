@@ -1,12 +1,13 @@
 import React from 'react';
 
-import { createKeys } from './services/signing';
+import { createKeys, getPublicKey } from './services/signing';
 
 export class SignupLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       privateKey: this.props.privateKey,
+      publicKey: this.props.publicKey
     };
 
     this.handlePrivateKeyChange = this.handlePrivateKeyChange.bind(this);
@@ -22,13 +23,21 @@ export class SignupLogin extends React.Component {
     event.preventDefault();
     const { privateKey } = this.state;
     this.props.setPrivateKey(privateKey);
-    // Redirect home
+
+    this.getPublicKeyFromPrivateKey(privateKey);
     this.props.history.push('/');
   }
 
+  getPublicKeyFromPrivateKey(privateKey) {
+    const publicKey = getPublicKey(privateKey).publicKey;
+    this.setPublicKey(publicKey);
+  }
+
   generateNewPrivateKey() {
-    const privateKey = createKeys().privateKey;
-    this.setState({ privateKey });
+    const { privateKey, publicKey } = createKeys();
+    this.props.setPublicKey(publicKey);
+    this.props.setPrivateKey(privateKey);
+    this.props.history.push('/');
   }
 
   render() {

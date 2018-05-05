@@ -14,7 +14,8 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      privateKey: this.props.privateKey
+      privateKey: this.props.privateKey,
+      publicKey: this.props.publicKey
     }
   }
 
@@ -29,13 +30,26 @@ export class App extends React.Component {
       : localStorage.getItem('privateKey');
   }
 
+  set publicKey(key) {
+    this.setState({ publicKey: key });
+    localStorage.setItem('publicKey', key);
+  }
+
+  get publicKey() {
+    return this.state.publicKey 
+      ? this.state.publicKey
+      : localStorage.getItem('publicKey');
+  }
+
   logout() {
     this.privateKey = null;
+    this.publicKey = null;
     localStorage.removeItem('privateKey');
+    localStorage.removeItem('publicKey');
   }
   
   render() {
-    const privateKey = this.privateKey
+    const publicKey = this.publicKey
     return (
       <div>
         <nav>
@@ -45,9 +59,9 @@ export class App extends React.Component {
           <Link to="/offer">View Offers</Link>&ensp;
 
           {/* public key view / logout */}
-          { privateKey &&
+          { publicKey &&
             <div>
-              { privateKey }
+              { publicKey }
               <a href="#" onClick={() => this.logout()}>logout</a>
             </div>
           }
@@ -62,6 +76,7 @@ export class App extends React.Component {
                   {...props}
                   privateKey={this.privateKey} 
                   setPrivateKey={(key) => this.privateKey = key}
+                  setPublicKey={(key) => this.publicKey = key}
                 />
               )
             }}
