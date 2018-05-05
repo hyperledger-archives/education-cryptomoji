@@ -30,8 +30,6 @@ export class SignupLogin extends React.Component {
 
   getPublicKeyFromPrivateKey(privateKey) {
     const publicKey = getPublicKey(privateKey);
-
-    console.log(publicKey);
     this.props.setPublicKey(publicKey);
   }
 
