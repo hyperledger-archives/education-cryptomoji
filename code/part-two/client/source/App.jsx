@@ -42,11 +42,14 @@ export class App extends React.Component {
           <Route
             exact
             path="/signup-login"
-            component={() => { 
+            render={(props) => { 
               return (
                 <SignupLogin 
+                  {...props}
                   privateKey={this.privateKey} 
-                  setPrivateKey={(key) => this.privateKey = key}/>) 
+                  setPrivateKey={(key) => this.privateKey = key}
+                />
+              )
             }}
           />
           <Route

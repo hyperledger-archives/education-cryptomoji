@@ -22,6 +22,8 @@ export class SignupLogin extends React.Component {
     event.preventDefault();
     const { privateKey } = this.state;
     this.props.setPrivateKey(privateKey);
+    // Redirect home
+    this.props.history.push('/');
   }
 
   generateNewPrivateKey() {
