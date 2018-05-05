@@ -1,26 +1,24 @@
 import axios from 'axios';
 
-import { MAX_HTTP_REQUESTS } from '../utils/constants';
+import { MAX_HTTP_REQUESTS, NAMESPACE } from '../utils/constants';
 import { decode } from './encoding.js';
 import { encodeAll } from './transactions.js';
 import * as addressing from './addressing.js';
 
 
-/**
- * Takes a seventy character address, and fetches an entity from state.
- * Adds the address and resource type to the entity.
- */
-export const fetchOne = address => {
+const ADDRESS_LENGTH = 70;
+
+// Takes a full 70 character address, and fetches an entity from state.
+// Adds the address and resource type to the entity.
+const fetchOne = address => {
   const type = addressing.addressToType(address);
   return axios.get(`api/state/${address}`)
     .then(({ data }) => Object.assign({ address, type } , decode(data.data)));
 };
 
-/**
- * Takes a partial address (i.e. prefix), and fetches all matching entities
- * from state. Adds the address and resource type to each.
- */
-export const fetchMany = (prefix = null) => {
+// Takes a partial address (i.e. prefix), and fetches all matching entities
+// from state. Adds the address and resource type to each.
+const fetchMany = prefix => {
   const doFetch = url => {
     return axios.get(url).then(({ data }) => {
       const resources = data.data.map(({ address, data }) => {
@@ -37,11 +35,25 @@ export const fetchMany = (prefix = null) => {
     });
   };
 
-  if (prefix === null) {
-    return doFetch('api/state');
+  return doFetch(`api/state?address=${prefix}`);
+};
+
+/**
+ * Takes a hexadecimal state address and fetches all matching state entities.
+ * If a full 70 character address is used, one entity is fetched, otherwise
+ * all entities matching the provided prefix are returned in an array.
+ * If the crypromoji namespace is not provided, it will be prepended.
+ */
+export const fetchState = (addressOrPrefix = '') => {
+  if (addressOrPrefix.slice(0, NAMESPACE.length) !== NAMESPACE) {
+    addressOrPrefix = NAMESPACE + addressOrPrefix;
   }
 
-  return doFetch(`api/state?address=${prefix}`);
+  if (addressOrPrefix.length === ADDRESS_LENGTH) {
+    return fetchOne(addressOrPrefix);
+  }
+
+  return fetchMany(addressOrPrefix);
 };
 
 /**
@@ -92,11 +104,7 @@ export const submitPayloads = (privateKey, payloads, shouldWait = true) => {
 export const getCollections = (publicKey = null) => {
   const address = addressing.getCollectionAddress(publicKey);
 
-  if (publicKey === null) {
-    return fetchMany(address);
-  }
-
-  return fetchOne(address);
+  return fetchState(address);
 };
 
 /**
@@ -111,11 +119,7 @@ export const getCollections = (publicKey = null) => {
 export const getMoji = (ownerKey = null, dna = null) => {
   const address = addressing.getMojiAddress(ownerKey, dna);
 
-  if (!dna) {
-    return fetchMany(address);
-  }
-
-  return fetchOne(address);
+  return fetchState(address);
 };
 
 /**
@@ -160,9 +164,5 @@ export const getSires = (ownerKey = null) => {
 export const getOffers = (ownerKey = null, moji = null) => {
   const address = addressing.getOfferAddress(ownerKey, moji);
 
-  if (!moji) {
-    return fetchMany(address);
-  }
-
-  return fetchOne(address);
+  return fetchState(address);
 };
