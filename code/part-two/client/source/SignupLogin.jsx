@@ -1,10 +1,12 @@
 import React from 'react';
 
+import { createKeys } from './services/signing';
+
 export class SignupLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      privateKey: '',
+      privateKey: localStorage.getItem('privateKey') || null,
     };
 
     this.handlePrivateKeyChange = this.handlePrivateKeyChange.bind(this);
@@ -18,12 +20,13 @@ export class SignupLogin extends React.Component {
 
   login(event) {
     event.preventDefault();
-    console.log(this.state);
+    const { privateKey } = this.state;
+    localStorage.setItem('privateKey', privateKey);
   }
 
   generateNewPrivateKey() {
-    console.log('generating new private key');
-    localStorage.setItem('pk', 'NEW PRIVATE KEY');
+    const privateKey = createKeys().privateKey;
+    this.setState({ privateKey });
   }
 
   render() {
