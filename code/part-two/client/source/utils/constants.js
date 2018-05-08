@@ -1,7 +1,7 @@
 import { hash } from './helpers';
 
 export const FAMILY_NAME = 'cryptomoji';
-export const FAMILY_VERSION = '1.0';
+export const FAMILY_VERSION = '0.1';
 export const NAMESPACE = hash(FAMILY_NAME, 6);
 
 export const TYPE_PREFIXES = {

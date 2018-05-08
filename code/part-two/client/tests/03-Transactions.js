@@ -63,7 +63,7 @@ describe('Transactions module', function() {
       expect(header.familyVersion)
         .to.be.set
         .and.be.a('string')
-        .and.equal('1.0');
+        .and.equal('0.1');
 
       expect(header.inputs)
         .to.be.set
