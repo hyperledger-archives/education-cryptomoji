@@ -1,10 +1,12 @@
 'use strict';
 
-const chai = require('chai');
-const expect = chai.expect;
-const { hash } = require('../utils/helpers.js');
+const { expect } = require('chai');
+const { createHash } = require('crypto');
 const { Block, Blockchain, Transaction } = require('../blockchain.js');
 
+
+// Returns a hex string SHA-512 hash of a string or Buffer
+const hash = msg => createHash('sha512').update(msg).digest('hex');
 
 // Test transaction data
 const testFromAddress = hash('testFromAddress');
