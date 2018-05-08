@@ -8,36 +8,22 @@ const { Block, Blockchain, Transaction } = require('../blockchain.js');
 // Returns a hex string SHA-512 hash of a string or Buffer
 const hash = msg => createHash('sha512').update(msg).digest('hex');
 
-// Test transaction data
-const testFromAddress = hash('testFromAddress');
-const testToAddress = hash('testToAddress');
-const testAmount = '10.00';
-const transaction = new Transaction(
-  testFromAddress,
-  testToAddress,
-  testAmount
-);
-
-// Test blockchain data
-const blockchain = new Blockchain();
-const genesisBlock = blockchain.chain[0];
-const newBlock = new Block();
-const miningAddress = hash('miningAddress');
-let timesMined = 0;
-
-// Test block data
-const testPreviousHash = '0123testPreviousHash';
-const testTransactions = [];
-const testNonce = 0;
-const now = Date.now();
-const block = new Block(now, testTransactions, testPreviousHash);
-const testDataHash = hash(
-  testPreviousHash + now + JSON.stringify(testTransactions) + testNonce
-);
-
-describe('Blockchain module', function() {
+describe('Blockchain Module', function() {
 
   describe('Transaction', function() {
+    const testFromAddress = hash('testFromAddress');
+    const testToAddress = hash('testToAddress');
+    const testAmount = '10.00';
+    let transaction = null;
+
+    beforeEach(function() {
+      transaction = new Transaction(
+        testFromAddress,
+        testToAddress,
+        testAmount
+      );
+    });
+
     it('should create a transaction with all initial values', function() {
       expect(transaction.fromAddress).to.equal(testFromAddress);
       expect(transaction.toAddress).to.equal(testToAddress);
@@ -46,6 +32,19 @@ describe('Blockchain module', function() {
   });
 
   describe('Block', function() {
+    const testPreviousHash = '0123testPreviousHash';
+    const testTransactions = [];
+    const testNonce = 0;
+    const now = Date.now();
+    const testDataHash = hash(
+      testPreviousHash + now + JSON.stringify(testTransactions) + testNonce
+    );
+    let block = null;
+
+    beforeEach(function() {
+      block = new Block(now, testTransactions, testPreviousHash);
+    });
+
     it('should create a block with all initial values', function() {
       expect(block.timestamp).to.equal(now);
       expect(block.previousHash).to.equal(testPreviousHash);
@@ -56,7 +55,6 @@ describe('Blockchain module', function() {
     });
 
     it('should create a block that can be mined', function() {
-
       // If the initial hash meets the proof of work requirement
       if (block.hash[0] === '0') {
         expect(block.hash).to.equal(testDataHash);
@@ -73,6 +71,21 @@ describe('Blockchain module', function() {
   });
 
   describe('Blockchain', function() {
+    const miningAddress = hash('miningAddress');
+    let blockchain = null;
+    let genesisBlock = null;
+    let newBlock = null;
+    let transaction = null;
+    let timesMined = null;
+
+    beforeEach(function() {
+      blockchain = new Blockchain();
+      genesisBlock = blockchain.chain[0];
+      newBlock = new Block();
+      timesMined = 0;
+      transaction = new Transaction(hash('from'), hash('to'), '1.337');
+    });
+
     it('should create a blockchain with a genesis block', function() {
       expect(genesisBlock.previousHash).to.be.null;
       expect(genesisBlock.timestamp).is.not.null;
