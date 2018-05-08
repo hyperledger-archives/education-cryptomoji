@@ -2,7 +2,7 @@
   "name": "cryptomoji-client",
   "version": "0.1.0",
   "description": "A React frontend for the Cryptomoji app",
-  "main": "source/index.js",
+  "main": "source/index.jsx",
   "scripts": {
     "build:dev": "webpack --mode development -w",
     "build:prod": "webpack --mode production",
