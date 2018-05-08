@@ -12,7 +12,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?/,
+        test: /\.jsx?$/,
         include: SOURCE_DIR,
         use: {
           loader: 'babel-loader',
