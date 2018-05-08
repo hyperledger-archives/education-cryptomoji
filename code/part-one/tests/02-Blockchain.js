@@ -35,75 +35,65 @@ const testDataHash = hash(
   testPreviousHash + now + JSON.stringify(testTransactions) + testNonce
 );
 
-
 // Transaction tests
 describe('Transaction', () => {
-  it('Should create a transaction with all initial values', done => {
+  it('Should create a transaction with all initial values', () => {
     expect(transaction.fromAddress).to.equal(testFromAddress);
     expect(transaction.toAddress).to.equal(testToAddress);
     expect(transaction.amount).to.equal(testAmount);
-    done();
   });
 });
 
 // Blockchain tests
 describe('Blockchain', () => {
-  it('Should create a blockchain with a genesis block', done => {
+  it('Should create a blockchain with a genesis block', () => {
     expect(genesisBlock.previousHash).to.be.null;
     expect(genesisBlock.timestamp).is.not.null;
-    done();
   });
 
-  it('Should be able to retrieve the latest block', done => {
+  it('Should be able to retrieve the latest block', () => {
     expect(blockchain.getLatestBlock()).to.equal(
       blockchain.chain[blockchain.chain.length - 1]
     );
-    done();
   });
 
-  it('Should be able to add pending transactions', done => {
+  it('Should be able to add pending transactions', () => {
     blockchain.addPendingTransaction(transaction);
 
     expect(blockchain.pendingTransactions).to.have.lengthOf(1);
-    done();
   });
 
-  it('Should be able to mine pending transactions', done => {
+  it('Should be able to mine pending transactions', () => {
     blockchain.minePendingTransactions(miningAddress);
     timesMined++;
 
     expect(blockchain.chain).to.have.lengthOf(2);
     expect(blockchain.pendingTransactions).to.have.lengthOf(0);
-    done();
   });
 
-  it('Should be able to get balance for an address', done => {
+  it('Should be able to get balance for an address', () => {
     const addressBalance = blockchain.getBalanceOfAddress(miningAddress);
 
     expect(addressBalance).to.equal(blockchain.miningReward * timesMined);
-    done();
   });
 
-  it('Should create a valid blockchain', done => {
+  it('Should create a valid blockchain', () => {
     expect(blockchain.isValidChain()).to.be.true;
-    done();
   });
 });
 
 // Block tests
 describe('Block', () => {
-  it('Should create a block with all initial values', done => {
+  it('Should create a block with all initial values', () => {
     expect(block.timestamp).to.equal(now);
     expect(block.previousHash).to.equal(testPreviousHash);
-    done();
   });
 
-  it('Should create a block that calculates hashes', done => {
+  it('Should create a block that calculates hashes', () => {
     expect(block.hash).to.equal(testDataHash);
-    done();
   });
 
-  it('Should create a block that can be mined', done => {
+  it('Should create a block that can be mined', () => {
 
     // If the initial hash meets the proof of work requirement
     if (block.hash[0] === '0') {
@@ -118,6 +108,5 @@ describe('Block', () => {
       expect(block._nonce).to.not.equal(testNonce);
     }
 
-    done();
   });
 });
