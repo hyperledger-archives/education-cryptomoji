@@ -2,13 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { getMoji } from './services/requests';
+import { parseDna } from './services/parseDna';
 
 export class Moji extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       address: null,
-      moji: null
+      moji: null,
+      mojiView: null
     };
   }
 
@@ -35,7 +37,10 @@ export class Moji extends React.Component {
   fetchMoji(address) {
     console.log('fetchMoji');
     return getMoji(address)
-      .then(moji => this.setState({ moji }))
+      .then(moji => this.setState({
+        moji,
+        mojiView: parseDna(moji.dna).view
+      }))
       .catch(err => {
         console.error(`Fetch moji failed for ${address}`, err);
         this.setState({ moji: null });
@@ -44,7 +49,7 @@ export class Moji extends React.Component {
 
   render() {
     console.log('RENDERING: <Moji />');
-    const { address, moji } = this.state;
+    const { address, moji, mojiView } = this.state;
     if (!moji) {
       return (
         <div>
@@ -55,7 +60,7 @@ export class Moji extends React.Component {
 
     return (
       <div>
-        <h2>Details for <code>{address}</code> moji!</h2>
+        <h2>{mojiView}</h2>
         <table>
           <tbody>
             <tr><td>address</td><td>{moji.address}</td></tr>
