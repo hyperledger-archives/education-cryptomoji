@@ -102,13 +102,7 @@ export class App extends React.Component {
           <Route
             exact
             path="/collection/:publicKey"
-            render={(props) => (
-              <Collection
-                {...props}
-                privateKey={this.state.privateKey}
-                publicKey={this.state.publicKey}
-              />
-            )}
+            component={Collection}
           />
           <Route
             exact
