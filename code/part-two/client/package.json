@@ -1,6 +1,6 @@
 {
   "name": "cryptomoji-client",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A React frontend for the Cryptomoji app",
   "main": "source/index.js",
   "scripts": {

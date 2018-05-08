@@ -1,6 +1,6 @@
 {
   "name": "cryptomoji-processor",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A Sawtooth transaction processor for the Cryptomoji app",
   "main": "index.js",
   "scripts": {
