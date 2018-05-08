@@ -1,7 +1,7 @@
 const chai = require('chai');
 const expect = chai.expect;
-const { hash } = require('./utils/helpers.js');
-const { Block, Blockchain, Transaction } = require('./blockchain.js');
+const { hash } = require('../utils/helpers.js');
+const { Block, Blockchain, Transaction } = require('../blockchain.js');
 
 
 // Test transaction data
