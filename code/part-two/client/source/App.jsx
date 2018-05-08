@@ -14,9 +14,9 @@ export class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      privateKey: this.props.privateKey,
-      publicKey: this.props.publicKey
-    }
+      privateKey: localStorage.getItem('privateKey') || null,
+      publicKey: localStorage.getItem('publicKey') || null
+    };
   }
 
   set privateKey(key) {
@@ -55,6 +55,7 @@ export class App extends React.Component {
         <nav>
           <Link to="/">Home</Link>&ensp;
           <Link to="/signup-login">Sign Up/Login</Link>&ensp;
+          <Link to={'/collection/' + this.state.publicKey}>Your Collection</Link>&ensp;
           <Link to="/collection">View Collections</Link>&ensp;
           <Link to="/offer">View Offers</Link>&ensp;
 
@@ -89,7 +90,13 @@ export class App extends React.Component {
           <Route
             exact
             path="/collection/:publicKey"
-            component={Collection}
+            render={(props) => (
+              <Collection
+                {...props}
+                privateKey={this.state.privateKey}
+                publicKey={this.state.publicKey}
+              />
+            )}
           />
           <Route
             exact
