@@ -1,3 +1,5 @@
+'use strict';
+
 const { hash } = require('./utils/helpers.js');
 
 class Transaction {
