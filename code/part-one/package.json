@@ -4,7 +4,7 @@
   "description": "Basic blockchain sprint built in javascript to teach general blockchain practices and structure",
   "main": "blockchain-intro-prompt.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha tests.js"
+    "test": "mocha tests"
   },
   "author": "",
   "license": "Apache 2.0",
