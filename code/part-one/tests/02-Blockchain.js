@@ -36,8 +36,8 @@ const testDataHash = hash(
 );
 
 // Transaction tests
-describe('Transaction', () => {
-  it('Should create a transaction with all initial values', () => {
+describe('Transaction', function() {
+  it('Should create a transaction with all initial values', function() {
     expect(transaction.fromAddress).to.equal(testFromAddress);
     expect(transaction.toAddress).to.equal(testToAddress);
     expect(transaction.amount).to.equal(testAmount);
@@ -45,25 +45,25 @@ describe('Transaction', () => {
 });
 
 // Blockchain tests
-describe('Blockchain', () => {
-  it('Should create a blockchain with a genesis block', () => {
+describe('Blockchain', function() {
+  it('Should create a blockchain with a genesis block', function() {
     expect(genesisBlock.previousHash).to.be.null;
     expect(genesisBlock.timestamp).is.not.null;
   });
 
-  it('Should be able to retrieve the latest block', () => {
+  it('Should be able to retrieve the latest block', function() {
     expect(blockchain.getLatestBlock()).to.equal(
       blockchain.chain[blockchain.chain.length - 1]
     );
   });
 
-  it('Should be able to add pending transactions', () => {
+  it('Should be able to add pending transactions', function() {
     blockchain.addPendingTransaction(transaction);
 
     expect(blockchain.pendingTransactions).to.have.lengthOf(1);
   });
 
-  it('Should be able to mine pending transactions', () => {
+  it('Should be able to mine pending transactions', function() {
     blockchain.minePendingTransactions(miningAddress);
     timesMined++;
 
@@ -71,29 +71,29 @@ describe('Blockchain', () => {
     expect(blockchain.pendingTransactions).to.have.lengthOf(0);
   });
 
-  it('Should be able to get balance for an address', () => {
+  it('Should be able to get balance for an address', function() {
     const addressBalance = blockchain.getBalanceOfAddress(miningAddress);
 
     expect(addressBalance).to.equal(blockchain.miningReward * timesMined);
   });
 
-  it('Should create a valid blockchain', () => {
+  it('Should create a valid blockchain', function() {
     expect(blockchain.isValidChain()).to.be.true;
   });
 });
 
 // Block tests
-describe('Block', () => {
-  it('Should create a block with all initial values', () => {
+describe('Block', function() {
+  it('Should create a block with all initial values', function() {
     expect(block.timestamp).to.equal(now);
     expect(block.previousHash).to.equal(testPreviousHash);
   });
 
-  it('Should create a block that calculates hashes', () => {
+  it('Should create a block that calculates hashes', function() {
     expect(block.hash).to.equal(testDataHash);
   });
 
-  it('Should create a block that can be mined', () => {
+  it('Should create a block that can be mined', function() {
 
     // If the initial hash meets the proof of work requirement
     if (block.hash[0] === '0') {
