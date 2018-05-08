@@ -45,6 +45,33 @@ describe('Blockchain module', function() {
     });
   });
 
+  describe('Block', function() {
+    it('should create a block with all initial values', function() {
+      expect(block.timestamp).to.equal(now);
+      expect(block.previousHash).to.equal(testPreviousHash);
+    });
+
+    it('should create a block that calculates hashes', function() {
+      expect(block.hash).to.equal(testDataHash);
+    });
+
+    it('should create a block that can be mined', function() {
+
+      // If the initial hash meets the proof of work requirement
+      if (block.hash[0] === '0') {
+        expect(block.hash).to.equal(testDataHash);
+        expect(block._nonce).to.equal(testNonce);
+
+      // If not uses nonce to generate proof of work
+      } else {
+        block.mineBlock(1);
+
+        expect(block.hash).to.not.equal(testDataHash);
+        expect(block._nonce).to.not.equal(testNonce);
+      }
+    });
+  });
+
   describe('Blockchain', function() {
     it('should create a blockchain with a genesis block', function() {
       expect(genesisBlock.previousHash).to.be.null;
@@ -79,34 +106,6 @@ describe('Blockchain module', function() {
 
     it('should create a valid blockchain', function() {
       expect(blockchain.isValidChain()).to.be.true;
-    });
-  });
-
-  describe('Block', function() {
-    it('should create a block with all initial values', function() {
-      expect(block.timestamp).to.equal(now);
-      expect(block.previousHash).to.equal(testPreviousHash);
-    });
-
-    it('should create a block that calculates hashes', function() {
-      expect(block.hash).to.equal(testDataHash);
-    });
-
-    it('should create a block that can be mined', function() {
-
-      // If the initial hash meets the proof of work requirement
-      if (block.hash[0] === '0') {
-        expect(block.hash).to.equal(testDataHash);
-        expect(block._nonce).to.equal(testNonce);
-
-      // If not uses nonce to generate proof of work
-      } else {
-        block.mineBlock(1);
-
-        expect(block.hash).to.not.equal(testDataHash);
-        expect(block._nonce).to.not.equal(testNonce);
-      }
-
     });
   });
 });
