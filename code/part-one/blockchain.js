@@ -1,6 +1,10 @@
 'use strict';
 
-const { hash } = require('./utils/helpers.js');
+const { createHash } = require('crypto');
+
+
+// Returns a hex string SHA-512 hash of a string or Buffer
+const hash = msg => createHash('sha512').update(msg).digest('hex');
 
 class Transaction {
   constructor(fromAddress, toAddress, amount) {
