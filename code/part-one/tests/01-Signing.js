@@ -58,6 +58,37 @@ describe('Signing module', function() {
   });
 
   describe('verify', function() {
+    const message = randomBytes(16);
+    let publicKey = null;
+    let signature = null;
 
+    beforeEach(function() {
+      const privateKey = signing.createPrivateKey();
+      publicKey = signing.getPublicKey(privateKey);
+      signature = secp256k1
+        .sign(sha256(message), toBytes(privateKey))
+        .signature
+        .toString('hex');
+    });
+
+    it('should verify a correct signature', function() {
+      const isValid = signing.verify(publicKey, message, signature);
+
+      expect(isValid).to.be.true;
+    });
+
+    it('should reject a signature with a mismatched public key', function() {
+      const publicKey = signing.getPublicKey(signing.createPrivateKey());
+      const isValid = signing.verify(publicKey, message, signature);
+
+      expect(isValid).to.be.false;
+    });
+
+    it('should reject a signature with a mismatched message', function() {
+      const message = randomBytes(16);
+      const isValid = signing.verify(publicKey, message, signature);
+
+      expect(isValid).to.be.false;
+    });
   });
 });
