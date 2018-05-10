@@ -1,26 +1,40 @@
-import secp256k1 from 'sawtooth-sdk/signing/secp256k1';
+import * as secp256k1 from 'secp256k1';
+import { randomBytes, createHash } from 'crypto';
 
 
-const CONTEXT = new secp256k1.Secp256k1Context();
+// Returns a Buffer SHA-256 hash of a string or Buffer
+const sha256 = msg => createHash('sha256').update(msg).digest();
+
+// Converts a hex string to a Buffer
+const toBytes = hex => Buffer.from(hex, 'hex');
 
 /**
- * Creates a new public/private key pair, and returns them as an object
- * with the keys "public", and "private".
+ * Creates a new private key encoded as a hex string.
  */
-export const createKeys = () => {
-  const privateWrapper = CONTEXT.newRandomPrivateKey();
-  const privateKey = privateWrapper.asHex();
-  const publicKey = CONTEXT.getPublicKey(privateWrapper).asHex();
+export const createPrivateKey = () => {
+  let privateKey = null;
+  do {
+    privateKey = randomBytes(32);
+  } while (!secp256k1.privateKeyVerify(privateKey));
 
-  return { privateKey, publicKey };
+  return privateKey.toString('hex');
 };
 
 /**
  * Takes a private key and returns its public pair.
  */
 export const getPublicKey = privateKey => {
-  const privateWrapper = secp256k1.Secp256k1PrivateKey.fromHex(privateKey);
-  return CONTEXT.getPublicKey(privateWrapper).asHex();
+  return secp256k1.publicKeyCreate(toBytes(privateKey)).toString('hex');
+};
+
+/**
+ * Creates a new public/private key pair, and returns them as an object
+ * with the keys "publicKey", and "privateKey".
+ */
+export const createKeys = () => {
+  const privateKey = createPrivateKey();
+  const publicKey = getPublicKey(privateKey);
+  return { privateKey, publicKey };
 };
 
 /**
@@ -28,6 +42,6 @@ export const getPublicKey = privateKey => {
  * take a Buffer message, and return a hexadecimal signature.
  */
 export const sign = (privateKey, message) => {
-  const privateWrapper = secp256k1.Secp256k1PrivateKey.fromHex(privateKey);
-  return CONTEXT.sign(message, privateWrapper);
+  const { signature } = secp256k1.sign(sha256(message), toBytes(privateKey));
+  return signature.toString('hex');
 };
