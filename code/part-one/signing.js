@@ -1,7 +1,7 @@
 'use strict';
 
 const secp256k1 = require('secp256k1');
-const { randomBytes } = require('crypto');
+const { randomBytes, createHash } = require('crypto');
 
 
 // Returns a Buffer SHA-256 hash of a string or Buffer
@@ -23,12 +23,17 @@ const getPublicKey = privateKey => {
   return secp256k1.publicKeyCreate(toBytes(privateKey)).toString('hex');
 };
 
-const sign = (message, privateKey) => {
-
+const sign = (privateKey, message) => {
+  const { signature } = secp256k1.sign(sha256(message), toBytes(privateKey));
+  return signature.toString('hex');
 };
 
-const verify = (message, signature, publicKey) => {
-
+const verify = (publicKey, message, signature) => {
+  return secp256k1.verify(
+    sha256(message),
+    toBytes(signature),
+    toBytes(publicKey)
+  );
 };
 
 module.exports = {
