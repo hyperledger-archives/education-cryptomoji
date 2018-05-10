@@ -5,6 +5,53 @@ import * as signing from '../source/services/signing.js';
 
 describe('Signing module', function() {
 
+  describe('createPrivateKey', function() {
+    let privateKey = null;
+
+    beforeEach(function() {
+      privateKey = signing.createPrivateKey();
+    });
+
+    it('should return a hexadecimal string', function() {
+      expect(privateKey).to.be.a.hexString;
+    });
+
+    it('should generate a valid Secp256k1 private key', function() {
+      const privateKeyBytes = Buffer.from(privateKey, 'hex');
+      expect(secp256k1.privateKeyVerify(privateKeyBytes)).to.be.true;
+    });
+
+  });
+
+  describe('getPublicKey', function() {
+    let privateKey = null;
+    let publicKey = null;
+
+    beforeEach(function() {
+      privateKey = signing.createPrivateKey();
+      publicKey = signing.getPublicKey(privateKey);
+    });
+
+    it('should return a hexadecimal string', function() {
+      expect(publicKey).to.be.a.hexString;
+    });
+
+    it('should return a valid Secp256k1 public key', function() {
+      const publicKeyBytes = Buffer.from(publicKey, 'hex');
+      expect(secp256k1.publicKeyVerify(publicKeyBytes)).to.be.true;
+    });
+
+    it('should return a public key derived from a private key', function() {
+      const privateKeyBytes = Buffer.from(privateKey, 'hex');
+      const generatedPublicKey = secp256k1
+        .publicKeyCreate(privateKeyBytes)
+        .toString('hex');
+
+      expect(publicKey).to.equal(generatedPublicKey);
+    });
+
+  });
+
   describe('createKeys', function() {
     let keys = null;
 
@@ -39,35 +86,6 @@ describe('Signing module', function() {
         .toString('hex');
 
       expect(keys.publicKey).to.equal(generatedPublicKey);
-    });
-
-  });
-
-  describe('getPublicKey', function() {
-    let privateKey = null;
-    let publicKey = null;
-
-    beforeEach(function() {
-      privateKey = signing.createKeys().privateKey;
-      publicKey = signing.getPublicKey(privateKey);
-    });
-
-    it('should return a hexadecimal string', function() {
-      expect(publicKey).to.be.a.hexString;
-    });
-
-    it('should return a valid Secp256k1 public key', function() {
-      const publicKeyBytes = Buffer.from(publicKey, 'hex');
-      expect(secp256k1.publicKeyVerify(publicKeyBytes)).to.be.true;
-    });
-
-    it('should return a public key derived from a private key', function() {
-      const privateKeyBytes = Buffer.from(privateKey, 'hex');
-      const generatedPublicKey = secp256k1
-        .publicKeyCreate(privateKeyBytes)
-        .toString('hex');
-
-      expect(publicKey).to.equal(generatedPublicKey);
     });
 
   });
