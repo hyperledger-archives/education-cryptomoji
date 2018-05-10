@@ -31,6 +31,33 @@ describe('Signing module', function() {
     });
   });
 
+  describe('getPublicKey', function() {
+    let privateKey = null;
+    let publicKey = null;
+
+    beforeEach(function() {
+      privateKey = signing.createPrivateKey();
+      publicKey = signing.getPublicKey(privateKey);
+    });
+
+    it('should return a hex string', function() {
+      expect(publicKey).to.be.a.hexString;
+    });
+
+    it('should generate a valid Secp256k1 public key', function() {
+      const isValid = secp256k1.privateKeyVerify(toBytes(privateKey));
+      expect(isValid).to.be.true;
+    });
+
+    it('should have a public key derived from its private key', function() {
+      const generatedPublicKey = secp256k1
+        .publicKeyCreate(toBytes(privateKey))
+        .toString('hex');
+
+      expect(publicKey).to.equal(generatedPublicKey);
+    });
+  });
+
   describe('sign', function() {
     const message = randomBytes(16);
     let publicKey = null;
