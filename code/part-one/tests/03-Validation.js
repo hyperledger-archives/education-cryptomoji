@@ -106,7 +106,7 @@ describe('Validation module', function() {
     });
 
     it('should return false when tampering with calculateHash', function() {
-      block.calculateHash = nonce => { block.nonce = nonce };
+      block.calculateHash = nonce => { block.nonce = nonce; };
       block.hash = modifyHexString(block.hash);
       expect(validation.isValidBlock(block)).to.be.false;
     });
