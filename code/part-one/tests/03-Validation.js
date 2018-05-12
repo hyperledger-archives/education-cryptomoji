@@ -70,4 +70,45 @@ describe('Validation module', function() {
       expect(validation.isValidTransaction(transaction)).to.be.false;
     });
   });
+
+  describe('isValidBlock', function() {
+    let block = null;
+
+    beforeEach(function() {
+      const transactions = [ makeRandomTransaction() ];
+      const previousHash = randomBytes(64).toString('hex');
+      block = new Block(transactions, previousHash);
+    });
+
+    it('should return true for a valid block', function() {
+      expect(validation.isValidBlock(block)).to.be.true;
+    });
+
+    it('should return false when hash is modified', function() {
+      block.hash = modifyHexString(block.hash);
+      expect(validation.isValidBlock(block)).to.be.false;
+    });
+
+    it('should return false when previousHash is modified', function() {
+      block.previousHash = modifyHexString(block.previousHash);
+      expect(validation.isValidBlock(block)).to.be.false;
+    });
+
+    it('should return false when nonce is modified', function() {
+      block.nonce = block.nonce + 1;
+      expect(validation.isValidBlock(block)).to.be.false;
+    });
+
+    it('should return false when a transaction is modified', function() {
+      const transaction = block.transactions[0];
+      transaction.amount = transaction.amount + 1;
+      expect(validation.isValidBlock(block)).to.be.false;
+    });
+
+    it('should return false when tampering with calculateHash', function() {
+      block.calculateHash = nonce => { block.nonce = nonce };
+      block.hash = modifyHexString(block.hash);
+      expect(validation.isValidBlock(block)).to.be.false;
+    });
+  });
 });
