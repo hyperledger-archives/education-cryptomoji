@@ -1,124 +1,158 @@
 'use strict';
 
 const { expect } = require('chai');
-const { createHash } = require('crypto');
-const { Block, Blockchain, Transaction } = require('../blockchain.js');
+const { randomBytes } = require('crypto');
+const signing = require('../signing');
+const { Transaction, Block, Blockchain } = require('../blockchain');
 
 
-// Returns a hex string SHA-512 hash of a string or Buffer
-const hash = msg => createHash('sha512').update(msg).digest('hex');
-
-describe('Blockchain Module', function() {
+describe('Blockchain module', function() {
 
   describe('Transaction', function() {
-    const testFromAddress = hash('testFromAddress');
-    const testToAddress = hash('testToAddress');
-    const testAmount = '10.00';
+    let signer = null;
+    let recipient = null;
+    let amount = null;
     let transaction = null;
 
     beforeEach(function() {
-      transaction = new Transaction(
-        testFromAddress,
-        testToAddress,
-        testAmount
-      );
+      signer = signing.createPrivateKey();
+      recipient = signing.getPublicKey(signing.createPrivateKey());
+      amount = Math.ceil(Math.random() * 100);
+      transaction = new Transaction(signer, recipient, amount);
     });
 
-    it('should create a transaction with all initial values', function() {
-      expect(transaction.fromAddress).to.equal(testFromAddress);
-      expect(transaction.toAddress).to.equal(testToAddress);
-      expect(transaction.amount).to.equal(testAmount);
+    it('should include signer public key as source', function() {
+      expect(transaction.source).to.equal(signing.getPublicKey(signer));
+    });
+
+    it('should include the passed recipient and amount', function() {
+      expect(transaction.recipient).to.equal(recipient);
+      expect(transaction.amount).to.equal(amount);
+    });
+
+    it('should include a valid signature', function() {
+      const { source, signature } = transaction;
+      const signedMessage = source + recipient + amount;
+
+      expect(signing.verify(source, signedMessage, signature)).to.be.true;
     });
   });
 
   describe('Block', function() {
-    const testPreviousHash = '0123testPreviousHash';
-    const testTransactions = [];
-    const testNonce = 0;
-    const now = Date.now();
-    const testDataHash = hash(
-      testPreviousHash + now + JSON.stringify(testTransactions) + testNonce
-    );
+    let previousHash = null;
+    let transactions = null;
     let block = null;
 
     beforeEach(function() {
-      block = new Block(now, testTransactions, testPreviousHash);
+      const signer = signing.createPrivateKey();
+      const recipient = signing.getPublicKey(signing.createPrivateKey());
+      const amount = Math.ceil(Math.random() * 100);
+
+      transactions = [ new Transaction(signer, recipient, amount) ];
+      previousHash = randomBytes(64).toString('hex');
+
+      block = new Block(transactions, previousHash);
     });
 
-    it('should create a block with all initial values', function() {
-      expect(block.timestamp).to.equal(now);
-      expect(block.previousHash).to.equal(testPreviousHash);
+    it('should include the passed transactions', function() {
+      expect(block.transactions).to.deep.equal(transactions);
     });
 
-    it('should create a block that calculates hashes', function() {
-      expect(block.hash).to.equal(testDataHash);
+    it('should include the passed previous hash', function() {
+      expect(block.previousHash).to.equal(previousHash);
     });
 
-    it('should create a block that can be mined', function() {
-      // If the initial hash meets the proof of work requirement
-      if (block.hash[0] === '0') {
-        expect(block.hash).to.equal(testDataHash);
-        expect(block._nonce).to.equal(testNonce);
+    it('should have a method that calculates a hash with a nonce', function() {
+      block.calculateHash(0);
+      expect(block.hash).to.be.a('string').and.not.be.empty;
+      expect(block.nonce).to.equal(0);
+    });
 
-      // If not uses nonce to generate proof of work
-      } else {
-        block.mineBlock(1);
+    it('should calculate the same hash with the same nonce', function() {
+      block.calculateHash(0);
+      const originalHash = block.hash;
+      block.calculateHash(0);
 
-        expect(block.hash).to.not.equal(testDataHash);
-        expect(block._nonce).to.not.equal(testNonce);
-      }
+      expect(block.hash).to.equal(originalHash);
+    });
+
+    it('should have different hashes for different nonces', function() {
+      block.calculateHash(0);
+      const originalHash = block.hash;
+      block.calculateHash(1);
+
+      expect(originalHash).to.not.equal(block.hash);
+    });
+
+    it('should have different hashes for different transactions', function() {
+      block.calculateHash(0);
+      const originalHash = block.hash;
+
+      const signer = signing.createPrivateKey();
+      const recipient = signing.getPublicKey(signing.createPrivateKey());
+      const amount = Math.ceil(Math.random() * 100);
+      const newTransaction = new Transaction(signer, recipient, amount);
+      block.transactions.push(newTransaction);
+
+      block.calculateHash(0);
+      expect(block.hash).to.not.equal(originalHash);
+    });
+
+    it('should have different hashes for different prev hashes', function() {
+      block.calculateHash(0);
+      const originalHash = block.hash;
+
+      block.previousHash = randomBytes(64).toString('hex');
+      block.calculateHash(0);
+
+      expect(block.hash).to.not.equal(originalHash);
     });
   });
 
   describe('Blockchain', function() {
-    const miningAddress = hash('miningAddress');
     let blockchain = null;
-    let genesisBlock = null;
-    let newBlock = null;
-    let transaction = null;
-    let timesMined = null;
 
     beforeEach(function() {
       blockchain = new Blockchain();
-      genesisBlock = blockchain.chain[0];
-      newBlock = new Block();
-      timesMined = 0;
-      transaction = new Transaction(hash('from'), hash('to'), '1.337');
     });
 
-    it('should create a blockchain with a genesis block', function() {
-      expect(genesisBlock.previousHash).to.be.null;
-      expect(genesisBlock.timestamp).is.not.null;
+    it('should have a blocks array with a genesis block', function() {
+      expect(blockchain.blocks).to.exist.and.be.an('array');
+
+      const genesis = blockchain.blocks[0];
+      expect(genesis.previousHash).to.be.null;
+      expect(genesis.transactions).to.be.an('array').and.be.empty;
     });
 
-    it('should be able to retrieve the latest block', function() {
-      expect(blockchain.getLatestBlock()).to.equal(
-        blockchain.chain[blockchain.chain.length - 1]
-      );
+    it('should have a method to get the latest block', function() {
+      expect(blockchain.getHeadBlock()).to.deep.equal(blockchain.blocks[0]);
     });
 
-    it('should be able to add pending transactions', function() {
-      blockchain.addPendingTransaction(transaction);
+    it('should be able to build a new block from transactions', function() {
+      const signer = signing.createPrivateKey();
+      const recipient = signing.getPublicKey(signing.createPrivateKey());
+      const transaction = new Transaction(signer, recipient, 100);
+      blockchain.addBlock([transaction]);
 
-      expect(blockchain.pendingTransactions).to.have.lengthOf(1);
-    });
-
-    it('should be able to mine pending transactions', function() {
-      blockchain.minePendingTransactions(miningAddress);
-      timesMined++;
-
-      expect(blockchain.chain).to.have.lengthOf(2);
-      expect(blockchain.pendingTransactions).to.have.lengthOf(0);
+      expect(blockchain.blocks).to.have.lengthOf(2);
+      expect(blockchain.getHeadBlock().transactions)
+        .to.deep.equal([transaction]);
     });
 
     it('should be able to get balance for an address', function() {
-      const addressBalance = blockchain.getBalanceOfAddress(miningAddress);
+      const signer = signing.createPrivateKey();
+      const recipient = signing.getPublicKey(signing.createPrivateKey());
+      const transaction = new Transaction(signer, recipient, 100);
+      blockchain.addBlock([transaction]);
 
-      expect(addressBalance).to.equal(blockchain.miningReward * timesMined);
+      expect(blockchain.getBalance(recipient)).to.equal(100);
+      expect(blockchain.getBalance(signing.getPublicKey(signer)))
+        .to.equal(-100);
     });
 
-    it('should create a valid blockchain', function() {
-      expect(blockchain.isValidChain()).to.be.true;
+    it('should return a balance of zero for an unknown address', function() {
+      const unknown = signing.getPublicKey(signing.createPrivateKey());
+      expect(blockchain.getBalance(unknown)).to.equal(0);
     });
   });
 });
