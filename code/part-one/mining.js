@@ -88,8 +88,48 @@ class MineableChain extends Blockchain {
   }
 }
 
+const isValidMineableChain = blockchain => {
+  const zeros = '0'.repeat(blockchain.difficulty);
+  const { blocks } = blockchain;
+
+  if (blocks.slice(1).some(b => b.hash.slice(0, zeros.length) !== zeros)) {
+    return false;
+  }
+
+  const balances = {};
+
+  for (const { transactions } of blocks) {
+    const rewards = transactions.filter(t => !t.source);
+
+    if (rewards.length > 1) {
+      return false;
+    }
+
+    if (rewards[0] && rewards[0].amount !== blockchain.reward) {
+      return false;
+    }
+
+    for (const { source, recipient, amount } of transactions) {
+      if (source) {
+        balances[source] = balances[source] || 0;
+        balances[source] = balances[source] - amount;
+
+        if (balances[source] < 0) {
+          return false;
+        }
+      }
+
+      balances[recipient] = balances[recipient] || 0;
+      balances[recipient] = balances[recipient] + amount;
+    }
+  }
+
+  return true;
+};
+
 module.exports = {
   MineableTransaction,
   MineableBlock,
-  MineableChain
+  MineableChain,
+  isValidMineableChain
 };
