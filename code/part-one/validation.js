@@ -27,11 +27,28 @@ const isValidBlock = block => {
 };
 
 const isValidChain = blockchain => {
+  const { blocks } = blockchain;
 
+  if (blocks[0].previousHash !== null) {
+    return false;
+  }
+
+  if (blocks.slice(1).some((b, i) => b.previousHash !== blocks[i].hash)) {
+    return false;
+  }
+
+  if (blocks.some(b => !isValidBlock(b))) {
+    return false;
+  }
+
+  return blocks
+    .map(b => b.transactions)
+    .reduce((flat, txns) => flat.concat(txns), [])
+    .every(isValidTransaction);
 };
 
 const breakChain = blockchain => {
-
+  blockchain.blocks[1].transactions[0].amount = 1000000000;
 };
 
 module.exports = {
