@@ -48,7 +48,7 @@ export class Collection extends React.Component {
     if (!collection) {
       return (
         <div>
-          We can't find anything for a collection at <code>{publicKey}</code>!
+          We can't find a collection for public key <code>{publicKey}</code>!
         </div>
       );
     }

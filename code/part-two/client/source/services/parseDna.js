@@ -63,7 +63,7 @@ const PARTS = Object.keys(definitions).reduce((parts, type) => {
     return emptyArray(count).map(() => [part, tags]);
   }).reduce(flatten, []);
 
-    return parts;
+  return parts;
 }, {});
 
 // Converts a hexadecimal string into an array of integers
