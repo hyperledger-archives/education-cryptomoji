@@ -111,4 +111,66 @@ describe('Validation module', function() {
       expect(validation.isValidBlock(block)).to.be.false;
     });
   });
+
+  describe('isValidChain', function() {
+    let blockchain = null;
+
+    beforeEach(function() {
+      blockchain = new Blockchain();
+      blockchain.addBlock([ makeRandomTransaction() ]);
+      blockchain.addBlock([ makeRandomTransaction() ]);
+      blockchain.addBlock([ makeRandomTransaction() ]);
+    });
+
+    it('should return true for a valid blockchain', function() {
+      expect(validation.isValidChain(blockchain)).to.be.true;
+    });
+
+    it('should return false when a block is removed', function() {
+      blockchain.blocks.splice(1, 1);
+      expect(validation.isValidChain(blockchain)).to.be.false;
+    });
+
+    it('should return false when the genesis block is removed', function() {
+      blockchain.blocks.shift();
+      expect(validation.isValidChain(blockchain)).to.be.false;
+    });
+
+    it('should return false when a new block is inserted', function() {
+      const transactions = [ makeRandomTransaction() ];
+      const previousHash = blockchain.blocks[1].hash;
+      const block = new Block(transactions, previousHash);
+      blockchain.blocks.splice(2, 0, block);
+
+      expect(validation.isValidChain(blockchain)).to.be.false;
+    });
+
+    it('should return false when a block is modified', function() {
+      const block = blockchain.blocks[2];
+      block.nonce = block.nonce + 1;
+      expect(validation.isValidChain(blockchain)).to.be.false;
+    });
+
+    it('should return false when a transaction is modified', function() {
+      const transaction = blockchain.blocks[1].transactions[0];
+      transaction.amount = transaction.amount + 1;
+      expect(validation.isValidChain(blockchain)).to.be.false;
+    });
+  });
+
+  describe('breakChain', function() {
+    let blockchain = null;
+
+    beforeEach(function() {
+      blockchain = new Blockchain();
+      blockchain.addBlock([ makeRandomTransaction() ]);
+      blockchain.addBlock([ makeRandomTransaction() ]);
+      blockchain.addBlock([ makeRandomTransaction() ]);
+    });
+
+    it('should invalidate a valid blockchain', function() {
+      validation.breakChain(blockchain);
+      expect(validation.isValidChain(blockchain)).to.be.false;
+    });
+  });
 });
