@@ -6,7 +6,8 @@ const signing = require('../signing');
 const {
   MineableTransaction,
   MineableBlock,
-  MineableChain
+  MineableChain,
+  isValidMineableChain
 } = require('../mining');
 
 
@@ -146,6 +147,57 @@ describe('Mining module', function() {
 
       const head = blockchain.getHeadBlock();
       expect(head.transactions).to.not.deep.include(transaction);
+    });
+  });
+
+  describe('isValidMineableChain', function() {
+    let blockchain = null;
+    let reward = null;
+    let miner = null;
+    let recipient = null;
+
+    beforeEach(function() {
+      blockchain = new MineableChain();
+      reward = blockchain.reward;
+      miner = signing.createPrivateKey();
+      recipient = signing.getPublicKey(signing.createPrivateKey());
+
+      const empty = new MineableTransaction(miner, recipient, 0);
+      blockchain.addTransaction(empty);
+      blockchain.mine(miner);
+
+      const transfer = new MineableTransaction(miner, recipient, reward);
+      blockchain.addTransaction(transfer);
+      blockchain.mine(miner);
+    });
+
+    it('should return true for a valid blockchain', function() {
+      expect(isValidMineableChain(blockchain)).to.be.true;
+    });
+
+    it('should return false with an unmined block', function() {
+      const valid = new MineableTransaction(miner, recipient, reward);
+      const block = new MineableBlock([valid], blockchain.getHeadBlock().hash);
+      block.calculateHash(0);
+      blockchain.blocks.push(block);
+
+      expect(isValidMineableChain(blockchain)).to.be.false;
+    });
+
+    it('should return false with an extra reward transaction', function() {
+      const fraud = new MineableTransaction(miner, null, reward);
+      blockchain.addTransaction(fraud);
+      blockchain.mine(miner);
+
+      expect(isValidMineableChain(blockchain)).to.be.false;
+    });
+
+    it('should return false with a negative balance', function() {
+      const invalid = new MineableTransaction(miner, recipient, reward * 10);
+      blockchain.addTransaction(invalid);
+      blockchain.mine(miner);
+
+      expect(isValidMineableChain(blockchain)).to.be.false;
     });
   });
 });
