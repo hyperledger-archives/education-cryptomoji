@@ -1,9 +1,9 @@
 'use strict';
 
-const { createHash } = require('crypto');
 const { TransactionHandler } = require('sawtooth-sdk/processor/handler');
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } = require('./services/constants');
-const { decode, reject } = require('./services/helpers');
+const { decode } = require('./services/helpers');
 
 const createCollection = require('./actions/create_collection');
 const selectSire = require('./actions/select_sire');
@@ -21,11 +21,17 @@ class MojiHandler extends TransactionHandler {
   }
 
   apply (txn, context) {
+    // The Sawtooth SDK currently breaks if an error is thrown in this method,
+    // including an InvalidTransaction. This will be fixed in version 1.0.5,
+    // but for now, wrap everything in a try/catch and return rejected promise.
+    // Not indenting to avoid a giant git diff later.
+    try {
+
     let payload = null;
     try {
       payload = decode(txn.payload);
     } catch (err) {
-      return reject('Failed to decode payload:', err);
+      throw new InvalidTransaction('Failed to decode payload: ' + err);
     }
 
     const action = payload.action;
@@ -46,8 +52,13 @@ class MojiHandler extends TransactionHandler {
     } else if (action === 'ACCEPT_RESPONSE') {
       return acceptResponse(context, publicKey, payload);
     } else {
-      return reject('Unknown action:', action);
+      throw new InvalidTransaction('Unknown action: ' + action);
     }
+
+    } catch (err) {
+      return new Promise((_, reject) => reject(err))
+    }
+    // ^^^^^ End of workaround try/catch ^^^^^
   }
 }
 

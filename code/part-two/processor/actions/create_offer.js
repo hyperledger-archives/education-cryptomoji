@@ -1,17 +1,21 @@
 'use strict';
 
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const getAddress = require('../services/addressing');
-const { decode, encode, reject } = require('../services/helpers');
+const { decode, encode } = require('../services/helpers');
 
+
+// A quick convenience function to throw an error with a joined message
+const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
 const createOffer = (context, publicKey, { moji }) => {
   if (!moji || moji.length === 0) {
-    return reject('No moji specified');
+    reject('No moji specified');
   }
 
   for (let mojiAddress of moji) {
     if (!getAddress.isValid(mojiAddress)) {
-      return reject('Moji address must be a 70-char hex string:', mojiAddress);
+      reject('Moji address must be a 70-char hex string:', mojiAddress);
     }
   }
 
@@ -23,11 +27,11 @@ const createOffer = (context, publicKey, { moji }) => {
   return context.getState(moji.concat(owner, offer, listing))
     .then(state => {
       if (state[offer].length !== 0) {
-        return reject('An offer for these moji already exists:', offer);
+        reject('An offer for these moji already exists:', offer);
       }
 
       if (state[owner].length === 0) {
-        return reject('Signer must have a collection:', publicKey);
+        reject('Signer must have a collection:', publicKey);
       }
 
       const sire = state[listing].length !== 0
@@ -36,15 +40,15 @@ const createOffer = (context, publicKey, { moji }) => {
 
       for (let mojiAddress of moji) {
         if (state[mojiAddress].length === 0) {
-          return reject('Specified moji does not exist:', mojiAddress);
+          reject('Specified moji does not exist:', mojiAddress);
         }
 
         if (decode(state[mojiAddress]).owner !== publicKey) {
-          return reject('Specified moji not owned by signer:', mojiAddress);
+          reject('Specified moji not owned by signer:', mojiAddress);
         }
 
         if (sire && mojiAddress === sire) {
-          return reject('Specified moji listed as a sire:', mojiAddress);
+          reject('Specified moji listed as a sire:', mojiAddress);
         }
       }
 

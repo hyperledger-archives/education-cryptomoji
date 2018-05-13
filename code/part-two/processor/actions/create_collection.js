@@ -1,8 +1,13 @@
 'use strict';
 
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const getAddress = require('../services/addressing');
 const { NEW_MOJI_COUNT, DNA_LENGTH, GENE_SIZE } = require('../services/constants');
-const { hash, encode, reject, getPrng } = require('../services/helpers');
+const { hash, encode, getPrng } = require('../services/helpers');
+
+
+// A quick convenience function to throw an error with a joined message
+const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
 const emptyArray = size => Array.apply(null, Array(size));
 
@@ -31,7 +36,7 @@ const createCollection = (context, publicKey, signature) => {
   return context.getState([ address ])
     .then(state => {
       if (state[address].length > 0) {
-        return reject('Collection already exists with key:', publicKey);
+        reject('Collection already exists with key:', publicKey);
       }
 
       const updates = {};

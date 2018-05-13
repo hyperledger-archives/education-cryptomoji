@@ -1,8 +1,12 @@
 'use strict';
 
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const getAddress = require('../services/addressing');
-const { decode, encode, reject } = require('../services/helpers');
+const { decode, encode } = require('../services/helpers');
 
+
+// A quick convenience function to throw an error with a joined message
+const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
 const swapMoji = (ownerBytes, toRemove, toAdd) => {
   const owner = decode(ownerBytes);
@@ -24,11 +28,11 @@ const getMojiUpdate = (state, moji, newOwner) => {
 
 const acceptResponse = (context, publicKey, { offer, response }) => {
   if (!offer) {
-    return reject('No offer address specified');
+    reject('No offer address specified');
   }
 
   if (!response && response !== 0) {
-    return reject('No response index specified');
+    reject('No response index specified');
   }
 
   let state = null;
@@ -42,18 +46,18 @@ const acceptResponse = (context, publicKey, { offer, response }) => {
       state = newState;
 
       if (state[offer].length === 0) {
-        return reject('Specified offer does not exist:', offer);
+        reject('Specified offer does not exist:', offer);
       }
 
       const decodedOffer = decode(state[offer]);
       const decodedResponse = decodedOffer.responses[response];
 
       if (!decodedResponse) {
-        return reject('There is no response at the index specified:', response);
+        reject('There is no response at the index specified:', response);
       }
 
       if (publicKey !== decodedResponse.approver) {
-        return reject('Signer is not approver for this response:', publicKey);
+        reject('Signer is not approver for this response:', publicKey);
       }
 
       owner = getAddress.collection(decodedOffer.owner);
@@ -67,7 +71,7 @@ const acceptResponse = (context, publicKey, { offer, response }) => {
 
       for (let moji of responderMoji) {
         if (state[moji].length === 0) {
-          return reject('Response is no longer valid, moji has moved:', moji);
+          reject('Response is no longer valid, moji has moved:', moji);
         }
       }
 
