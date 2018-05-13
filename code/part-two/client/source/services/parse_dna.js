@@ -1,16 +1,19 @@
 // Imports a JSON object with a listing of parts,
 // including a count of their appearances.
 //
-// Follows this format:
+// The definitions object this format:
 // {
 //   mouths: {
-//     <part>: {
+//     <part string>: {
 //       count: <number>,
-//       tags: [ <tags> ]
+//       tags: [ <tag stings> ]
 //     },
+//
 //     ...
 //   },
+//
 //   eyes: { ... },
+//
 //   ...
 // }
 import definitions from './part_definitions.json';
@@ -174,10 +177,15 @@ const combineParts = parts => {
 };
 
 /**
- * Takes a hexadecimal DNA string and parses it into an object
+ * Takes a 36 character hexadecimal DNA string and returns an object
  * with two keys:
  *   - view: a string, the actual characters of the moji to display
  *   - tags: an array of strings, tags associated with this moji
+ *
+ * Example:
+ *   const moji = parseDna('ad41bd46798e8fc24aa33c29b564ba3a644e');
+ *   console.log(moji.view)  // '٩( * ᵒ⌄ ᵒ ꐐ * )۶'
+ *   console.log(moji.tags)  // [ 'happy', 'bear', 'sad' ]
  */
 export const parseDna = dna => {
   const dnaArray = hexToInts(dna);
