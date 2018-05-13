@@ -89,7 +89,7 @@ export const getOfferAddress = (ownerKey = null, moji = null) => {
       return addressOrDna;
     }
 
-    return getMojiAddress(publicKey, addressOrDna);
+    return getMojiAddress(ownerKey, addressOrDna);
   });
 
   return collectionPrefix + hash(addresses.join(''), 54);
