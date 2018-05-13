@@ -9,6 +9,11 @@ const signing = require('./signing');
  * amounts, were improperly signed, or that have been modified since signing.
  */
 const isValidTransaction = transaction => {
+  /* START PROBLEM
+  // Enter your solution here
+
+  END PROBLEM */
+  // START SOLUTION
   if (transaction.amount < 0) {
     return false;
   }
@@ -18,6 +23,7 @@ const isValidTransaction = transaction => {
     + transaction.amount;
 
   return signing.verify(transaction.source, toSign, transaction.signature);
+  // END SOLUTION
 };
 
 /**
@@ -26,6 +32,11 @@ const isValidTransaction = transaction => {
  * or if they contain any invalid transactions.
  */
 const isValidBlock = block => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   const transactionString = block.transactions.map(t => t.signature).join('');
   const toHash = block.previousHash + transactionString + block.nonce;
 
@@ -34,6 +45,7 @@ const isValidBlock = block => {
   }
 
   return block.transactions.every(isValidTransaction);
+  // END SOLUTION
 };
 
 /**
@@ -48,6 +60,11 @@ const isValidBlock = block => {
  *   - contains any invalid transactions
  */
 const isValidChain = blockchain => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   const { blocks } = blockchain;
 
   if (blocks[0].previousHash !== null) {
@@ -66,6 +83,7 @@ const isValidChain = blockchain => {
     .map(b => b.transactions)
     .reduce((flat, txns) => flat.concat(txns), [])
     .every(isValidTransaction);
+  // END SOLUTION
 };
 
 /**
@@ -74,7 +92,13 @@ const isValidChain = blockchain => {
  * (in theory) make the blockchain fail later validation checks;
  */
 const breakChain = blockchain => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   blockchain.blocks[1].transactions[0].amount = 1000000000;
+  // END SOLUTION
 };
 
 module.exports = {
