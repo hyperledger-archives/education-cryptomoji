@@ -5,7 +5,18 @@ const signing = require('./signing');
 const { Block, Blockchain } = require('./blockchain');
 
 
+/**
+ * A slightly modified version of a transaction. It should work mostly the
+ * the same as the non-mineable version, but now recipient is optional,
+ * allowing the creation of transactions that will reward miners by creating
+ * new amounts for their balances.
+ */
 class MineableTransaction {
+  /**
+   * If recipient is omitted, the _source_ for this transaction should be
+   * `null`, while the _recipient_ becomes the public key of the signer.
+   * We're creating something out of nothing.
+   */
   constructor(privateKey, recipient = null, amount) {
     const publicKey = signing.getPublicKey(privateKey);
     this.amount = amount;
@@ -23,16 +34,16 @@ class MineableTransaction {
   }
 }
 
+/**
+ * Almost identical to the non-mineable block. In fact, we'll extend it
+ * so we can reuse the calculateHash method.
+ */
 class MineableBlock extends Block {
-  /*
-    Initialize the block constructor
-
-    **Note**
-    The block should be initiated with
-      - a timestamp
-      - transactions
-      - the previous block's hash
-  */
+  /**
+   * Unlike the non-mineable block, when this one is initialized, we want the
+   * hash and nonce to not be set. This Block starts invalid, and will
+   * become valid after it is mined.
+   */
   constructor(transactions, previousHash) {
     super(transactions, previousHash);
     this.hash = '';
@@ -40,7 +51,28 @@ class MineableBlock extends Block {
   }
 }
 
+/**
+ * The new mineable chain is a major update to our old Blockchain. We'll
+ * extend it so we can use some of its methods, but it's going to look
+ * very different when we're done.
+ */
 class MineableChain extends Blockchain {
+  /**
+   * In addition initializing a blocks array with a genesis block, this will
+   * store hard coded difficulty and reward properties. These are settings
+   * used by the mining method.
+   *
+   * Properties:
+   *   - blocks: an array of mineable blocks
+   *   - difficulty: a number, how many hex digits must be zeroed out for a
+   *     hash to be valid, this will increase mining time exponentially, so
+   *     probably best to set it pretty low (like 2 or 3)
+   *   - reward: a number, how much to award the miner of each new block
+   *
+   * Hint:
+   *   You'll also need some sort of property to store pending transactions.
+   *   This will only be used internally.
+   */
   constructor() {
     super();
     const genesis = new MineableBlock([], null);
@@ -52,23 +84,35 @@ class MineableChain extends Blockchain {
     this._pending = [];
   }
 
+  /**
+   * No more adding blocks directly.
+   */
   addBlock() {
     throw new Error('Must mine to add blocks to this blockchain');
   }
 
+  /**
+   * Instead of blocks, we add pending transactions. This method should take a
+   * mineable transaction and store it until it can be mined.
+   */
   addTransaction(transaction) {
     this._pending.push(transaction);
   }
 
-  /*
-    Add a new block to the blockchain based on pending transactions:
-
-    Create function that:
-      - Adds previousHash property to new block
-      - Create hash (or mine block)
-      - Adds block to the chain
-      - Creates new pending transaction for mining reward
-  */
+  /**
+   * This method takes a private key, and uses it to create a new transaction
+   * rewarding the owner of the key. This transaction should be combined with
+   * the pending transactions and included in a new block on the chain.
+   *
+   * Note:
+   *   Only certain hashes are valid for blocks now! In order for a block to be
+   *   valid it must have a hash that starts with as many zeros as the
+   *   the blockchain's difficulty. You'll have to keep trying nonces until you
+   *   find one that works!
+   *
+   * Hint:
+   *   Don't forget to clear your pending transactions after you're done.
+   */
   mine(privateKey) {
     const reward = new MineableTransaction(privateKey, null, this.reward);
     const pendingTransactions = this._pending.concat(reward);
@@ -88,10 +132,26 @@ class MineableChain extends Blockchain {
   }
 }
 
+/**
+ * A new validation function for our mineable blockchains. Forget about all the
+ * signature and hash validation we did before. Our old validation functions
+ * may not work right, but rewriting them would be a very dull experience.
+ *
+ * Instead, this function will make a few brand new checks. It should reject
+ * a blockchain with:
+ *   - any hash other than genesis's that doesn't start with the right
+ *     number of zeros
+ *   - any block that has more than one transaction with a null source
+ *   - any transaction with a null source that has an amount different
+ *     than the reward
+ *   - any public key that ever goes into a negative balance by sending
+ *     funds they don't have
+ */
 const isValidMineableChain = blockchain => {
   const zeros = '0'.repeat(blockchain.difficulty);
   const { blocks } = blockchain;
 
+  // All blocks other than genesis begin with the right number of zeros
   if (blocks.slice(1).some(b => b.hash.slice(0, zeros.length) !== zeros)) {
     return false;
   }
@@ -101,14 +161,17 @@ const isValidMineableChain = blockchain => {
   for (const { transactions } of blocks) {
     const rewards = transactions.filter(t => !t.source);
 
+    // The block has no more than one reward transaction
     if (rewards.length > 1) {
       return false;
     }
 
+    // If present, the reward transaction has the correct amount
     if (rewards[0] && rewards[0].amount !== blockchain.reward) {
       return false;
     }
 
+    // Each transaction only withdraws from keys with enough funds
     for (const { source, recipient, amount } of transactions) {
       if (source) {
         balances[source] = balances[source] || 0;
