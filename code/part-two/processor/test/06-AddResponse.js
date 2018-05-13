@@ -4,7 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getOfferAddress
+} = require('./services/addressing');
 const { decode } = require('../services/helpers');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
@@ -35,14 +38,14 @@ describe('Add Response', function() {
 
     return handler.apply(responderTxn, context)
       .then(() => {
-        const address = getAddress.collection(responderPub);
+        const address = getCollectionAddress(responderPub);
         moji = decode(context._state[address]).moji.sort();
         return handler.apply(ownerTxn, context);
       })
       .then(() => {
-        const ownerAddress = getAddress.collection(ownerPub);
+        const ownerAddress = getCollectionAddress(ownerPub);
         const { moji } = decode(context._state[ownerAddress]);
-        offer = getAddress.offer(ownerTxn._publicKey)(moji);
+        offer = getOfferAddress(ownerTxn._publicKey, moji);
 
         const offerTxn = new Txn({ action: 'CREATE_OFFER', moji }, ownerPriv);
         return handler.apply(offerTxn, context);
@@ -142,7 +145,7 @@ describe('Add Response', function() {
   });
 
   it('should reject public keys with no Collection', function() {
-    delete context._state[getAddress.collection(responderPub)];
+    delete context._state[getCollectionAddress(responderPub)];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
 
     return handler.apply(txn, context)
@@ -241,7 +244,7 @@ describe('Add Response', function() {
   });
 
   it("should reject a response with offer owner's moji", function() {
-    const { moji } = decode(context._state[getAddress.collection(ownerPub)]);
+    const { moji } = decode(context._state[getCollectionAddress(ownerPub)]);
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, ownerPriv);
 
     return handler.apply(txn, context)
@@ -264,7 +267,7 @@ describe('Add Response', function() {
 
     return handler.apply(fraudTxn, context)
       .then(() => {
-        const fraud = decode(context._state[getAddress.collection(fraudPub)]);
+        const fraud = decode(context._state[getCollectionAddress(fraudPub)]);
         moji = fraud.moji.slice(0, 2).concat(moji.slice(0, 1));
         const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, fraudPriv);
         return handler.apply(txn, context);

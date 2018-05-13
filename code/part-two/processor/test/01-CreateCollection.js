@@ -4,10 +4,14 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getMojiAddress
+} = require('./services/addressing');
 const { hash, decode } = require('../services/helpers');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
+
 
 describe('Create Collection', function() {
   let handler = null;
@@ -24,7 +28,7 @@ describe('Create Collection', function() {
     context = new Context();
     txn = new Txn({ action: 'CREATE_COLLECTION' });
     publicKey = txn._publicKey;
-    address = getAddress.collection(publicKey);
+    address = getCollectionAddress(publicKey);
   });
 
   it('should create a Collection at the correct address', function() {
@@ -56,7 +60,7 @@ describe('Create Collection', function() {
         expect(moji.dna, 'Moji DNA should be 36 hex characters')
           .to.match(/^[0-9a-f]{36}$/);
         expect(mojiAddress, 'Moji address match address generated from DNA')
-          .to.equal(getAddress.moji(publicKey)(moji.dna));
+          .to.equal(getMojiAddress(publicKey, moji.dna));
       });
   });
 

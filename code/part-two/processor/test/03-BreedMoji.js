@@ -4,7 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getSireAddress
+} = require('./services/addressing');
 const { decode } = require('../services/helpers');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
@@ -35,8 +38,8 @@ describe('Breed Moji', function() {
       handler.apply(breederOwnerTxn, context)
     ])
       .then(() => {
-        const sireOwnerAddress = getAddress.collection(sireOwnerKey);
-        const breederOwnerAddress = getAddress.collection(publicKey);
+        const sireOwnerAddress = getCollectionAddress(sireOwnerKey);
+        const breederOwnerAddress = getCollectionAddress(publicKey);
 
         sire = decode(context._state[sireOwnerAddress]).moji[0];
         breeder = decode(context._state[breederOwnerAddress]).moji[0];
@@ -52,7 +55,7 @@ describe('Breed Moji', function() {
 
     return handler.apply(txn, context)
       .then(() => {
-        const owner = decode(context._state[getAddress.collection(publicKey)]);
+        const owner = decode(context._state[getCollectionAddress(publicKey)]);
         expect(owner.moji, 'Owner should have four cryptomoji')
           .to.have.lengthOf(4);
 
@@ -94,7 +97,7 @@ describe('Breed Moji', function() {
   });
 
   it('should reject public keys with no Collection', function() {
-    delete context._state[getAddress.collection(publicKey)];
+    delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'BREED_MOJI', sire, breeder }, privateKey);
 
     return handler.apply(txn, context)
@@ -119,7 +122,7 @@ describe('Breed Moji', function() {
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        const owner = decode(context._state[getAddress.collection(publicKey)]);
+        const owner = decode(context._state[getCollectionAddress(publicKey)]);
         expect(owner.moji, 'Owner should still have just three cryptomoji')
           .to.have.lengthOf(3);
       });
@@ -137,7 +140,7 @@ describe('Breed Moji', function() {
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        const owner = decode(context._state[getAddress.collection(publicKey)]);
+        const owner = decode(context._state[getCollectionAddress(publicKey)]);
         expect(owner.moji, 'Owner should still have just three cryptomoji')
           .to.have.lengthOf(3);
       });
@@ -154,7 +157,7 @@ describe('Breed Moji', function() {
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        const owner = decode(context._state[getAddress.collection(publicKey)]);
+        const owner = decode(context._state[getCollectionAddress(publicKey)]);
         expect(owner.moji, 'Owner should still have just three cryptomoji')
           .to.have.lengthOf(3);
       });
@@ -172,14 +175,14 @@ describe('Breed Moji', function() {
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        const owner = decode(context._state[getAddress.collection(publicKey)]);
+        const owner = decode(context._state[getCollectionAddress(publicKey)]);
         expect(owner.moji, 'Owner should still have just three cryptomoji')
           .to.have.lengthOf(3);
       });
   });
 
   it('should reject sires when there is no listing', function() {
-    delete context._state[getAddress.sireListing(sireOwnerKey)];
+    delete context._state[getSireAddress(sireOwnerKey)];
     const txn = new Txn({ action: 'BREED_MOJI', sire, breeder }, privateKey);
 
     return handler.apply(txn, context)
@@ -190,14 +193,14 @@ describe('Breed Moji', function() {
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        const owner = decode(context._state[getAddress.collection(publicKey)]);
+        const owner = decode(context._state[getCollectionAddress(publicKey)]);
         expect(owner.moji, 'Owner should still have just three cryptomoji')
           .to.have.lengthOf(3);
       });
   });
 
   it('should reject sires when another moji is listed', function() {
-    const ownerAddress = getAddress.collection(sireOwnerKey);
+    const ownerAddress = getCollectionAddress(sireOwnerKey);
     const sire = decode(context._state[ownerAddress]).moji[1];
     const txn = new Txn({ action: 'BREED_MOJI', sire, breeder }, privateKey);
 
@@ -209,14 +212,14 @@ describe('Breed Moji', function() {
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        const owner = decode(context._state[getAddress.collection(publicKey)]);
+        const owner = decode(context._state[getCollectionAddress(publicKey)]);
         expect(owner.moji, 'Owner should still have just three cryptomoji')
           .to.have.lengthOf(3);
       });
   });
 
   it('should reject breeders not owned by the signer', function() {
-    const sireOwnerAddress = getAddress.collection(sireOwnerKey);
+    const sireOwnerAddress = getCollectionAddress(sireOwnerKey);
     const sireOwner = decode(context._state[sireOwnerAddress]);
     const breeder = sireOwner.moji[1];
     const txn = new Txn({ action: 'BREED_MOJI', sire, breeder }, privateKey);
@@ -229,7 +232,7 @@ describe('Breed Moji', function() {
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        const owner = decode(context._state[getAddress.collection(publicKey)]);
+        const owner = decode(context._state[getCollectionAddress(publicKey)]);
         expect(owner.moji, 'Owner should still have just three cryptomoji')
           .to.have.lengthOf(3);
       });
