@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { getMoji } from './services/requests';
-import { parseDna } from './services/parseDna';
+import { parseDna } from './services/parse_dna';
 
 export class MojiItem extends React.Component {
   constructor(props) {
