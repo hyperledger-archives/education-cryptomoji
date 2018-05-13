@@ -5,12 +5,17 @@ import {
   BatchHeader,
   BatchList
 } from 'sawtooth-sdk/protobuf';
-
-import { hash } from '../utils/helpers';
-import { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } from '../utils/constants';
+import { createHash } from 'crypto';
 import { getPublicKey, sign } from './signing.js';
 import { encode } from './encoding.js';
 
+
+const FAMILY_NAME = 'cryptomoji';
+const FAMILY_VERSION = '0.1';
+const NAMESPACE = '5f4d76';
+
+// Takes a string and returns a hex-string SHA-512 hash
+const hash = str => createHash('sha512').update(str).digest('hex');
 
 // Returns a random 1-12 character string
 const getNonce = () => (Math.random() * 10 ** 18).toString(36);

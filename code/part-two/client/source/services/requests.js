@@ -1,12 +1,13 @@
 import axios from 'axios';
 
-import { MAX_HTTP_REQUESTS, NAMESPACE } from '../utils/constants';
 import { decode } from './encoding.js';
 import { encodeAll } from './transactions.js';
 import * as addressing from './addressing.js';
 
 
+const NAMESPACE = '5f4d76';
 const ADDRESS_LENGTH = 70;
+const MAX_HTTP_REQUESTS = 10;
 
 // Takes a full 70 character address, and fetches an entity from state.
 // Adds the address and resource type to the entity.
