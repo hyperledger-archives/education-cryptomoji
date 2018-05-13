@@ -1,25 +1,29 @@
 'use strict';
 
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const getAddress = require('../services/addressing');
-const { decode, encode, reject } = require('../services/helpers');
+const { decode, encode } = require('../services/helpers');
 
+
+// A quick convenience function to throw an error with a joined message
+const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
 const addResponse = (context, publicKey, { moji, offer }) => {
   if (!moji || moji.length === 0) {
-    return reject('No moji specified');
+    reject('No moji specified');
   }
 
   for (let mojiAddress of moji) {
     if (!getAddress.isValid(mojiAddress)) {
-      return reject('Moji address must be a 70-char hex string:', mojiAddress);
+      reject('Moji address must be a 70-char hex string:', mojiAddress);
     }
   }
 
   if (!offer) {
-    return reject('No offer specified');
+    reject('No offer specified');
   }
   if (!getAddress.isValid(offer)) {
-    return reject('Offer address must be a 70-char hex string:', offer);
+    reject('Offer address must be a 70-char hex string:', offer);
   }
 
   const signer = getAddress.collection(publicKey);
@@ -27,16 +31,16 @@ const addResponse = (context, publicKey, { moji, offer }) => {
   return context.getState(moji.concat(signer, offer))
     .then(state => {
       if (state[signer].length === 0) {
-        return reject('Signer does not have a collection:', publicKey);
+        reject('Signer does not have a collection:', publicKey);
       }
 
       if (state[offer].length === 0) {
-        return reject('Specified offer does not exist:', offer);
+        reject('Specified offer does not exist:', offer);
       }
 
       for (let mojiAddress of moji) {
         if (state[mojiAddress].length === 0) {
-          return reject('Specified moji does not exist:', mojiAddress);
+          reject('Specified moji does not exist:', mojiAddress);
         }
       }
 
@@ -48,7 +52,7 @@ const addResponse = (context, publicKey, { moji, offer }) => {
           && response.moji.every((m, i) => m === moji[i]);
 
         if (responseExists) {
-          return reject('A response already exists for moji:', moji.join(', '));
+          reject('A response already exists for moji:', moji.join(', '));
         }
       }
 
@@ -58,8 +62,7 @@ const addResponse = (context, publicKey, { moji, offer }) => {
       });
 
       if (decodedOffer.owner === decodedMoji[0].owner) {
-        const message = 'Response moji and offer have same owner:';
-        return reject(message, decodedOffer.owner);
+        reject('Response moji and offer have same owner:', decodedOffer.owner);
       }
 
       const approver = signerIsOwner
@@ -68,11 +71,11 @@ const addResponse = (context, publicKey, { moji, offer }) => {
 
       for (let moji of decodedMoji) {
         if (signerIsOwner && moji.owner !== approver) {
-          return reject('Moji must share owner with others:', moji.address);
+          reject('Moji must share owner with others:', moji.address);
         }
 
         if (!signerIsOwner && moji.owner !== publicKey) {
-          return reject('Signer must own specified moji:', moji.address);
+          reject('Signer must own specified moji:', moji.address);
         }
       }
 
@@ -86,7 +89,7 @@ const addResponse = (context, publicKey, { moji, offer }) => {
 
             for (let offered of moji) {
               if (offered === sire) {
-                return reject('Specified moji listed as a sire:', offered);
+                reject('Specified moji listed as a sire:', offered);
               }
             }
           }

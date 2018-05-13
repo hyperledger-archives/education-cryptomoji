@@ -1,9 +1,13 @@
 'use strict';
 
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const getAddress = require('../services/addressing');
 const { DNA_BITS, AVERAGE_CHANCE, SIRE_CHANCE } = require('../services/constants');
-const { encode, decode, reject, getPrng } = require('../services/helpers');
+const { encode, decode, getPrng } = require('../services/helpers');
 
+
+// A quick convenience function to throw an error with a joined message
+const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
 const HEX_SIZE = DNA_BITS / 4;
 
@@ -36,17 +40,17 @@ const combineDna = (sire, breeder, prng) => {
 
 const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
   if (!sire) {
-    return reject('No sire specified');
+    reject('No sire specified');
   }
   if (!getAddress.isValid(sire)) {
-    return reject('Sire address must be a 70-char hex string:', sire);
+    reject('Sire address must be a 70-char hex string:', sire);
   }
 
   if (!breeder) {
-    return reject('No breeder specified');
+    reject('No breeder specified');
   }
   if (!getAddress.isValid(breeder)) {
-    return reject('Breeder address must be a 70-char hex string:', breeder);
+    reject('Breeder address must be a 70-char hex string:', breeder);
   }
 
   const owner = getAddress.collection(publicKey);
@@ -55,15 +59,15 @@ const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
   return context.getState([ owner, sire, breeder ])
     .then(state => {
       if (state[owner].length === 0) {
-        return reject('Signer must have a collection:', publicKey);
+        reject('Signer must have a collection:', publicKey);
       }
 
       if (state[sire].length === 0) {
-        return reject('Specified sire does not exist:', sire);
+        reject('Specified sire does not exist:', sire);
       }
 
       if (state[breeder].length === 0) {
-        return reject('Specified breeder does not exist:', breeder);
+        reject('Specified breeder does not exist:', breeder);
       }
 
       const ownerState = decode(state[owner]);
@@ -72,7 +76,7 @@ const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
       const listing = getAddress.sireListing(sireState.owner);
 
       if (breederState.owner !== publicKey) {
-        return reject('Breeder must be owned by signer:', breeder);
+        reject('Breeder must be owned by signer:', breeder);
       }
 
       return context.getState([ listing ])
@@ -81,7 +85,7 @@ const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
             || decode(state[listing]).sire !== sire;
 
           if (isNotListed) {
-            return reject('Specified sire is not listed:', sire);
+            reject('Specified sire is not listed:', sire);
           }
 
           const dna = combineDna(sireState.dna, breederState.dna, prng);
