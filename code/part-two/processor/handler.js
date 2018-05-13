@@ -2,8 +2,8 @@
 
 const { createHash } = require('crypto');
 const { TransactionHandler } = require('sawtooth-sdk/processor/handler');
-const { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } = require('./utils/constants');
-const { decode, reject } = require('./utils/helpers');
+const { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } = require('./services/constants');
+const { decode, reject } = require('./services/helpers');
 
 const createCollection = require('./actions/create_collection');
 const selectSire = require('./actions/select_sire');

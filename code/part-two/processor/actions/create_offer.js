@@ -1,7 +1,7 @@
 'use strict';
 
-const getAddress = require('../utils/addressing');
-const { decode, encode, reject } = require('../utils/helpers');
+const getAddress = require('../services/addressing');
+const { decode, encode, reject } = require('../services/helpers');
 
 
 const createOffer = (context, publicKey, { moji }) => {

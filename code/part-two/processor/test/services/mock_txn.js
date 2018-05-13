@@ -3,8 +3,8 @@
 const { TransactionHeader } = require('sawtooth-sdk/protobuf');
 const secp256k1 = require('sawtooth-sdk/signing/secp256k1');
 const context = new secp256k1.Secp256k1Context();
-const constants = require('../../utils/constants');
-const { hash, encode } = require('../../utils/helpers');
+const constants = require('../../services/constants');
+const { hash, encode } = require('../../services/helpers');
 
 const getRandomString = () => (Math.random() * 10 ** 18).toString(36);
 

@@ -1,8 +1,8 @@
 'use strict';
 
-const getAddress = require('../utils/addressing');
-const { NEW_MOJI_COUNT, DNA_LENGTH, GENE_SIZE } = require('../utils/constants');
-const { hash, encode, reject, getPrng } = require('../utils/helpers');
+const getAddress = require('../services/addressing');
+const { NEW_MOJI_COUNT, DNA_LENGTH, GENE_SIZE } = require('../services/constants');
+const { hash, encode, reject, getPrng } = require('../services/helpers');
 
 const emptyArray = size => Array.apply(null, Array(size));
 
