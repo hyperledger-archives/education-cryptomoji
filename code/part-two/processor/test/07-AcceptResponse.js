@@ -4,7 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getOfferAddress
+} = require('./services/addressing');
 const { encode, decode } = require('../services/helpers');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
@@ -31,14 +34,14 @@ describe('Accept Response', function() {
 
     ownerPriv = ownerTxn._privateKey;
     responderPriv = responderTxn._privateKey;
-    ownerAddr = getAddress.collection(ownerTxn._publicKey);
-    responderAddr = getAddress.collection(responderTxn._publicKey);
+    ownerAddr = getCollectionAddress(ownerTxn._publicKey);
+    responderAddr = getCollectionAddress(responderTxn._publicKey);
 
     return handler.apply(responderTxn, context)
       .then(() => handler.apply(ownerTxn, context))
       .then(() => {
         const { moji } = decode(context._state[ownerAddr]);
-        offer = getAddress.offer(ownerTxn._publicKey)(moji);
+        offer = getOfferAddress(ownerTxn._publicKey, moji);
         ownerDna = moji.map(m => decode(context._state[m]).dna);
 
         const offerTxn = new Txn({ action: 'CREATE_OFFER', moji }, ownerPriv);

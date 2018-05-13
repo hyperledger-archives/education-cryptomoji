@@ -4,7 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getOfferAddress
+} = require('./services/addressing');
 const { decode } = require('../services/helpers');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
@@ -27,9 +30,9 @@ describe('Cancel Offer', function() {
     publicKey = collecTxn._publicKey;
     return handler.apply(collecTxn, context)
       .then(() => {
-        const address = getAddress.collection(publicKey);
+        const address = getCollectionAddress(publicKey);
         const moji = decode(context._state[address]).moji;
-        offer = getAddress.offer(publicKey)(moji);
+        offer = getOfferAddress(publicKey, moji);
         const offerTxn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
         return handler.apply(offerTxn, context);
       });
@@ -45,7 +48,7 @@ describe('Cancel Offer', function() {
   });
 
   it('should reject public keys with no Collection', function() {
-    delete context._state[getAddress.collection(publicKey)];
+    delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'CANCEL_OFFER', offer }, privateKey);
 
     return handler.apply(txn, context)

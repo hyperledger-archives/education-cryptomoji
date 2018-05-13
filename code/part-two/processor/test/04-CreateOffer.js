@@ -4,7 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getOfferAddress
+} = require('./services/addressing');
 const { decode } = require('../services/helpers');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
@@ -28,9 +31,9 @@ describe('Create Offer', function() {
     publicKey = createTxn._publicKey;
     return handler.apply(createTxn, context)
       .then(() => {
-        const ownerAddress = getAddress.collection(publicKey);
+        const ownerAddress = getCollectionAddress(publicKey);
         moji = decode(context._state[ownerAddress]).moji.sort();
-        address = getAddress.offer(publicKey)(moji);
+        address = getOfferAddress(publicKey, moji);
       });
   });
 
@@ -53,7 +56,7 @@ describe('Create Offer', function() {
 
   it('should create an Offer for a single moji', function() {
     moji = moji.slice(0, 1);
-    const address = getAddress.offer(publicKey)(moji);
+    const address = getOfferAddress(publicKey, moji);
     const txn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
 
     return handler.apply(txn, context)
@@ -79,7 +82,7 @@ describe('Create Offer', function() {
   });
 
   it('should reject public keys with no Collection', function() {
-    delete context._state[getAddress.collection(publicKey)];
+    delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
 
     return handler.apply(txn, context)
@@ -95,7 +98,7 @@ describe('Create Offer', function() {
   });
 
   it('should reject an Offer without any moji', function() {
-    const address = getAddress.offer(publicKey)([]);
+    const address = getOfferAddress(publicKey, []);
     const txn = new Txn({ action: 'CREATE_OFFER', moji: [] }, privateKey);
 
     return handler.apply(txn, context)
@@ -164,7 +167,7 @@ describe('Create Offer', function() {
   it('should reject public keys that do not own the moji', function() {
     const createTxn = new Txn({ action: 'CREATE_COLLECTION' });
     const privateKey = createTxn._privateKey;
-    const address = getAddress.offer(createTxn._publicKey)(moji);
+    const address = getOfferAddress(createTxn._publicKey, moji);
     const txn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
 
     return handler.apply(createTxn, context)

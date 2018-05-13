@@ -4,7 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getSireAddress
+} = require('./services/addressing');
 const { decode } = require('../services/helpers');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
@@ -26,10 +29,10 @@ describe('Select Sire', function() {
     context = new Context();
     privateKey = createTxn._privateKey;
     publicKey = createTxn._publicKey;
-    address = getAddress.sireListing(publicKey);
+    address = getSireAddress(publicKey);
     return handler.apply(createTxn, context)
       .then(() => {
-        const address = getAddress.collection(publicKey);
+        const address = getCollectionAddress(publicKey);
         sire = decode(context._state[address]).moji[0];
       });
   });
@@ -50,7 +53,7 @@ describe('Select Sire', function() {
   });
 
   it('should reject public keys with no Collection', function() {
-    delete context._state[getAddress.collection(publicKey)];
+    delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'SELECT_SIRE', sire }, privateKey);
 
     return handler.apply(txn, context)
@@ -99,7 +102,7 @@ describe('Select Sire', function() {
 
   it('should reject public keys that do not own the Sire', function() {
     const createTxn = new Txn({ action: 'CREATE_COLLECTION' });
-    const address = getAddress.sireListing(createTxn._publicKey);
+    const address = getSireAddress(createTxn._publicKey);
     const txn = new Txn({ action: 'SELECT_SIRE', sire }, createTxn._privateKey);
 
     return handler.apply(createTxn, context)
