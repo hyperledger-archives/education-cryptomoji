@@ -6,6 +6,10 @@ build/
 dist/
 bundle.js
 
+# problemify folders
+part-one-problem/
+part-one-solution/
+
 # Logs
 *.log
 
