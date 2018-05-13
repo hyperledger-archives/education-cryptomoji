@@ -21,7 +21,17 @@ const hash = str => createHash('sha512').update(str).digest('hex');
 const getNonce = () => (Math.random() * 10 ** 18).toString(36);
 
 /**
- * Takes a private key and payload and returns a Transaction instance.
+ * A function that takes a private key and a payload and returns a new
+ * signed Transaction instance.
+ *
+ * Hint:
+ *   Remember ProtobufJS has two different APIs for encoding protobufs
+ *   (which you'll use for the TransactionHeader) and for creating
+ *   protobuf instances (which you'll use for the Transaction itself):
+ *     - TransactionHeader.encode({ ... }).finish()
+ *     - Transaction.create({ ... })
+ *
+ *   Also, don't forget to encode your payload!
  */
 export const createTransaction = (privateKey, payload) => {
   const publicKey = getPublicKey(privateKey);
@@ -32,8 +42,8 @@ export const createTransaction = (privateKey, payload) => {
     batcherPublicKey: publicKey,
     familyName: FAMILY_NAME,
     familyVersion: FAMILY_VERSION,
-    inputs: [NAMESPACE],
-    outputs: [NAMESPACE],
+    inputs: [ NAMESPACE ],
+    outputs: [ NAMESPACE ],
     nonce: getNonce(),
     payloadSha512: hash(encodedPayload)
   }).finish();
@@ -46,13 +56,16 @@ export const createTransaction = (privateKey, payload) => {
 };
 
 /**
- * Takes a private key and one or more Transactions and
- * returns a Batch instance.
+ * A function that takes a private key and one or more Transaction instances
+ * and returns a signed Batch instance.
+ *
+ * Should accept both multiple transactions in an array, or just one
+ * with no array.
  */
 export const createBatch = (privateKey, transactions) => {
   const publicKey = getPublicKey(privateKey);
   if (!Array.isArray(transactions)) {
-    transactions = [transactions];
+    transactions = [ transactions ];
   }
 
   const header = BatchHeader.encode({
@@ -68,19 +81,27 @@ export const createBatch = (privateKey, transactions) => {
 };
 
 /**
- * Takes a Batch and returns an encoded BatchList for submission.
+ * A fairly simple function that takes a one or more Batch instances and
+ * returns an encoded BatchList.
+ *
+ * Although it's simple, axios has a bug when POSTing the generated Buffer,
+ * so we've implemented it for you.
  */
 export const encodeBatch = batch => {
   return BatchList.encode({ batches: [batch] }).finish();
 };
 
 /**
- * Takes a private key and one or more payloads and
- * returns an encoded BatchList for submission.
+ * A function that takes a private key and one or more payloads and returns
+ * an encoded BatchList for submission. The Transactions for each payload
+ * will be wrapped in a single Batch in a BatchList.
+ *
+ * As with the other methods, it should handle both a single payload, or
+ * multiple payloads in an array.
  */
 export const encodeAll = (privateKey, payloads) => {
   if (!Array.isArray(payloads)) {
-    payloads = [payloads];
+    payloads = [ payloads ];
   }
 
   const transactions = payloads.map(p => createTransaction(privateKey, p));
