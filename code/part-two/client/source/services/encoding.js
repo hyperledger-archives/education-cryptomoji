@@ -1,3 +1,4 @@
+// START SOLUTION
 // Maps over an array with the provided iterator function,
 // concatenating the resulting arrays
 const concatMap = (array, iterator) => {
@@ -21,6 +22,7 @@ const listKeys = object => {
   return topKeys.concat(nestedKeys);
 };
 
+// END SOLUTION
 /**
  * A function that takes an object and returns it encoded as JSON Buffer.
  *
@@ -35,8 +37,14 @@ const listKeys = object => {
  *   your object's keys or random transactions may fail.
  */
 export const encode = object => {
+  /* START PROBLEM
+  // Enter your solution here
+
+  END PROBLEM */
+  // START SOLUTION
   const sortedKeys = listKeys(object).sort();
   return Buffer.from(JSON.stringify(object, sortedKeys));
+  // END SOLUTION
 };
 
 /**
@@ -48,5 +56,11 @@ export const encode = object => {
  *   base64 string -> Buffer -> JSON string -> object
  */
 export const decode = base64Str => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   return JSON.parse(Buffer.from(base64Str, 'base64').toString());
+  // END SOLUTION
 };
