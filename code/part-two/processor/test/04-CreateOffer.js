@@ -8,7 +8,7 @@ const {
   getCollectionAddress,
   getOfferAddress
 } = require('./services/addressing');
-const { decode } = require('../services/helpers');
+const { decode } = require('./services/encoding');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
 
