@@ -14,12 +14,14 @@ const FAMILY_NAME = 'cryptomoji';
 const FAMILY_VERSION = '0.1';
 const NAMESPACE = '5f4d76';
 
+// START SOLUTION
 // Takes a string and returns a hex-string SHA-512 hash
 const hash = str => createHash('sha512').update(str).digest('hex');
 
 // Returns a random 1-12 character string
 const getNonce = () => (Math.random() * 10 ** 18).toString(36);
 
+// END SOLUTION
 /**
  * A function that takes a private key and a payload and returns a new
  * signed Transaction instance.
@@ -34,6 +36,11 @@ const getNonce = () => (Math.random() * 10 ** 18).toString(36);
  *   Also, don't forget to encode your payload!
  */
 export const createTransaction = (privateKey, payload) => {
+  /* START PROBLEM
+  // Enter your solution here
+
+  END PROBLEM */
+  // START SOLUTION
   const publicKey = getPublicKey(privateKey);
   const encodedPayload = encode(payload);
 
@@ -53,6 +60,7 @@ export const createTransaction = (privateKey, payload) => {
     headerSignature: sign(privateKey, header),
     payload: encodedPayload
   });
+  // END SOLUTION
 };
 
 /**
@@ -63,6 +71,11 @@ export const createTransaction = (privateKey, payload) => {
  * with no array.
  */
 export const createBatch = (privateKey, transactions) => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   const publicKey = getPublicKey(privateKey);
   if (!Array.isArray(transactions)) {
     transactions = [ transactions ];
@@ -78,6 +91,7 @@ export const createBatch = (privateKey, transactions) => {
     headerSignature: sign(privateKey, header),
     transactions
   });
+  // END SOLUTION
 };
 
 /**
@@ -107,6 +121,11 @@ export const encodeBatches = batches => {
  * multiple payloads in an array.
  */
 export const encodeAll = (privateKey, payloads) => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   if (!Array.isArray(payloads)) {
     payloads = [ payloads ];
   }
@@ -115,4 +134,5 @@ export const encodeAll = (privateKey, payloads) => {
   const batch = createBatch(privateKey, transactions);
 
   return encodeBatches(batch);
+  // END SOLUTION
 };

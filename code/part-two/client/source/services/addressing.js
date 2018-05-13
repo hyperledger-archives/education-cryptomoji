@@ -10,6 +10,7 @@ const TYPE_PREFIXES = {
 };
 const ADDRESS_LENGTH = 70;
 
+// START SOLUTION
 // Returns a hex-string SHA-512 hash sliced to a particular length
 const hash = (str, length) => {
   return createHash('sha512').update(str).digest('hex').slice(0, length);
@@ -29,6 +30,7 @@ export const addressToType = (address = '') => {
   return type || null;
 };
 
+// END SOLUTION
 /**
  * A function which optionally takes a public key, and returns a full or
  * partial collection address.
@@ -45,12 +47,18 @@ export const addressToType = (address = '') => {
  *   // '5f4d7600ecd7ef459ec82a01211983551c3ed82169ca5fa0703ec98e17f9b534ffb797'
  */
 export const getCollectionAddress = (publicKey = null) => {
+  /* START PROBLEM
+  // Enter your solution here
+
+  END PROBLEM */
+  // START SOLUTION
   const prefix = NAMESPACE + TYPE_PREFIXES.COLLECTION;
   if (publicKey === null) {
     return prefix;
   }
 
   return prefix + hash(publicKey, 62);
+  // END SOLUTION
 };
 
 /**
@@ -66,6 +74,11 @@ export const getCollectionAddress = (publicKey = null) => {
  *   console.log(ownerPrefix);  // '5f4d7601ecd7ef45'
  */
 export const getMojiAddress = (ownerKey = null, dna = null) => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   const typePrefix = NAMESPACE + TYPE_PREFIXES.MOJI;
   if (ownerKey === null) {
     return typePrefix;
@@ -77,6 +90,7 @@ export const getMojiAddress = (ownerKey = null, dna = null) => {
   }
 
   return collectionPrefix + hash(dna, 54);
+  // END SOLUTION
 };
 
 /**
@@ -87,12 +101,18 @@ export const getMojiAddress = (ownerKey = null, dna = null) => {
  * otherwise returns the full address.
  */
 export const getSireAddress = (ownerKey = null) => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   const prefix = NAMESPACE + TYPE_PREFIXES.SIRE_LISTING;
   if (ownerKey === null) {
     return prefix;
   }
 
   return prefix + hash(ownerKey, 62);
+  // END SOLUTION
 };
 
 /**
@@ -108,6 +128,11 @@ export const getSireAddress = (ownerKey = null) => {
  * The identifiers may be either moji dna, or moji addresses.
  */
 export const getOfferAddress = (ownerKey = null, moji = null) => {
+  /* START PROBLEM
+  // Your code here
+
+  END PROBLEM */
+  // START SOLUTION
   const typePrefix = NAMESPACE + TYPE_PREFIXES.OFFER;
   if (ownerKey === null) {
     return typePrefix;
@@ -131,4 +156,5 @@ export const getOfferAddress = (ownerKey = null, moji = null) => {
   });
 
   return collectionPrefix + hash(addresses.join(''), 54);
+  // END SOLUTION
 };
