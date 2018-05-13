@@ -4,10 +4,10 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const getAddress = require('../utils/addressing');
-const { decode } = require('../utils/helpers');
-const Txn = require('./mocks/txn');
-const Context = require('./mocks/context');
+const getAddress = require('../services/addressing');
+const { decode } = require('../services/helpers');
+const Txn = require('./services/mock_txn');
+const Context = require('./services/mock_context');
 
 describe('Add Response', function() {
   let handler = null;

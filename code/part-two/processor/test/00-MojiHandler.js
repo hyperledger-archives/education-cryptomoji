@@ -4,8 +4,8 @@ const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
 const MojiHandler = require('../handler');
-const Txn = require('./mocks/txn');
-const Context = require('./mocks/context');
+const Txn = require('./services/mock_txn');
+const Context = require('./services/mock_context');
 
 
 describe('Core MojiHandler Behavior', function() {

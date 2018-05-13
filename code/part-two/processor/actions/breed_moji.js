@@ -1,8 +1,8 @@
 'use strict';
 
-const getAddress = require('../utils/addressing');
-const { DNA_BITS, AVERAGE_CHANCE, SIRE_CHANCE } = require('../utils/constants');
-const { encode, decode, reject, getPrng } = require('../utils/helpers');
+const getAddress = require('../services/addressing');
+const { DNA_BITS, AVERAGE_CHANCE, SIRE_CHANCE } = require('../services/constants');
+const { encode, decode, reject, getPrng } = require('../services/helpers');
 
 
 const HEX_SIZE = DNA_BITS / 4;
