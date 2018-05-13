@@ -1,10 +1,11 @@
 'use strict';
 
+const { createHash } = require('crypto');
 const { TransactionHeader } = require('sawtooth-sdk/protobuf');
 const secp256k1 = require('sawtooth-sdk/signing/secp256k1');
 const context = new secp256k1.Secp256k1Context();
 const constants = require('../../services/constants');
-const { hash, encode } = require('../../services/helpers');
+const { encode } = require('./encoding');
 
 const getRandomString = () => (Math.random() * 10 ** 18).toString(36);
 
@@ -27,7 +28,7 @@ class Txn {
       nonce: getRandomString(),
       inputs: [ constants.NAMESPACE ],
       outputs: [ constants.NAMESPACE ],
-      payloadSha512: hash(this.payload)
+      payloadSha512: createHash('sha512').update(this.payload).digest('hex')
     });
     const encodedHeader = TransactionHeader.encode(this.header).finish();
     this.signature = context.sign(encodedHeader, privateWrapper);
