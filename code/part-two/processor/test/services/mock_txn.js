@@ -4,8 +4,12 @@ const { createHash } = require('crypto');
 const { TransactionHeader } = require('sawtooth-sdk/protobuf');
 const secp256k1 = require('sawtooth-sdk/signing/secp256k1');
 const context = new secp256k1.Secp256k1Context();
-const constants = require('../../services/constants');
 const { encode } = require('./encoding');
+
+
+const FAMILY_NAME = 'cryptomoji';
+const FAMILY_VERSION = '0.1';
+const NAMESPACE = '5f4d76';
 
 const getRandomString = () => (Math.random() * 10 ** 18).toString(36);
 
@@ -23,11 +27,11 @@ class Txn {
     this.header = TransactionHeader.create({
       signerPublicKey: this._publicKey,
       batcherPublicKey: this._publicKey,
-      familyName: constants.FAMILY_NAME,
-      familyVersion: constants.FAMILY_VERSION,
+      familyName: FAMILY_NAME,
+      familyVersion: FAMILY_VERSION,
       nonce: getRandomString(),
-      inputs: [ constants.NAMESPACE ],
-      outputs: [ constants.NAMESPACE ],
+      inputs: [ NAMESPACE ],
+      outputs: [ NAMESPACE ],
       payloadSha512: createHash('sha512').update(this.payload).digest('hex')
     });
     const encodedHeader = TransactionHeader.encode(this.header).finish();
