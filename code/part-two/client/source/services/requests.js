@@ -65,10 +65,7 @@ export const fetchState = (addressOrPrefix = '') => {
  * Resolves to `true` if submission was successful, otherwise throws an error.
  */
 export const submitPayloads = (privateKey, payloads, shouldWait = true) => {
-  // Axios will mishandle a Uint8Array constructed with a large ArrayBuffer.
-  // The easiest workaround is to take a slice of the array, which will
-  // create a new array with a buffer of an equal size.
-  const encodedBatch = encodeAll(privateKey, payloads).slice();
+  const encodedBatch = encodeAll(privateKey, payloads);
 
   return axios({
     method: 'POST',

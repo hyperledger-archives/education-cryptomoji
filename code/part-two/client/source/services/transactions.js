@@ -87,8 +87,15 @@ export const createBatch = (privateKey, transactions) => {
  * Although it's simple, axios has a bug when POSTing the generated Buffer,
  * so we've implemented it for you.
  */
-export const encodeBatch = batch => {
-  return BatchList.encode({ batches: [batch] }).finish();
+export const encodeBatches = batches => {
+  if (!Array.isArray(batches)) {
+    batches = [ batches ];
+  }
+  const batchList = BatchList.encode({ batches }).finish();
+
+  // Axios will mishandle a Uint8Array constructed with a large ArrayBuffer.
+  // The easiest workaround is to take a slice of the array.
+  return batchList.slice();
 };
 
 /**
@@ -107,5 +114,5 @@ export const encodeAll = (privateKey, payloads) => {
   const transactions = payloads.map(p => createTransaction(privateKey, p));
   const batch = createBatch(privateKey, transactions);
 
-  return encodeBatch(batch);
+  return encodeBatches(batch);
 };
