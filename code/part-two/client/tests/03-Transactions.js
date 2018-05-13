@@ -193,7 +193,7 @@ describe('Transactions module', function() {
 
   });
 
-  describe('encodeBatch', function() {
+  describe('encodeBatches', function() {
     let batch = null;
     let encoded = null;
 
@@ -202,7 +202,7 @@ describe('Transactions module', function() {
       const payload = { hello: 'world' };
       const txn = transactions.createTransaction(keys.privateKey, payload);
       batch = transactions.createBatch(keys.privateKey, txn);
-      encoded = transactions.encodeBatch(batch);
+      encoded = transactions.encodeBatches(batch);
     });
 
     it('should return a Buffer or Uint8Array', function() {
