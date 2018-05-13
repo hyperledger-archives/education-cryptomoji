@@ -11,7 +11,7 @@ const {
 } = require('../mining');
 
 
-describe('Mining module', function() {
+describe.skip('Mining module', function() {
 
   describe('MineableTransaction', function() {
     let signer = null;
