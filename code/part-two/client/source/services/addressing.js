@@ -1,9 +1,19 @@
-import { hash } from '../utils/helpers';
-import {
-  NAMESPACE,
-  TYPE_PREFIXES,
-  ADDRESS_LENGTH
-} from '../utils/constants';
+import { createHash } from 'crypto';
+
+
+const NAMESPACE = '5f4d76';
+const TYPE_PREFIXES = {
+  COLLECTION: '00',
+  MOJI: '01',
+  SIRE_LISTING: '02',
+  OFFER: '03'
+};
+const ADDRESS_LENGTH = 70;
+
+// Returns a hex-string SHA-512 hash sliced to a particular length
+const hash = (str, length) => {
+  return createHash('sha512').update(str).digest('hex').slice(0, length);
+};
 
 /**
  * Optionally takes a public key, and returns a collection address.
