@@ -2,15 +2,17 @@ import { createHash } from 'crypto';
 
 
 const NAMESPACE = '5f4d76';
-const TYPE_PREFIXES = {
+const PREFIXES = {
   COLLECTION: '00',
   MOJI: '01',
   SIRE_LISTING: '02',
   OFFER: '03'
 };
+// START SOLUTION
 const ADDRESS_LENGTH = 70;
 
-// START SOLUTION
+Object.keys(PREFIXES).forEach(p => { PREFIXES[p] = NAMESPACE + PREFIXES[p]; });
+
 // Returns a hex-string SHA-512 hash sliced to a particular length
 const hash = (str, length) => {
   return createHash('sha512').update(str).digest('hex').slice(0, length);
@@ -20,12 +22,8 @@ const hash = (str, length) => {
  * Takes an address returns a string corresponding to its type.
  */
 export const addressToType = (address = '') => {
-  if (address.slice(0, 6) !== NAMESPACE) {
-    return null;
-  }
-
-  const type = Object.keys(TYPE_PREFIXES)
-    .find(type => TYPE_PREFIXES[type] === address.slice(6, 8));
+  const type = Object.keys(PREFIXES)
+    .find(type => PREFIXES[type] === address.slice(0, 8));
 
   return type || null;
 };
@@ -35,9 +33,9 @@ export const addressToType = (address = '') => {
  * A function which optionally takes a public key, and returns a full or
  * partial collection address.
  *
- * If the public key is omitted, returns the 8 character prefix which will
- * fetch all collections from the REST API, otherwise returns the full
- * 70 character address.
+ * Should work similarly to the processor version, but if the public key is
+ * omitted, returns the 8 character prefix which will fetch all collections
+ * from the REST API, otherwise returns the full 70 character address.
  *
  * Example:
  *   const prefix = getCollectionAddress();
@@ -52,12 +50,11 @@ export const getCollectionAddress = (publicKey = null) => {
 
   END PROBLEM */
   // START SOLUTION
-  const prefix = NAMESPACE + TYPE_PREFIXES.COLLECTION;
   if (publicKey === null) {
-    return prefix;
+    return PREFIXES.COLLECTION;
   }
 
-  return prefix + hash(publicKey, 62);
+  return PREFIXES.COLLECTION + hash(publicKey, 62);
   // END SOLUTION
 };
 
@@ -79,17 +76,16 @@ export const getMojiAddress = (ownerKey = null, dna = null) => {
 
   END PROBLEM */
   // START SOLUTION
-  const typePrefix = NAMESPACE + TYPE_PREFIXES.MOJI;
   if (ownerKey === null) {
-    return typePrefix;
+    return PREFIXES.MOJI;
   }
 
-  const collectionPrefix = typePrefix + hash(ownerKey, 8);
+  const ownerPrefix = PREFIXES.MOJI + hash(ownerKey, 8);
   if (dna === null) {
-    return collectionPrefix;
+    return ownerPrefix;
   }
 
-  return collectionPrefix + hash(dna, 54);
+  return ownerPrefix + hash(dna, 54);
   // END SOLUTION
 };
 
@@ -106,12 +102,11 @@ export const getSireAddress = (ownerKey = null) => {
 
   END PROBLEM */
   // START SOLUTION
-  const prefix = NAMESPACE + TYPE_PREFIXES.SIRE_LISTING;
   if (ownerKey === null) {
-    return prefix;
+    return PREFIXES.SIRE_LISTING;
   }
 
-  return prefix + hash(ownerKey, 62);
+  return PREFIXES.SIRE_LISTING + hash(ownerKey, 62);
   // END SOLUTION
 };
 
@@ -133,14 +128,13 @@ export const getOfferAddress = (ownerKey = null, moji = null) => {
 
   END PROBLEM */
   // START SOLUTION
-  const typePrefix = NAMESPACE + TYPE_PREFIXES.OFFER;
   if (ownerKey === null) {
-    return typePrefix;
+    return PREFIXES.OFFER;
   }
 
-  const collectionPrefix = typePrefix + hash(ownerKey, 8);
+  const ownerPrefix = PREFIXES.OFFER + hash(ownerKey, 8);
   if (moji === null) {
-    return collectionPrefix;
+    return ownerPrefix;
   }
 
   if (!Array.isArray(moji)) {
@@ -155,6 +149,6 @@ export const getOfferAddress = (ownerKey = null, moji = null) => {
     return getMojiAddress(ownerKey, addressOrDna);
   });
 
-  return collectionPrefix + hash(addresses.join(''), 54);
+  return ownerPrefix + hash(addresses.join(''), 54);
   // END SOLUTION
 };
