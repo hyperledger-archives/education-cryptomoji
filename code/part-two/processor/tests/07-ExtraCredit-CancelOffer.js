@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 
-const MojiHandler = require('../handler');
+const MojiHandler = require('./services/handler_wrapper');
 const {
   getCollectionAddress,
   getOfferAddress
