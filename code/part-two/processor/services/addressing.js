@@ -1,53 +1,57 @@
 'use strict';
 
-const { hash } = require('./helpers');
-const { NAMESPACE, TYPE_PREFIXES } = require('./constants');
+const { createHash } = require('crypto');
 
 
-const getAddress = {};
-
-// Returns the address of a collection by its public key
-getAddress.collection = publicKey => {
-  return NAMESPACE +
-    TYPE_PREFIXES.COLLECTION +
-    hash(publicKey, 62);
+const NAMESPACE = '5f4d76';
+const PREFIXES = {
+  COLLECTION: '00',
+  MOJI: '01',
+  SIRE_LISTING: '02',
+  OFFER: '03'
 };
 
-// A curried function, fetching a moji address from owner key and dna
-getAddress.moji = ownerKey => {
-  const ownerHash = hash(ownerKey, 8);
+Object.keys(PREFIXES).forEach(p => { PREFIXES[p] = NAMESPACE + PREFIXES[p]; });
 
-  return mojiDna => {
-    return NAMESPACE +
-      TYPE_PREFIXES.MOJI +
-      ownerHash +
-      hash(mojiDna, 54);
-  };
+// Returns a hex-string SHA-512 hash sliced to a particular length
+const hash = (str, length) => {
+  return createHash('sha512').update(str).digest('hex').slice(0, length);
 };
 
-// Returns the address of a sire listing by owner key
-getAddress.sireListing = ownerKey => {
-  return NAMESPACE +
-    TYPE_PREFIXES.SIRE_LISTING +
-    hash(ownerKey, 62);
+// Takes a public key and returns a collection address
+const getCollectionAddress = publicKey => {
+  return PREFIXES.COLLECTION + hash(publicKey, 62);
 };
 
-// A curried function, fetching an offer address from owner key and
-// the addresses of cryptomoji being offered
-getAddress.offer = ownerKey => {
-  const ownerHash = hash(ownerKey, 8);
-
-  return offeredAddresses => {
-    if (!Array.isArray(offeredAddresses)) {
-      offeredAddresses = [offeredAddresses];
-    }
-    return NAMESPACE +
-      TYPE_PREFIXES.OFFER +
-      ownerHash +
-      hash(offeredAddresses.sort().join(''), 54);
-  };
+// Takes an owner's public key and dna string and returns a moji address
+const getMojiAddress = (ownerKey, dna) => {
+  return PREFIXES.MOJI + hash(ownerKey, 8) + hash(dna, 54);
 };
 
-getAddress.isValid = address => /^[0-9a-f]{70}$/.test(address);
+// Takes an owner's public key and returns the address for their sire listing
+const getSireAddress = ownerKey => {
+  return PREFIXES.SIRE_LISTING + hash(ownerKey, 62);
+};
 
-module.exports = getAddress;
+// Takes a public key and array of moji addresses, returns an offer address
+const getOfferAddress = (ownerKey, addresses) => {
+  if (!Array.isArray(addresses)) {
+    addresses = [ addresses ];
+  }
+
+  return PREFIXES.OFFER + hash(ownerKey, 8) + hash(addresses.join(''), 54);
+};
+
+const isValidAddress = address => {
+  const pattern = `^${NAMESPACE}[0-9a-f]{64}$`;
+
+  return new RegExp(pattern).test(address);
+};
+
+module.exports = {
+  getCollectionAddress,
+  getMojiAddress,
+  getSireAddress,
+  getOfferAddress,
+  isValidAddress
+};

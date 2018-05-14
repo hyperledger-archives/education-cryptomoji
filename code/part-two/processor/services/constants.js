@@ -1,11 +1,9 @@
 'use strict';
 
-const { hash } = require('./helpers');
-
 
 const FAMILY_NAME = 'cryptomoji';
 const FAMILY_VERSION = '0.1';
-const NAMESPACE = hash(FAMILY_NAME, 6);
+const NAMESPACE = '5f4d76';
 
 const TYPE_PREFIXES = {
   COLLECTION: '00',

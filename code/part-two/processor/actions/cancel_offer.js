@@ -1,7 +1,10 @@
 'use strict';
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  isValidAddress
+} = require('../services/addressing');
 const { decode, encode } = require('../services/encoding');
 
 
@@ -12,11 +15,11 @@ const cancelOffer = (context, publicKey, { offer }) => {
   if (!offer) {
     reject('No offer specified');
   }
-  if (!getAddress.isValid(offer)) {
-    reject('Offer address must be a 70-char hex string:', offer);
+  if (!isValidAddress(offer)) {
+    reject('Invalid offer address:', offer);
   }
 
-  const owner = getAddress.collection(publicKey);
+  const owner = getCollectionAddress(publicKey);
 
   return context.getState([ owner, offer ])
     .then(state => {

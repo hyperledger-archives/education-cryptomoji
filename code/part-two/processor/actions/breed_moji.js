@@ -1,7 +1,12 @@
 'use strict';
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getMojiAddress,
+  getSireAddress,
+  isValidAddress
+} = require('../services/addressing');
 const { DNA_BITS, AVERAGE_CHANCE, SIRE_CHANCE } = require('../services/constants');
 const { encode, decode } = require('../services/encoding');
 const { getPrng } = require('../services/helpers');
@@ -43,18 +48,18 @@ const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
   if (!sire) {
     reject('No sire specified');
   }
-  if (!getAddress.isValid(sire)) {
+  if (!isValidAddress(sire)) {
     reject('Sire address must be a 70-char hex string:', sire);
   }
 
   if (!breeder) {
     reject('No breeder specified');
   }
-  if (!getAddress.isValid(breeder)) {
+  if (!isValidAddress(breeder)) {
     reject('Breeder address must be a 70-char hex string:', breeder);
   }
 
-  const owner = getAddress.collection(publicKey);
+  const owner = getCollectionAddress(publicKey);
   const prng = getPrng(signature);
 
   return context.getState([ owner, sire, breeder ])
@@ -74,7 +79,7 @@ const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
       const ownerState = decode(state[owner]);
       const sireState = decode(state[sire]);
       const breederState = decode(state[breeder]);
-      const listing = getAddress.sireListing(sireState.owner);
+      const listing = getSireAddress(sireState.owner);
 
       if (breederState.owner !== publicKey) {
         reject('Breeder must be owned by signer:', breeder);
@@ -90,7 +95,7 @@ const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
           }
 
           const dna = combineDna(sireState.dna, breederState.dna, prng);
-          const address = getAddress.moji(publicKey)(dna);
+          const address = getMojiAddress(publicKey, dna);
           const child = {
             dna,
             sire,

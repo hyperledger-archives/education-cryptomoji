@@ -1,7 +1,11 @@
 'use strict';
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getSireAddress,
+  isValidAddress
+} = require('../services/addressing');
 const { decode, encode } = require('../services/encoding');
 
 
@@ -14,19 +18,19 @@ const addResponse = (context, publicKey, { moji, offer }) => {
   }
 
   for (let mojiAddress of moji) {
-    if (!getAddress.isValid(mojiAddress)) {
-      reject('Moji address must be a 70-char hex string:', mojiAddress);
+    if (!isValidAddress(mojiAddress)) {
+      reject('Invalid moji address:', mojiAddress);
     }
   }
 
   if (!offer) {
     reject('No offer specified');
   }
-  if (!getAddress.isValid(offer)) {
-    reject('Offer address must be a 70-char hex string:', offer);
+  if (!isValidAddress(offer)) {
+    reject('Invalid offer address:', offer);
   }
 
-  const signer = getAddress.collection(publicKey);
+  const signer = getCollectionAddress(publicKey);
 
   return context.getState(moji.concat(signer, offer))
     .then(state => {
@@ -79,7 +83,7 @@ const addResponse = (context, publicKey, { moji, offer }) => {
         }
       }
 
-      const listing = getAddress.sireListing(decodedMoji[0].owner);
+      const listing = getSireAddress(decodedMoji[0].owner);
 
       return context.getState([ listing ])
         .then(state => {

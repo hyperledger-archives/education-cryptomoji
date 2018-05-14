@@ -1,7 +1,12 @@
 'use strict';
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getSireAddress,
+  getOfferAddress,
+  isValidAddress
+} = require('../services/addressing');
 const { decode, encode } = require('../services/encoding');
 
 
@@ -14,15 +19,15 @@ const createOffer = (context, publicKey, { moji }) => {
   }
 
   for (let mojiAddress of moji) {
-    if (!getAddress.isValid(mojiAddress)) {
-      reject('Moji address must be a 70-char hex string:', mojiAddress);
+    if (!isValidAddress(mojiAddress)) {
+      reject('Invalid moji address:', mojiAddress);
     }
   }
 
   moji = moji.sort();
-  const owner = getAddress.collection(publicKey);
-  const offer = getAddress.offer(publicKey)(moji);
-  const listing = getAddress.sireListing(publicKey);
+  const owner = getCollectionAddress(publicKey);
+  const listing = getSireAddress(publicKey);
+  const offer = getOfferAddress(publicKey, moji);
 
   return context.getState(moji.concat(owner, offer, listing))
     .then(state => {
