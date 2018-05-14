@@ -12,7 +12,9 @@ const { decode, encode } = require('../services/encoding');
 // A quick convenience function to throw an error with a joined message
 const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
-
+/**
+ * Selects a moji as a sire for a particular collection.
+ */
 const selectSire = (context, publicKey, { sire }) => {
   if (!sire) {
     reject('No sire specified');

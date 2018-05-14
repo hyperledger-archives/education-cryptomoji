@@ -73,4 +73,3 @@ module.exports = {
   encode,
   decode
 };
-

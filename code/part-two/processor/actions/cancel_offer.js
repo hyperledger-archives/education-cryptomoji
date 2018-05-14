@@ -11,6 +11,9 @@ const { decode, encode } = require('../services/encoding');
 // A quick convenience function to throw an error with a joined message
 const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
+/**
+ * Cancels an existing offer, deleting it from state.
+ */
 const cancelOffer = (context, publicKey, { offer }) => {
   if (!offer) {
     reject('No offer specified');

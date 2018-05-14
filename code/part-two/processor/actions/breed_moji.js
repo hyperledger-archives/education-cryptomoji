@@ -19,15 +19,17 @@ const HEX_SIZE = DNA_BITS / 4;
 // A quick convenience function to throw an error with a joined message
 const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
-const geneToInts = gene => {
-  return gene
+// Turns a hex dna string into an array of integers, one per gene
+const dnaToInts = dna => {
+  return dna
     .match(RegExp(`[0-9a-f]{${HEX_SIZE},${HEX_SIZE}}`, 'g'))
     .map(hex => parseInt(hex, 16));
 };
 
+// Takes sire and breeder dna, and a prng, and combines them into new dna
 const combineDna = (sire, breeder, prng) => {
-  const sireGenes = geneToInts(sire);
-  const breederGenes = geneToInts(breeder);
+  const sireGenes = dnaToInts(sire);
+  const breederGenes = dnaToInts(breeder);
 
   return sireGenes
     .map((sireGene, i) => [ sireGene, breederGenes[i] ])
@@ -46,6 +48,10 @@ const combineDna = (sire, breeder, prng) => {
     .join('');
 };
 
+/**
+ * Combines the dna of a sire and breeder, creating a new moji for the
+ * breeder's owner.
+ */
 const breedMoji = (context, publicKey, { sire, breeder }, signature) => {
   if (!sire) {
     reject('No sire specified');
