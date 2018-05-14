@@ -16,7 +16,50 @@ const hash = (str, length) => {
 describe('Processor services', function() {
 
   describe('prng', function() {
+    let prng = null;
 
+    beforeEach(function() {
+      prng = getPrng('5eed');
+    });
+
+    it('should return a function from getPrng', function() {
+      expect(prng).to.be.a('function');
+    });
+
+    it('should return an integer up to the passed max', function() {
+      const result = prng(100);
+
+      expect(result).to.be.a('number');
+      expect(result).to.be.below(100);
+      expect(Math.floor(result)).to.equal(result);
+    });
+
+    it('should generate a different number each call', function() {
+      const first = prng(100);
+      const second = prng(100);
+      const third = prng(100);
+
+      expect(first).to.not.equal(second);
+      expect(first).to.not.equal(third);
+      expect(second).to.not.equal(third);
+    });
+
+    it('should generate the same number when given the same seed', function() {
+      const newPrng = getPrng('5eed');
+      const first = prng(100);
+      const second = newPrng(100);
+
+      expect(first).to.equal(second);
+    });
+
+
+    it('should generate different numbers with different seeds', function() {
+      const newPrng = getPrng('d1ff5eed');
+      const first = prng(100);
+      const second = newPrng(100);
+
+      expect(first).to.not.equal(second);
+    });
   });
 
   describe('encoding', function() {
