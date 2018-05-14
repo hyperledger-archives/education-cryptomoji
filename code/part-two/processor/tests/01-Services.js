@@ -220,6 +220,35 @@ describe('Processor services', function() {
 
     describe('isValidAddress', function() {
 
+      it('should accept a valid address', function() {
+        const address = '5f4d7600' + randomBytes(31).toString('hex');
+
+        expect(addressing.isValidAddress(address)).to.be.true;
+      });
+
+      it('should reject an address that is the wrong length', function() {
+        const address = '5f4d7601' + randomBytes(30).toString('hex');
+
+        expect(addressing.isValidAddress(address)).to.be.false;
+      });
+
+      it('should reject an address without the right namespace', function() {
+        const address = '5f4d7702' + randomBytes(31).toString('hex');
+
+        expect(addressing.isValidAddress(address)).to.be.false;
+      });
+
+      it('should reject an address that is not hex', function() {
+        const address = '5f4d7702' + 'za' + randomBytes(30).toString('hex');
+
+        expect(addressing.isValidAddress(address)).to.be.false;
+      });
+
+      it('should reject an address that is not a string', function() {
+        const address = { not: 'address' };
+
+        expect(addressing.isValidAddress(address)).to.be.false;
+      });
     });
   });
 
