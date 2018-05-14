@@ -7,15 +7,17 @@ const {
   getSireAddress,
   isValidAddress
 } = require('../services/addressing');
-const { DNA_BITS, AVERAGE_CHANCE, SIRE_CHANCE } = require('../services/constants');
 const { encode, decode } = require('../services/encoding');
 const { getPrng } = require('../services/helpers');
 
 
+const DNA_BITS = 2 * 8;
+const AVERAGE_CHANCE = 200;
+const SIRE_CHANCE = 600;
+const HEX_SIZE = DNA_BITS / 4;
+
 // A quick convenience function to throw an error with a joined message
 const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
-
-const HEX_SIZE = DNA_BITS / 4;
 
 const geneToInts = gene => {
   return gene

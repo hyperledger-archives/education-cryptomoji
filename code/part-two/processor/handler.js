@@ -2,7 +2,6 @@
 
 const { TransactionHandler } = require('sawtooth-sdk/processor/handler');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
-const { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } = require('./services/constants');
 const { decode } = require('./services/encoding');
 
 const createCollection = require('./actions/create_collection');
@@ -13,6 +12,10 @@ const cancelOffer = require('./actions/cancel_offer');
 const addResponse = require('./actions/add_response');
 const acceptResponse = require('./actions/accept_response');
 
+
+const FAMILY_NAME = 'cryptomoji';
+const FAMILY_VERSION = '0.1';
+const NAMESPACE = '5f4d76';
 
 class MojiHandler extends TransactionHandler {
   constructor () {
