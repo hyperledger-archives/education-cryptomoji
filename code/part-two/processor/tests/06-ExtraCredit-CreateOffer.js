@@ -81,79 +81,49 @@ describe('Create Offer', function() {
   it('should reject public keys with no collection', function() {
     delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address]).to.not.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[address]).to.not.exist);
   });
 
   it('should reject offers without any moji', function() {
     const address = getOfferAddress(publicKey, []);
     const txn = new Txn({ action: 'CREATE_OFFER', moji: [] }, privateKey);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address]).to.not.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[address]).to.not.exist);
   });
 
   it('should reject offers with any moji that do not exist', function() {
     delete context._state[moji[1]];
     const txn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address]).to.not.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[address]).to.not.exist);
   });
 
   it('should reject offers that include a sire', function() {
     const sire = moji[1];
     const sireTxn = new Txn({ action: 'SELECT_SIRE', sire }, privateKey);
     const offerTxn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
+    const submission = handler.apply(sireTxn, context)
+      .then(() => handler.apply(offerTxn, context));
 
-    return handler.apply(sireTxn, context)
-      .then(() => handler.apply(offerTxn, context))
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address]).to.not.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[address]).to.not.exist);
   });
 
   it('should reject offers for moji already in an offer', function() {
     const firstTxn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
     moji = moji.reverse();
     const secondTxn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
+    const submission = handler.apply(firstTxn, context)
+      .then(() => handler.apply(secondTxn, context));
 
-    return handler.apply(firstTxn, context)
-      .then(() => handler.apply(secondTxn, context))
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction);
   });
 
   it('should reject public keys that do not own the moji', function() {
@@ -161,16 +131,10 @@ describe('Create Offer', function() {
     const privateKey = createTxn._privateKey;
     const address = getOfferAddress(createTxn._publicKey, moji);
     const txn = new Txn({ action: 'CREATE_OFFER', moji }, privateKey);
+    const submission = handler.apply(createTxn, context)
+      .then(() => handler.apply(txn, context));
 
-    return handler.apply(createTxn, context)
-      .then(() => handler.apply(txn, context))
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address]).to.not.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[address]).to.not.exist);
   });
 });

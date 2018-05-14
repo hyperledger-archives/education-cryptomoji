@@ -65,15 +65,9 @@ describe('Cancel Offer', function() {
 
   it('should reject canceling offers that are not set', function() {
     const txn = new Txn({ action: 'CANCEL_OFFER' }, privateKey);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction);
   });
 
   it('should reject canceling offers that do not exist', function() {
@@ -94,16 +88,10 @@ describe('Cancel Offer', function() {
     const collecTxn = new Txn({ action: 'CREATE_COLLECTION' });
     const privateKey = collecTxn._privateKey;
     const txn = new Txn({ action: 'CANCEL_OFFER', offer }, privateKey);
+    const submission = handler.apply(collecTxn, context)
+      .then(() => handler.apply(txn, context));
 
-    return handler.apply(collecTxn, context)
-      .then(() => handler.apply(txn, context))
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[offer]).to.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[offer]).to.exist);
   });
 });

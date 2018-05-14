@@ -141,14 +141,10 @@ describe('Accept Response', function() {
   it('should reject acceptances from key others than approver', function() {
     const payload = { action: 'ACCEPT_RESPONSE', offer, response: 0 };
     const txn = new Txn(payload, responderPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         expect(context._state[offer]).to.not.be.empty;
 
         const newOwnerDna = decode(context._state[ownerAddr]).moji
@@ -166,14 +162,10 @@ describe('Accept Response', function() {
   it('should reject acceptances for indexes with no response', function() {
     const payload = { action: 'ACCEPT_RESPONSE', offer, response: 1 };
     const txn = new Txn(payload, ownerPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
       .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
         expect(context._state[offer]).to.not.be.empty;
 
         const newOwnerDna = decode(context._state[ownerAddr]).moji
@@ -192,14 +184,10 @@ describe('Accept Response', function() {
     delete context._state[decode(context._state[responderAddr]).moji[1]];
     const payload = { action: 'ACCEPT_RESPONSE', offer, response: 0 };
     const txn = new Txn(payload, ownerPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         expect(context._state[offer]).to.not.be.empty;
       });
   });

@@ -103,14 +103,9 @@ describe('Create Collection', function() {
   });
 
   it('should reject a public key that has already been used', function() {
-    return handler.apply(txn, context)
-      .then(() => handler.apply(txn, context))
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-      });
+    const submission = handler.apply(txn, context)
+      .then(() => handler.apply(txn, context));
+
+    return expect(submission).to.be.rejectedWith(InvalidTransaction);
   });
 });

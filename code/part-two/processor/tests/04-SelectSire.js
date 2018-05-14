@@ -54,60 +54,36 @@ describe('Select Sire', function() {
   it('should reject public keys with no collection', function() {
     delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'SELECT_SIRE', sire }, privateKey);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address]).to.not.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[address]).to.not.exist);
   });
 
   it('should reject listings with no sire', function() {
     const txn = new Txn({ action: 'SELECT_SIRE' }, privateKey);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction);
   });
 
   it('should reject sires that do not exist', function() {
     delete context._state[sire];
     const txn = new Txn({ action: 'SELECT_SIRE', sire }, privateKey);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address]).to.not.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[address]).to.not.exist);
   });
 
   it('should reject public keys that do not own the sire', function() {
     const createTxn = new Txn({ action: 'CREATE_COLLECTION' });
     const address = getSireAddress(createTxn._publicKey);
     const txn = new Txn({ action: 'SELECT_SIRE', sire }, createTxn._privateKey);
+    const submission = handler.apply(createTxn, context)
+      .then(() => handler.apply(txn, context));
 
-    return handler.apply(createTxn, context)
-      .then(() => handler.apply(txn, context))
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address]).to.not.exist;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => expect(context._state[address]).to.not.exist);
   });
 });
