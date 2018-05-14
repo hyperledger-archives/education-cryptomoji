@@ -11,6 +11,7 @@ const { decode, encode } = require('../services/encoding');
 // A quick convenience function to throw an error with a joined message
 const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
+// Removes some moji from an encoded collection and adds others
 const swapMoji = (ownerBytes, toRemove, toAdd) => {
   const owner = decode(ownerBytes);
   owner.moji = owner.moji
@@ -20,6 +21,7 @@ const swapMoji = (ownerBytes, toRemove, toAdd) => {
   return encode(owner);
 };
 
+// Creates an update object assigning existing moji to a new owner
 const getMojiUpdate = (state, moji, newOwner) => {
   return moji.reduce((updates, address) => {
     const dna = decode(state[address]).dna;
@@ -29,6 +31,9 @@ const getMojiUpdate = (state, moji, newOwner) => {
   }, {});
 };
 
+/**
+ * Accepts a particular response on an offer, swapping the moji to new owners.
+ */
 const acceptResponse = (context, publicKey, { offer, response }) => {
   if (!offer) {
     reject('No offer address specified');

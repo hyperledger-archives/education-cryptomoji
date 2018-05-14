@@ -13,6 +13,9 @@ const { decode, encode } = require('../services/encoding');
 // A quick convenience function to throw an error with a joined message
 const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
+/**
+ * Creates a new offer in state for a set of moji.
+ */
 const createOffer = (context, publicKey, { moji }) => {
   if (!moji || moji.length === 0) {
     reject('No moji specified');

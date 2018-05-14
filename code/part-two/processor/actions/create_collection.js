@@ -16,8 +16,10 @@ const GENE_SIZE = 2 ** (2 * 8);
 // A quick convenience function to throw an error with a joined message
 const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
 
+// Creates an empty array of a certain size
 const emptyArray = size => Array.apply(null, Array(size));
 
+// Uses a PRNG function to generate a pseudo-random dna string
 const makeDna = prng => {
   return emptyArray(DNA_LENGTH).map(() => {
     const randomHex = prng(GENE_SIZE).toString(16);
@@ -25,6 +27,7 @@ const makeDna = prng => {
   }).join('');
 };
 
+// Creates an array of new moji objects from a public key and a PRNG
 const makeMoji = (publicKey, prng) => {
   return emptyArray(NEW_MOJI_COUNT).map(() => ({
     dna: makeDna(prng),
@@ -36,6 +39,9 @@ const makeMoji = (publicKey, prng) => {
   }));
 };
 
+/**
+ * Creates a new collection with a set of new moji.
+ */
 const createCollection = (context, publicKey, signature) => {
   const address = getCollectionAddress(publicKey);
   const prng = getPrng(signature);
