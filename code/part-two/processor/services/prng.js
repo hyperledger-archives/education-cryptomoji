@@ -16,6 +16,4 @@ const getPrng = hex => {
   };
 };
 
-module.exports = {
-  getPrng
-};
+module.exports = getPrng;
