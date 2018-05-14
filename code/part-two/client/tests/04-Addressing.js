@@ -46,14 +46,14 @@ describe('Addressing module', function() {
       expect(address).to.be.a.hexString;
     });
 
-    it('should return a correct Cryptomoji address', function() {
+    it('should return a correct cryptomoji address', function() {
       const address = addressing.getMojiAddress(publicKey, dna);
       const keyHash = hash(publicKey).slice(0, 8);
       const dnaHash = hash(dna).slice(0, 54);
       expect(address).to.equal('5f4d76' + '01' + keyHash + dnaHash);
     });
 
-    it('should return the Collection prefix if not passed dna', function() {
+    it('should return the collection prefix if not passed dna', function() {
       const address = addressing.getMojiAddress(publicKey);
       const keyHash = hash(publicKey).slice(0, 8);
       expect(address).to.equal('5f4d76' + '01' + keyHash);
@@ -78,7 +78,7 @@ describe('Addressing module', function() {
       expect(address).to.be.a.hexString;
     });
 
-    it('should return a correct Sire listing address', function() {
+    it('should return a correct sire listing address', function() {
       const address = addressing.getSireAddress(publicKey);
       const keyHash = hash(publicKey).slice(0, 62);
       expect(address).to.equal('5f4d76' + '02' + keyHash);
@@ -111,13 +111,13 @@ describe('Addressing module', function() {
       expect(address).to.be.a.hexString;
     });
 
-    it('should return a correct Offer address', function() {
+    it('should return a correct offer address', function() {
       const address = addressing.getOfferAddress(publicKey, mojiAddress);
       const addressHash = hash(mojiAddress).slice(0, 54);
       expect(address).to.equal('5f4d76' + '03' + keyHash + addressHash);
     });
 
-    it('should return a correct Offer address with multiple moji', function() {
+    it('should return a correct offer address with multiple moji', function() {
       const mojiAddresses = [
         mojiAddress,
         addressing.getMojiAddress(publicKey, randomBytes(18).toString('hex'))
@@ -129,7 +129,7 @@ describe('Addressing module', function() {
       expect(address).to.equal('5f4d76' + '03' + keyHash + addressHash);
     });
 
-    it('should return the Collection prefix if not passed moji', function() {
+    it('should return the collection prefix if not passed moji', function() {
       const address = addressing.getOfferAddress(publicKey);
       expect(address).to.equal('5f4d76' + '03' + keyHash);
     });

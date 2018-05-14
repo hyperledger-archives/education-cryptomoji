@@ -24,21 +24,18 @@ describe('Core MojiHandler Behavior', function() {
     const txn = new Txn({ hello: 'world' });
     const applyResult = handler.apply(txn, context);
 
-    expect(applyResult, 'Apply should return a promise')
-      .to.be.an.instanceOf(Promise);
-
+    expect(applyResult).to.be.an.instanceOf(Promise);
     applyResult.catch(() => {});
   });
 
-  it('should reject a poorly encoded payload', function() {
+  it('should reject poorly encoded payloads', function() {
     const txn = new Txn({});
     // If not JSON stringified, an object will become `"[object Object]"`
     txn.payload = Buffer.from({ hello: 'world' }.toString());
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
@@ -46,13 +43,12 @@ describe('Core MojiHandler Behavior', function() {
       });
   });
 
-  it('should reject an unknown action', function() {
+  it('should reject unknown actions', function() {
     const txn = new Txn({ action: 'BAD' });
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {

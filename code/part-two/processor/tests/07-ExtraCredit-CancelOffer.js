@@ -12,6 +12,7 @@ const { decode } = require('./services/encoding');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
 
+
 describe('Cancel Offer', function() {
   let handler = null;
   let context = null;
@@ -38,7 +39,7 @@ describe('Cancel Offer', function() {
       });
   });
 
-  it('should delete a canceled offer', function() {
+  it('should delete canceled offers', function() {
     const txn = new Txn({ action: 'CANCEL_OFFER', offer }, privateKey);
 
     return handler.apply(txn, context)
@@ -47,29 +48,27 @@ describe('Cancel Offer', function() {
       });
   });
 
-  it('should reject public keys with no Collection', function() {
+  it('should reject public keys with no collection', function() {
     delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'CANCEL_OFFER', offer }, privateKey);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[offer], 'Offer should still exist').to.exist;
+        expect(context._state[offer]).to.exist;
       });
   });
 
-  it('should reject canceling an offer that is not set', function() {
+  it('should reject canceling offers that are not set', function() {
     const txn = new Txn({ action: 'CANCEL_OFFER' }, privateKey);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
@@ -77,14 +76,13 @@ describe('Cancel Offer', function() {
       });
   });
 
-  it('should reject canceling an offer that does not exist', function() {
+  it('should reject canceling offers that do not exist', function() {
     delete context._state[offer];
     const txn = new Txn({ action: 'CANCEL_OFFER', offer }, privateKey);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
@@ -100,13 +98,12 @@ describe('Cancel Offer', function() {
     return handler.apply(collecTxn, context)
       .then(() => handler.apply(txn, context))
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[offer], 'Offer should still exist').to.exist;
+        expect(context._state[offer]).to.exist;
       });
   });
 });

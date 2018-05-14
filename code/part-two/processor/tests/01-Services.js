@@ -13,7 +13,7 @@ const hash = (str, length) => {
   return createHash('sha512').update(str).digest('hex').slice(0, length);
 };
 
-describe('Processor services', function() {
+describe('Processor Services', function() {
 
   describe('prng', function() {
     let prng = null;
@@ -152,7 +152,7 @@ describe('Processor services', function() {
         expect(address).to.be.a.hexString;
       });
 
-      it('should return a correct Cryptomoji address', function() {
+      it('should return a correct cryptomoji address', function() {
         const address = addressing.getMojiAddress(publicKey, dna);
         const keyHash = hash(publicKey).slice(0, 8);
         const dnaHash = hash(dna).slice(0, 54);
@@ -172,7 +172,7 @@ describe('Processor services', function() {
         expect(address).to.be.a.hexString;
       });
 
-      it('should return a correct Sire listing address', function() {
+      it('should return a correct sire listing address', function() {
         const address = addressing.getSireAddress(publicKey);
         const keyHash = hash(publicKey).slice(0, 62);
         expect(address).to.equal('5f4d76' + '02' + keyHash);
@@ -199,13 +199,13 @@ describe('Processor services', function() {
         expect(address).to.be.a.hexString;
       });
 
-      it('should return a correct Offer address', function() {
+      it('should return a correct offer address', function() {
         const address = addressing.getOfferAddress(publicKey, mojiAddress);
         const addressHash = hash(mojiAddress).slice(0, 54);
         expect(address).to.equal('5f4d76' + '03' + keyHash + addressHash);
       });
 
-      it('should return a Offer address with multiple moji', function() {
+      it('should return an offer address with multiple moji', function() {
         const mojiAddresses = [
           mojiAddress,
           addressing.getMojiAddress(publicKey, randomBytes(18).toString('hex'))
