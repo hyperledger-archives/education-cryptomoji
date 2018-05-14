@@ -1,3 +1,5 @@
+'use strict';
+
 // Maps over an array with an iterator, concatenating the resulting arrays
 const concatMap = (array, iterator) => {
   return array.reduce((mapped, item) => {

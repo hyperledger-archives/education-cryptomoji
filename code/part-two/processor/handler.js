@@ -3,7 +3,7 @@
 const { TransactionHandler } = require('sawtooth-sdk/processor/handler');
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const { FAMILY_NAME, FAMILY_VERSION, NAMESPACE } = require('./services/constants');
-const { decode } = require('./services/helpers');
+const { decode } = require('./services/encoding');
 
 const createCollection = require('./actions/create_collection');
 const selectSire = require('./actions/select_sire');

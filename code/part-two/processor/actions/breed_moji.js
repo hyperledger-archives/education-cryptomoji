@@ -3,7 +3,8 @@
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const getAddress = require('../services/addressing');
 const { DNA_BITS, AVERAGE_CHANCE, SIRE_CHANCE } = require('../services/constants');
-const { encode, decode, getPrng } = require('../services/helpers');
+const { encode, decode } = require('../services/encoding');
+const { getPrng } = require('../services/helpers');
 
 
 // A quick convenience function to throw an error with a joined message
