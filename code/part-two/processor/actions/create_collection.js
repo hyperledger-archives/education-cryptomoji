@@ -5,10 +5,13 @@ const {
   getCollectionAddress,
   getMojiAddress
 } = require('../services/addressing');
-const { NEW_MOJI_COUNT, DNA_LENGTH, GENE_SIZE } = require('../services/constants');
 const { encode } = require('../services/encoding');
 const { getPrng } = require('../services/helpers');
 
+
+const NEW_MOJI_COUNT = 3;
+const DNA_LENGTH = 9;
+const GENE_SIZE = 2 ** (2 * 8);
 
 // A quick convenience function to throw an error with a joined message
 const reject = (...msgs) => { throw new InvalidTransaction(msgs.join(' ')); };
