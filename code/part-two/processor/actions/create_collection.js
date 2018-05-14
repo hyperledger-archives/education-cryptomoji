@@ -6,7 +6,7 @@ const {
   getMojiAddress
 } = require('../services/addressing');
 const { encode } = require('../services/encoding');
-const { getPrng } = require('../services/helpers');
+const getPrng = require('../services/prng');
 
 
 const NEW_MOJI_COUNT = 3;

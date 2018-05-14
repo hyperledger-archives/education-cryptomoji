@@ -8,7 +8,7 @@ const {
   isValidAddress
 } = require('../services/addressing');
 const { encode, decode } = require('../services/encoding');
-const { getPrng } = require('../services/helpers');
+const getPrng = require('../services/prng');
 
 
 const DNA_BITS = 2 * 8;
