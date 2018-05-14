@@ -2,7 +2,7 @@
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
 const getAddress = require('../services/addressing');
-const { decode, encode } = require('../services/helpers');
+const { decode, encode } = require('../services/encoding');
 
 
 // A quick convenience function to throw an error with a joined message

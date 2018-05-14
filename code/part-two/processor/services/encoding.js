@@ -1,3 +1,5 @@
+'use strict';
+
 // START SOLUTION
 // Maps over an array with the provided iterator function,
 // concatenating the resulting arrays
@@ -25,8 +27,8 @@ const listKeys = object => {
 // END SOLUTION
 /**
  * A function that takes an object and returns it encoded as JSON Buffer.
- * Should work identically to the processor version. Feel free to copy and
- * paste any work you did there.
+ * Should work identically to the client version. Feel free to copy and paste
+ * any work you did there.
  *
  * Example:
  *   const encoded = encode({ hello: 'world', foo: 'bar' })
@@ -38,7 +40,7 @@ const listKeys = object => {
  *   deterministically! JSON is convenient, but you will need to sort
  *   your object's keys or random transactions may fail.
  */
-export const encode = object => {
+const encode = object => {
   /* START PROBLEM
   // Enter your solution here
 
@@ -50,19 +52,25 @@ export const encode = object => {
 };
 
 /**
- * A function that takes a base64 string and decodes it into an object.
+ * A function that takes a JSON Buffer and decodes it into an object.
  *
  * Hint:
  *   Although you encoded it as a Buffer originally, the REST API will send
  *   any binary data as a base64 string. So you will need to go from
  *   base64 string -> Buffer -> JSON string -> object
  */
-export const decode = base64Str => {
+const decode = buffer => {
   /* START PROBLEM
   // Your code here
 
   END PROBLEM */
   // START SOLUTION
-  return JSON.parse(Buffer.from(base64Str, 'base64').toString());
+  return JSON.parse(buffer.toString());
   // END SOLUTION
 };
+
+module.exports = {
+  encode,
+  decode
+};
+

@@ -8,27 +8,6 @@ const hash = (str, length = 128) => {
   return createHash('sha512').update(str).digest('hex').slice(0, length);
 };
 
-// Recursively returns all the keys of an object and nested objects;
-const deepKeys = obj => {
-  if (!obj || typeof obj !== 'object') {
-    return [];
-  }
-
-  const keys = Array.isArray(obj) ? [] : Object.keys(obj);
-  const values = Array.isArray(obj) ? obj : Object.values(obj);
-
-  return values.reduce((keys, value) => keys.concat(deepKeys(value)), keys);
-};
-
-// Encodes an object as a Buffer of sorted JSON string
-const encode = obj => {
-  const jsonString = JSON.stringify(obj, deepKeys(obj).sort());
-  return Buffer.from(jsonString);
-};
-
-// Decodes JSON Buffers back into objects
-const decode = encoded => JSON.parse(encoded.toString());
-
 // Takes a hex string and returns a function to generate pseudorandom,
 // but deterministic, numbers. Based on this github gist by blixt:
 // gist.github.com/blixt/f17b47c62508be59987b
@@ -47,7 +26,5 @@ const getPrng = hex => {
 
 module.exports = {
   hash,
-  encode,
-  decode,
   getPrng
 };
