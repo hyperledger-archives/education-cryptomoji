@@ -53,12 +53,12 @@ describe('Create Collection', function() {
         expect(collection.moji, 'Collection should have three moji addresses')
           .to.have.lengthOf(3);
         expect(mojiAddress, 'Moji address should be 70 hex characters')
-          .to.match(/^[0-9a-f]{70}$/);
+          .to.be.a.hexString.with.lengthOf(70);
         expect(context._state[mojiAddress], 'Moji should exist').to.exist;
         const moji = decode(context._state[mojiAddress]);
 
         expect(moji.dna, 'Moji DNA should be 36 hex characters')
-          .to.match(/^[0-9a-f]{36}$/);
+          .to.be.a.hexString.with.lengthOf(36);
         expect(mojiAddress, 'Moji address match address generated from DNA')
           .to.equal(getMojiAddress(publicKey, moji.dna));
       });
