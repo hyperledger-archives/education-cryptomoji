@@ -1,7 +1,10 @@
 'use strict';
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getMojiAddress
+} = require('../services/addressing');
 const { decode, encode } = require('../services/encoding');
 
 
@@ -20,7 +23,7 @@ const swapMoji = (ownerBytes, toRemove, toAdd) => {
 const getMojiUpdate = (state, moji, newOwner) => {
   return moji.reduce((updates, address) => {
     const dna = decode(state[address]).dna;
-    const newAddress = getAddress.moji(newOwner)(dna);
+    const newAddress = getMojiAddress(newOwner, dna);
     updates[newAddress] = state[address];
     return updates;
   }, {});
@@ -60,7 +63,7 @@ const acceptResponse = (context, publicKey, { offer, response }) => {
         reject('Signer is not approver for this response:', publicKey);
       }
 
-      owner = getAddress.collection(decodedOffer.owner);
+      owner = getCollectionAddress(decodedOffer.owner);
       ownerMoji = decodedOffer.moji;
       responderMoji = decodedResponse.moji;
 
@@ -76,7 +79,7 @@ const acceptResponse = (context, publicKey, { offer, response }) => {
       }
 
       const decodedMoji = decode(state[responderMoji[0]]);
-      responder = getAddress.collection(decodedMoji.owner);
+      responder = getCollectionAddress(decodedMoji.owner);
 
       return context.getState([ owner, responder ]);
     })

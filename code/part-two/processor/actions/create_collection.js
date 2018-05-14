@@ -1,7 +1,10 @@
 'use strict';
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getMojiAddress
+} = require('../services/addressing');
 const { NEW_MOJI_COUNT, DNA_LENGTH, GENE_SIZE } = require('../services/constants');
 const { encode } = require('../services/encoding');
 const { getPrng } = require('../services/helpers');
@@ -31,7 +34,7 @@ const makeMoji = (publicKey, prng) => {
 };
 
 const createCollection = (context, publicKey, signature) => {
-  const address = getAddress.collection(publicKey);
+  const address = getCollectionAddress(publicKey);
   const prng = getPrng(signature);
 
   return context.getState([ address ])
@@ -43,10 +46,9 @@ const createCollection = (context, publicKey, signature) => {
       const updates = {};
       const mojiAddresses = [];
       const moji = makeMoji(publicKey, prng);
-      const getMojiAddress = getAddress.moji(publicKey);
 
       moji.forEach(moji => {
-        const address = getMojiAddress(moji.dna);
+        const address = getMojiAddress(publicKey, moji.dna);
         updates[address] = encode(moji);
         mojiAddresses.push(address);
       });

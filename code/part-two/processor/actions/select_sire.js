@@ -1,7 +1,11 @@
 'use strict';
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
-const getAddress = require('../services/addressing');
+const {
+  getCollectionAddress,
+  getSireAddress,
+  isValidAddress
+} = require('../services/addressing');
 const { decode, encode } = require('../services/encoding');
 
 
@@ -13,11 +17,11 @@ const selectSire = (context, publicKey, { sire }) => {
   if (!sire) {
     reject('No sire specified');
   }
-  if (!getAddress.isValid(sire)) {
-    reject('Sire address must be a 70-char hex string:', sire);
+  if (!isValidAddress(sire)) {
+    reject('Invalid sire listing address:', sire);
   }
 
-  const owner = getAddress.collection(publicKey);
+  const owner = getCollectionAddress(publicKey);
   return context.getState([ owner, sire ])
     .then(state => {
       if (state[owner].length === 0) {
@@ -33,7 +37,7 @@ const selectSire = (context, publicKey, { sire }) => {
       }
 
       const update = {};
-      update[getAddress.sireListing(publicKey)] = encode({
+      update[getSireAddress(publicKey)] = encode({
         sire,
         owner: publicKey
       });
