@@ -109,16 +109,11 @@ describe('Add Response', function() {
       moji: moji.reverse(),
       offer
     }, responderPriv);
+    const submission = handler.apply(txn, context)
+      .then(() => handler.apply(repeatTxn, context));
 
-    return handler.apply(txn, context)
-      .then(() => handler.apply(repeatTxn, context))
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         const { responses } = decode(context._state[offer]);
         expect(responses).to.have.lengthOf(1);
       });
@@ -142,15 +137,10 @@ describe('Add Response', function() {
   it('should reject public keys with no collection', function() {
     delete context._state[getCollectionAddress(responderPub)];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         const { responses } = decode(context._state[offer]);
         expect(responses).to.be.empty;
       });
@@ -159,15 +149,10 @@ describe('Add Response', function() {
   it('should reject responses when moji are not set', function() {
     const moji = [];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         const { responses } = decode(context._state[offer]);
         expect(responses).to.be.empty;
       });
@@ -175,29 +160,22 @@ describe('Add Response', function() {
 
   it('should reject responses when offer is not set', function() {
     const txn = new Txn({ action: 'ADD_RESPONSE', moji }, responderPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
+        const { responses } = decode(context._state[offer]);
+        expect(responses).to.be.empty;
       });
   });
 
   it('should reject responses with any moji that do not exist', function() {
     delete context._state[moji[1]];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         const { responses } = decode(context._state[offer]);
         expect(responses).to.be.empty;
       });
@@ -207,16 +185,11 @@ describe('Add Response', function() {
     const sire = moji[1];
     const sireTxn = new Txn({ action: 'SELECT_SIRE', sire }, responderPriv);
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
+    const submission = handler.apply(sireTxn, context)
+      .then(() => handler.apply(txn, context));
 
-    return handler.apply(sireTxn, context)
-      .then(() => handler.apply(txn, context))
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         const { responses } = decode(context._state[offer]);
         expect(responses).to.be.empty;
       });
@@ -225,29 +198,18 @@ describe('Add Response', function() {
   it('should reject responses with an offer that does not exist', function() {
     delete context._state[offer];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-      });
+    return expect(submission).to.be.rejectedWith(InvalidTransaction);
   });
 
   it("should reject responses with offer owner's own moji", function() {
     const { moji } = decode(context._state[getCollectionAddress(ownerPub)]);
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, ownerPriv);
+    const submission = handler.apply(txn, context);
 
-    return handler.apply(txn, context)
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
-
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         const { responses } = decode(context._state[offer]);
         expect(responses).to.be.empty;
       });
@@ -258,19 +220,16 @@ describe('Add Response', function() {
     const fraudPriv = fraudTxn._privateKey;
     const fraudPub = fraudTxn._publicKey;
 
-    return handler.apply(fraudTxn, context)
+    const submission = handler.apply(fraudTxn, context)
       .then(() => {
         const fraud = decode(context._state[getCollectionAddress(fraudPub)]);
         moji = fraud.moji.slice(0, 2).concat(moji.slice(0, 1));
         const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, fraudPriv);
         return handler.apply(txn, context);
-      })
-      .catch(err => {
-        expect(err).to.be.instanceOf(InvalidTransaction);
-        return true;
-      })
-      .then(wasRejected => {
-        expect(wasRejected, 'Transaction should be rejected').to.be.true;
+      });
+
+    return expect(submission).to.be.rejectedWith(InvalidTransaction)
+      .then(() => {
         const { responses } = decode(context._state[offer]);
         expect(responses).to.be.empty;
       });
