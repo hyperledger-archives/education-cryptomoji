@@ -12,6 +12,7 @@ const { decode } = require('./services/encoding');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
 
+
 describe('Breed Moji', function() {
   let handler = null;
   let context = null;
@@ -50,60 +51,51 @@ describe('Breed Moji', function() {
       });
   });
 
-  it("should create a new moji for the breeder's owner", function() {
+  it("should create a new moji for breeders' owners", function() {
     const txn = new Txn({ action: 'BREED_MOJI', sire, breeder }, privateKey);
 
     return handler.apply(txn, context)
       .then(() => {
         const owner = decode(context._state[getCollectionAddress(publicKey)]);
-        expect(owner.moji, 'Owner should have four cryptomoji')
-          .to.have.lengthOf(4);
+        expect(owner.moji).to.have.lengthOf(4);
 
         const child = decode(context._state[owner.moji[3]]);
 
-        expect(child.owner, "Child moji should include the owner's public key")
-          .to.equal(publicKey);
-        expect(child.sire, "Child moji should include the sire's address")
-          .to.equal(sire);
-        expect(child.breeder, "Child moji should include the breeder's address")
-          .to.equal(breeder);
+        expect(child.owner).to.equal(publicKey);
+        expect(child.sire).to.equal(sire);
+        expect(child.breeder).to.equal(breeder);
       });
   });
 
-  it('should add a new sired moji for the sire', function() {
+  it('should list new a sired moji on sires', function() {
     const txn = new Txn({ action: 'BREED_MOJI', sire, breeder }, privateKey);
 
     return handler.apply(txn, context)
       .then(() => {
         const sireMoji = decode(context._state[sire]);
-        expect(sireMoji.sired, 'Sire should have one sired moji')
-          .to.have.lengthOf(1);
-        expect(sireMoji.bred, 'Sire should still not have bred')
-          .to.be.empty;
+        expect(sireMoji.sired).to.have.lengthOf(1);
+        expect(sireMoji.bred).to.be.empty;
       });
   });
 
-  it('should add a new bred moji for the breeder', function() {
+  it('should add a new bred moji for breeders', function() {
     const txn = new Txn({ action: 'BREED_MOJI', sire, breeder }, privateKey);
 
     return handler.apply(txn, context)
       .then(() => {
         const breederMoji = decode(context._state[breeder]);
-        expect(breederMoji.bred, 'Breeder should have one bred moji')
-          .to.have.lengthOf(1);
-        expect(breederMoji.sired, 'Breeder should still not have sired')
-          .to.be.empty;
+        expect(breederMoji.bred).to.have.lengthOf(1);
+        expect(breederMoji.sired).to.be.empty;
       });
   });
 
-  it('should reject public keys with no Collection', function() {
+  it('should reject public keys with no collection', function() {
     delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'BREED_MOJI', sire, breeder }, privateKey);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
@@ -116,15 +108,14 @@ describe('Breed Moji', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const owner = decode(context._state[getCollectionAddress(publicKey)]);
-        expect(owner.moji, 'Owner should still have just three cryptomoji')
-          .to.have.lengthOf(3);
+        expect(owner.moji).to.have.lengthOf(3);
       });
   });
 
@@ -134,15 +125,14 @@ describe('Breed Moji', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const owner = decode(context._state[getCollectionAddress(publicKey)]);
-        expect(owner.moji, 'Owner should still have just three cryptomoji')
-          .to.have.lengthOf(3);
+        expect(owner.moji).to.have.lengthOf(3);
       });
   });
 
@@ -151,15 +141,14 @@ describe('Breed Moji', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const owner = decode(context._state[getCollectionAddress(publicKey)]);
-        expect(owner.moji, 'Owner should still have just three cryptomoji')
-          .to.have.lengthOf(3);
+        expect(owner.moji).to.have.lengthOf(3);
       });
   });
 
@@ -169,15 +158,14 @@ describe('Breed Moji', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const owner = decode(context._state[getCollectionAddress(publicKey)]);
-        expect(owner.moji, 'Owner should still have just three cryptomoji')
-          .to.have.lengthOf(3);
+        expect(owner.moji).to.have.lengthOf(3);
       });
   });
 
@@ -187,15 +175,14 @@ describe('Breed Moji', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const owner = decode(context._state[getCollectionAddress(publicKey)]);
-        expect(owner.moji, 'Owner should still have just three cryptomoji')
-          .to.have.lengthOf(3);
+        expect(owner.moji).to.have.lengthOf(3);
       });
   });
 
@@ -206,15 +193,14 @@ describe('Breed Moji', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
         const owner = decode(context._state[getCollectionAddress(publicKey)]);
-        expect(owner.moji, 'Owner should still have just three cryptomoji')
-          .to.have.lengthOf(3);
+
+        expect(owner.moji).to.have.lengthOf(3);
       });
   });
 
@@ -226,15 +212,14 @@ describe('Breed Moji', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const owner = decode(context._state[getCollectionAddress(publicKey)]);
-        expect(owner.moji, 'Owner should still have just three cryptomoji')
-          .to.have.lengthOf(3);
+        expect(owner.moji).to.have.lengthOf(3);
       });
   });
 });

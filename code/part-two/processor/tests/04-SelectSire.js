@@ -12,6 +12,7 @@ const { decode } = require('./services/encoding');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
 
+
 describe('Select Sire', function() {
   let handler = null;
   let context = null;
@@ -37,35 +38,31 @@ describe('Select Sire', function() {
       });
   });
 
-  it('should list a Sire at the correct address', function() {
+  it('should list Sires at the correct address', function() {
     const txn = new Txn({ action: 'SELECT_SIRE', sire }, privateKey);
 
     return handler.apply(txn, context)
       .then(() => {
-        expect(context._state[address], 'Sire listing should exist').to.exist;
-        const listing = decode(context._state[address]);
+        expect(context._state[address]).to.exist;
 
-        expect(listing.owner, "Sire listing should include owner's public key")
-          .to.equal(publicKey);
-        expect(listing.sire, "Sire listing should include the sire's address")
-          .to.equal(sire);
+        const listing = decode(context._state[address]);
+        expect(listing.owner).to.equal(publicKey);
+        expect(listing.sire).to.equal(sire);
       });
   });
 
-  it('should reject public keys with no Collection', function() {
+  it('should reject public keys with no collection', function() {
     delete context._state[getCollectionAddress(publicKey)];
     const txn = new Txn({ action: 'SELECT_SIRE', sire }, privateKey);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address], 'Sire listing should not exist')
-          .to.not.exist;
+        expect(context._state[address]).to.not.exist;
       });
   });
 
@@ -74,8 +71,7 @@ describe('Select Sire', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
@@ -89,18 +85,16 @@ describe('Select Sire', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address], 'Sire listing should not exist')
-          .to.not.exist;
+        expect(context._state[address]).to.not.exist;
       });
   });
 
-  it('should reject public keys that do not own the Sire', function() {
+  it('should reject public keys that do not own the sire', function() {
     const createTxn = new Txn({ action: 'CREATE_COLLECTION' });
     const address = getSireAddress(createTxn._publicKey);
     const txn = new Txn({ action: 'SELECT_SIRE', sire }, createTxn._privateKey);
@@ -108,14 +102,12 @@ describe('Select Sire', function() {
     return handler.apply(createTxn, context)
       .then(() => handler.apply(txn, context))
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[address], 'Sire listing should not exist')
-          .to.not.exist;
+        expect(context._state[address]).to.not.exist;
       });
   });
 });

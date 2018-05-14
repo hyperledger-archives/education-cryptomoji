@@ -12,6 +12,7 @@ const { decode } = require('./services/encoding');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
 
+
 describe('Add Response', function() {
   let handler = null;
   let context = null;
@@ -52,49 +53,44 @@ describe('Add Response', function() {
       });
   });
 
-  it('should add a response with multiple moji', function() {
+  it('should add responses with multiple moji', function() {
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
 
     return handler.apply(txn, context)
       .then(() => {
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'Offer should have one response').to.have.lengthOf(1);
+        expect(responses).to.have.lengthOf(1);
 
-        expect(responses[0].approver, 'Response should need owner approval')
-          .to.equal(ownerPub);
-        expect(responses[0].moji, 'Response should include the moji offered')
-          .to.deep.equal(moji);
+        expect(responses[0].approver).to.equal(ownerPub);
+        expect(responses[0].moji).to.deep.equal(moji);
       });
   });
 
-  it('should add a response with a single moji', function() {
+  it('should add responses with a single moji', function() {
     moji = moji.slice(0, 1);
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
 
     return handler.apply(txn, context)
       .then(() => {
         const responses = decode(context._state[offer]).responses;
-        expect(responses, 'Offer should have one response').to.have.lengthOf(1);
+        expect(responses).to.have.lengthOf(1);
 
-        expect(responses[0].approver, 'Response should need owner approval')
-          .to.equal(ownerPub);
-        expect(responses[0].moji, 'Response should include the moji offered')
-          .to.deep.equal(moji);
+        expect(responses[0].approver).to.equal(ownerPub);
+        expect(responses[0].moji).to.deep.equal(moji);
       });
   });
 
-  it('should add a response from the offer owner', function() {
+  it('should add responses from the offer owner', function() {
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, ownerPriv);
 
     return handler.apply(txn, context)
       .then(() => {
         const { responses } = decode(context._state[offer]);
-        expect(responses[0].approver, 'Response should need responder approval')
-          .to.equal(responderPub);
+        expect(responses[0].approver).to.equal(responderPub);
       });
   });
 
-  it('should sort the moji in the response', function() {
+  it('should sort the moji in responses', function() {
     moji = moji.reverse();
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
 
@@ -117,14 +113,14 @@ describe('Add Response', function() {
     return handler.apply(txn, context)
       .then(() => handler.apply(repeatTxn, context))
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'Offer should have one response').to.have.lengthOf(1);
+        expect(responses).to.have.lengthOf(1);
       });
   });
 
@@ -139,52 +135,50 @@ describe('Add Response', function() {
       .then(() => handler.apply(getAddTxn(3), context))
       .then(() => {
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'There should be three responses')
-          .to.have.lengthOf(3);
+        expect(responses).to.have.lengthOf(3);
       });
   });
 
-  it('should reject public keys with no Collection', function() {
+  it('should reject public keys with no collection', function() {
     delete context._state[getCollectionAddress(responderPub)];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'Offer should have no responses').to.be.empty;
+        expect(responses).to.be.empty;
       });
   });
 
-  it('should reject a response when moji is not set', function() {
+  it('should reject responses when moji are not set', function() {
     const moji = [];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'Offer should have no responses').to.be.empty;
+        expect(responses).to.be.empty;
       });
   });
 
-  it('should reject a response when offer is not set', function() {
+  it('should reject responses when offer is not set', function() {
     const txn = new Txn({ action: 'ADD_RESPONSE', moji }, responderPriv);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
@@ -192,24 +186,24 @@ describe('Add Response', function() {
       });
   });
 
-  it('should reject a response with a moji that does not exist', function() {
+  it('should reject responses with any moji that do not exist', function() {
     delete context._state[moji[1]];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'Offer should have no responses').to.be.empty;
+        expect(responses).to.be.empty;
       });
   });
 
-  it('should reject a response that includes a Sire', function() {
+  it('should reject responses that include a sire', function() {
     const sire = moji[1];
     const sireTxn = new Txn({ action: 'SELECT_SIRE', sire }, responderPriv);
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
@@ -217,25 +211,24 @@ describe('Add Response', function() {
     return handler.apply(sireTxn, context)
       .then(() => handler.apply(txn, context))
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'Offer should have no responses').to.be.empty;
+        expect(responses).to.be.empty;
       });
   });
 
-  it('should reject a response with an offer that does not exist', function() {
+  it('should reject responses with an offer that does not exist', function() {
     delete context._state[offer];
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, responderPriv);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
@@ -243,20 +236,20 @@ describe('Add Response', function() {
       });
   });
 
-  it("should reject a response with offer owner's moji", function() {
+  it("should reject responses with offer owner's own moji", function() {
     const { moji } = decode(context._state[getCollectionAddress(ownerPub)]);
     const txn = new Txn({ action: 'ADD_RESPONSE', moji, offer }, ownerPriv);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
+
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'Offer should have no responses').to.be.empty;
+        expect(responses).to.be.empty;
       });
   });
 
@@ -273,14 +266,13 @@ describe('Add Response', function() {
         return handler.apply(txn, context);
       })
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
         const { responses } = decode(context._state[offer]);
-        expect(responses, 'Offer should have no responses').to.be.empty;
+        expect(responses).to.be.empty;
       });
   });
 });

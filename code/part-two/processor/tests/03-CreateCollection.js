@@ -31,16 +31,14 @@ describe('Create Collection', function() {
     address = getCollectionAddress(publicKey);
   });
 
-  it('should create a Collection at the correct address', function() {
+  it('should create collections at correct addresses', function() {
     return handler.apply(txn, context)
       .then(() => {
-        expect(context._state[address], 'Collection should exist').to.exist;
-        const collection = decode(context._state[address]);
+        expect(context._state[address]).to.exist;
 
-        expect(collection.key, 'Collection should have a public key')
-          .to.equal(publicKey);
-        expect(collection.moji, 'Collection should have a moji array')
-          .to.be.an('array');
+        const collection = decode(context._state[address]);
+        expect(collection.key).to.equal(publicKey);
+        expect(collection.moji).to.be.an('array');
       });
   });
 
@@ -50,17 +48,13 @@ describe('Create Collection', function() {
         const collection = decode(context._state[address]);
         const mojiAddress = collection.moji[0];
 
-        expect(collection.moji, 'Collection should have three moji addresses')
-          .to.have.lengthOf(3);
-        expect(mojiAddress, 'Moji address should be 70 hex characters')
-          .to.be.a.hexString.with.lengthOf(70);
-        expect(context._state[mojiAddress], 'Moji should exist').to.exist;
-        const moji = decode(context._state[mojiAddress]);
+        expect(collection.moji).to.have.lengthOf(3);
+        expect(mojiAddress).to.be.a.hexString.with.lengthOf(70);
+        expect(context._state[mojiAddress]).to.exist;
 
-        expect(moji.dna, 'Moji DNA should be 36 hex characters')
-          .to.be.a.hexString.with.lengthOf(36);
-        expect(mojiAddress, 'Moji address match address generated from DNA')
-          .to.equal(getMojiAddress(publicKey, moji.dna));
+        const moji = decode(context._state[mojiAddress]);
+        expect(moji.dna).to.be.a.hexString.with.lengthOf(36);
+        expect(mojiAddress).to.equal(getMojiAddress(publicKey, moji.dna));
       });
   });
 
@@ -79,9 +73,7 @@ describe('Create Collection', function() {
       })
       .then(() => {
         const collection = decode(context._state[address]);
-
-        expect(collection.moji, 'New moji should match old moji')
-          .to.deep.equal(oldMoji);
+        expect(collection.moji).to.deep.equal(oldMoji);
       });
   });
 
@@ -106,9 +98,7 @@ describe('Create Collection', function() {
       })
       .then(() => {
         const collection = decode(context._state[address]);
-
-        expect(collection.moji, 'Moji should not match when signature changes')
-          .to.not.deep.equal(oldMoji);
+        expect(collection.moji).to.not.deep.equal(oldMoji);
       });
   });
 
@@ -116,8 +106,7 @@ describe('Create Collection', function() {
     return handler.apply(txn, context)
       .then(() => handler.apply(txn, context))
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {

@@ -12,6 +12,7 @@ const { encode, decode } = require('./services/encoding');
 const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
 
+
 describe('Accept Response', function() {
   let handler = null;
   let context = null;
@@ -57,27 +58,25 @@ describe('Accept Response', function() {
       });
   });
 
-  it('should allow offer owner to accept a response', function() {
+  it('should allow offer owners to accept responses', function() {
     const payload = { action: 'ACCEPT_RESPONSE', offer, response: 0 };
     const txn = new Txn(payload, ownerPriv);
 
     return handler.apply(txn, context)
       .then(() => {
-        expect(context._state[offer], 'Offer should be removed').to.not.exist;
+        expect(context._state[offer]).to.not.exist;
 
         const newOwnerDna = decode(context._state[ownerAddr]).moji
           .map(m => decode(context._state[m]).dna);
         const newResponderDna = decode(context._state[responderAddr]).moji
           .map(m => decode(context._state[m]).dna);
 
-        expect(newOwnerDna.sort(), 'Owner should now have response moji')
-          .to.deep.equal(responderDna.sort());
-        expect(newResponderDna.sort(), 'Responder should now have owner moji')
-          .to.deep.equal(ownerDna.sort());
+        expect(newOwnerDna.sort()).to.deep.equal(responderDna.sort());
+        expect(newResponderDna.sort()).to.deep.equal(ownerDna.sort());
       });
   });
 
-  it('should allow owner of response moji to accept a response', function() {
+  it('should allow owners of response moji to accept responses', function() {
     const defaultOffer = decode(context._state[offer]);
     defaultOffer.responses = [];
     context._state[offer] = encode(defaultOffer);
@@ -91,7 +90,7 @@ describe('Accept Response', function() {
     return handler.apply(addTxn, context)
       .then(() => handler.apply(acceptTxn, context))
       .then(() => {
-        expect(context._state[offer], 'Offer should be removed').to.not.exist;
+        expect(context._state[offer]).to.not.exist;
 
         const newOwnerDna = decode(context._state[ownerAddr]).moji
           .map(m => decode(context._state[m]).dna);
@@ -105,7 +104,7 @@ describe('Accept Response', function() {
       });
   });
 
-  it('should accept one response of many', function() {
+  it('should accept responses that are one of many', function() {
     const defaultOffer = decode(context._state[offer]);
     defaultOffer.responses = [];
     context._state[offer] = encode(defaultOffer);
@@ -125,7 +124,7 @@ describe('Accept Response', function() {
       .then(() => handler.apply(getAddTxn(2), context))
       .then(() => handler.apply(acceptTxn, context))
       .then(() => {
-        expect(context._state[offer], 'Offer should be removed').to.not.exist;
+        expect(context._state[offer]).to.not.exist;
 
         const newOwnerDna = decode(context._state[ownerAddr]).moji
           .map(m => decode(context._state[m]).dna);
@@ -139,20 +138,18 @@ describe('Accept Response', function() {
       });
   });
 
-  it('should reject acceptances from a key other than approver', function() {
+  it('should reject acceptances from key others than approver', function() {
     const payload = { action: 'ACCEPT_RESPONSE', offer, response: 0 };
     const txn = new Txn(payload, responderPriv);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[offer], 'Offer should still exist')
-          .to.not.be.empty;
+        expect(context._state[offer]).to.not.be.empty;
 
         const newOwnerDna = decode(context._state[ownerAddr]).moji
           .map(m => decode(context._state[m]).dna);
@@ -172,14 +169,12 @@ describe('Accept Response', function() {
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[offer], 'Offer should still exist')
-          .to.not.be.empty;
+        expect(context._state[offer]).to.not.be.empty;
 
         const newOwnerDna = decode(context._state[ownerAddr]).moji
           .map(m => decode(context._state[m]).dna);
@@ -193,21 +188,19 @@ describe('Accept Response', function() {
       });
   });
 
-  it('should reject acceptances when a moji has been moved', function() {
+  it('should reject acceptances when any moji have been moved', function() {
     delete context._state[decode(context._state[responderAddr]).moji[1]];
     const payload = { action: 'ACCEPT_RESPONSE', offer, response: 0 };
     const txn = new Txn(payload, ownerPriv);
 
     return handler.apply(txn, context)
       .catch(err => {
-        expect(err, 'Error should be an InvalidTransaction')
-          .to.be.instanceOf(InvalidTransaction);
+        expect(err).to.be.instanceOf(InvalidTransaction);
         return true;
       })
       .then(wasRejected => {
         expect(wasRejected, 'Transaction should be rejected').to.be.true;
-        expect(context._state[offer], 'Offer should still exist')
-          .to.not.be.empty;
+        expect(context._state[offer]).to.not.be.empty;
       });
   });
 });
