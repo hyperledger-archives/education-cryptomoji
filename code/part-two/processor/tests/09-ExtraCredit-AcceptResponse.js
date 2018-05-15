@@ -13,7 +13,8 @@ const Txn = require('./services/mock_txn');
 const Context = require('./services/mock_context');
 
 
-describe('Accept Response', function() {
+// EXTRA CREDIT: Remove `.skip` to test
+describe.skip('Accept Response', function() {
   let handler = null;
   let context = null;
   let offer = null;
