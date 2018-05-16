@@ -1,3 +1,4 @@
+/* SOLUTION FILE */
 'use strict';
 
 const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions');
