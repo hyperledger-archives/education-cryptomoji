@@ -1,3 +1,4 @@
+/* SOLUTION FILE */
 import React from 'react';
 
 import { MojiItem } from './MojiItem';

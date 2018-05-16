@@ -1,3 +1,4 @@
+/* SOLUTION FILE */
 import axios from 'axios';
 
 import { decode } from './encoding.js';
