@@ -1,0 +1,128 @@
+#! /usr/bin/env node
+
+// Modifies a directory to contain only problem code or solution code.
+//
+// Run in one of two modes, specifying a path:
+//   - `problemify --problem ./`
+//   - `problemify --solution ./`
+//
+// Based on the problemify concept by @bcmarinacci
+// https://github.com/bcmarinacci/problemify
+//
+// More strict than that CLI, only matching comments in ALL CAPS. Also modifies
+// the files in place rather than creating new directories (for use with git).
+// Finally, it adds functionality for `/* PROBLEM FILE */` and
+// `/* SOLUTION FILE */` comments on the first line of a file. These will
+// delete the file if in solution mode or problem mode respectfully.
+
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+
+
+const IGNORED = ['node_modules', 'bundle.js'];
+const EXTENSIONS = ['.js', '.jsx'];
+const PROBLEM_RE = new RegExp([
+  '.*\\/\\/.*START SOLUTION.*\\n[\\s\\S]*?.*\\/\\/.*END SOLUTION.*\\n',
+  '.*\\/\\*.*START PROBLEM.*\\n',
+  '.*END PROBLEM.*\\*\\/.*\\n',
+  '\\/\\* PROBLEM FILE \\*\\/\\n'
+].join('|'), 'gm');
+const SOLUTION_RE = new RegExp([
+  '.*\\/\\*.*START PROBLEM.*\\n[\\s\\S]*?.*END PROBLEM.*\\*\\/.*\\n',
+  '.*\\/\\/.*START SOLUTION.*\\n',
+  '.*\\/\\/.*END SOLUTION.*\\n',
+  '\\/\\* SOLUTION FILE \\*\\/\\n'
+].join('|'), 'gm');
+
+const printUsage = () => {
+  console.log(
+`
+usage: problemify mode path
+
+Modifies JS source code in directory to be either a problem or a solution.
+
+positional arguments:
+  mode                  One of: -p, -s, --problem, or --solution
+  path                  Path to source code
+
+optional arguments
+  -h, --help            Print this help text
+`
+  );
+}
+
+const parseArgs = ([ _, __, modeFlag, pathName ]) => {
+  if (['-h', '--help'].includes(modeFlag)) {
+    printUsage();
+    process.exit(0);
+  }
+
+  if (!['-p', '-s','--problem', '--solution'].includes(modeFlag)) {
+    console.error('Error: Must specify a mode!');
+    printUsage();
+    process.exit(1);
+  }
+
+  if (!pathName) {
+    console.error('Error: Must specify a path!');
+    printUsage();
+    process.exit(1);
+  }
+
+  const mode = ['-p', '--problem'].includes(modeFlag) ? 'P' : 'S';
+  const fullPath = path.resolve(process.cwd(), pathName);
+
+  return [ mode, fullPath ];
+}
+
+const concatMap = (array, iterator) => {
+  return array.reduce((mapped, item) => {
+    return mapped.concat(iterator(item));
+  }, [])
+};
+
+const listFiles = dir => {
+  return concatMap(fs.readdirSync(dir), file => {
+    if (IGNORED.includes(file)) {
+      return [];
+    }
+
+    if (fs.statSync(path.join(dir, file)).isDirectory()) {
+      return listFiles(path.join(dir, file))
+    }
+
+    if (EXTENSIONS.includes(path.extname(file))) {
+      return path.join(dir, file);
+    }
+
+    return [];
+  })
+};
+
+const xformFile = mode => path => {
+  fs.readFile(path, 'utf8', (err, code) => {
+    if (err) throw err;
+
+    if (mode === 'P' && code.slice(0, 19) === '/* SOLUTION FILE */') {
+      return fs.unlink(path, err => { if (err) throw err; });
+    }
+
+    if (mode === 'S' && code.slice(0, 18) === '/* PROBLEM FILE */') {
+      return fs.unlink(path, err => { if (err) throw err; });
+    }
+
+    const xformed = mode === 'P'
+      ? code.replace(PROBLEM_RE, '')
+      : code.replace(SOLUTION_RE, '');
+
+    fs.writeFile(path, xformed, 'utf8', err => { if (err) throw err; });
+  });
+};
+
+// Modify files
+const [ MODE, PATH ] = parseArgs(process.argv);
+console.log(`${MODE === 'P' ? 'Problemifying' : 'Solutionifying'}: ${PATH}`);
+
+listFiles(PATH).forEach(xformFile(MODE));
