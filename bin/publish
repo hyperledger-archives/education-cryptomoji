@@ -1,0 +1,48 @@
+#! /bin/bash
+
+# Problemifies the code, then creates new commits and pushes them to the
+# `master` and `solution` branches.
+#
+# Requires `git` and `node`
+
+# Check for uncommitted changes
+if [ -n "$( git diff-index --name-only HEAD -- )" ]
+    then
+        echo "The working directory must be clean to publish"
+        echo "Stash or commit your changes"
+        exit 1
+fi
+
+# Save current environment
+CURR_DIR="$( pwd )"
+ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
+CURR_BRANCH="$( git rev-parse --abbrev-ref HEAD )"
+
+# Pull new staging code
+git checkout staging
+git pull upstream staging
+HEAD="$( git rev-parse HEAD )"
+
+# Problemify code
+cd $ROOT_DIR
+bin/problemify -p code/
+git checkout master
+
+# Push to master
+git add .
+git commit -s -m "Problemified code generated from: $HEAD"
+git push upstream master
+
+# Solutionify code
+git checkout staging
+bin/problemify -s code/
+git checkout solution
+
+# Push to solution
+git add .
+git commit -s -m "Solutionified code generated from: $HEAD"
+git push upstream solution
+
+# Reset environment
+cd $CURR_DIR
+git checkout $CURR_BRANCH
