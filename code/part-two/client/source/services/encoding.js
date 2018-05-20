@@ -4,7 +4,7 @@
 const concatMap = (array, iterator) => {
   return array.reduce((mapped, item) => {
     return mapped.concat(iterator(item));
-  }, [])
+  }, []);
 };
 
 // Recursively fetches all of the keys in nested objects

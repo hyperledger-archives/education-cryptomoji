@@ -181,7 +181,7 @@ describe('Transactions module', function() {
       const transactionArray = [
         transaction,
         transactions.createTransaction(keys.privateKey, { foo: 'bar' })
-      ]
+      ];
       batch = transactions.createBatch(keys.privateKey, transactionArray);
       const header = BatchHeader.decode(batch.header);
 
