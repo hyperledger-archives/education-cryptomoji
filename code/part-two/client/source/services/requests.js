@@ -14,7 +14,7 @@ const MAX_HTTP_REQUESTS = 10;
 const fetchOne = address => {
   const type = addressing.addressToType(address);
   return axios.get(`/api/state/${address}`)
-    .then(({ data }) => Object.assign({ address, type } , decode(data.data)));
+    .then(({ data }) => Object.assign({ address, type }, decode(data.data)));
 };
 
 // Takes a partial address (i.e. prefix), and fetches all matching entities
