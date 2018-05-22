@@ -39,7 +39,9 @@ const getOfferAddress = (ownerKey, addresses) => {
     addresses = [ addresses ];
   }
 
-  return PREFIXES.OFFER + hash(ownerKey, 8) + hash(addresses.join(''), 54);
+  return PREFIXES.OFFER
+    + hash(ownerKey, 8)
+    + hash(addresses.sort().join(''), 54);
 };
 
 const isValidAddress = address => {

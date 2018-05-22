@@ -149,6 +149,6 @@ export const getOfferAddress = (ownerKey = null, moji = null) => {
     return getMojiAddress(ownerKey, addressOrDna);
   });
 
-  return ownerPrefix + hash(addresses.join(''), 54);
+  return ownerPrefix + hash(addresses.sort().join(''), 54);
   // END SOLUTION
 };
