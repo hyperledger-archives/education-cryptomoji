@@ -212,7 +212,20 @@ describe('Processor Services', function() {
         ];
 
         const address = addressing.getOfferAddress(publicKey, mojiAddresses);
-        const addressHash = hash(mojiAddress + mojiAddresses[1]).slice(0, 54);
+        const addressHash = hash(mojiAddresses.sort().join('')).slice(0, 54);
+
+        expect(address).to.equal('5f4d76' + '03' + keyHash + addressHash);
+      });
+
+      it('should sort moji when generating an offer address', function() {
+        const mojiAddresses = [
+          mojiAddress,
+          addressing.getMojiAddress(publicKey, randomBytes(18).toString('hex'))
+        ];
+        mojiAddresses.sort().reverse();
+
+        const address = addressing.getOfferAddress(publicKey, mojiAddresses);
+        const addressHash = hash(mojiAddresses.sort().join('')).slice(0, 54);
 
         expect(address).to.equal('5f4d76' + '03' + keyHash + addressHash);
       });
