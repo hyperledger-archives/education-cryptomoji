@@ -22,18 +22,12 @@ class Transaction {
    *     other properties, signed by the passed in private key
    */
   constructor(privateKey, recipient, amount) {
-    /* START PROBLEM
-    // Enter your solution here
-
-    END PROBLEM */
-    // START SOLUTION
     this.source = signing.getPublicKey(privateKey);
     this.recipient = recipient;
     this.amount = amount;
 
     const toSign = this.source + recipient + amount;
     this.signature = signing.sign(privateKey, toSign);
-    // END SOLUTION
   }
 }
 
@@ -54,15 +48,10 @@ class Block {
    *   - hash: a unique hash string generated from the other properties
    */
   constructor(transactions, previousHash) {
-    /* START PROBLEM
-    // Your code here
-
-    END PROBLEM */
     // start solution
     this.transactions = transactions;
     this.previousHash = previousHash;
     this.calculateHash(0);
-    // END SOLUTION
   }
 
   /**
@@ -75,17 +64,12 @@ class Block {
    *   properties change.
    */
   calculateHash(nonce) {
-    /* START PROBLEM
-    // Your code here
-
-    END PROBLEM */
     // start solution
     const transactionString = this.transactions.map(t => t.signature).join('');
     const toHash = this.previousHash + transactionString + nonce;
 
     this.nonce = nonce;
     this.hash = createHash('sha512').update(toHash).digest('hex');
-    // END SOLUTION
   }
 }
 
@@ -104,27 +88,17 @@ class Blockchain {
    *   - blocks: an array of blocks, starts with one genesis block
    */
   constructor() {
-    /* START PROBLEM
-    // Your code here
-
-    END PROBLEM */
     // start solution
     const genesis = new Block([], null);
     this.blocks = [ genesis ];
-    // END SOLUTION
   }
 
   /**
    * Simply returns the last block added to the chain.
    */
   getHeadBlock() {
-    /* START PROBLEM
-    // Your code here
-
-    END PROBLEM */
     // start solution
     return this.blocks[this.blocks.length - 1];
-    // END SOLUTION
   }
 
   /**
@@ -132,14 +106,9 @@ class Blockchain {
    * adding it to the chain.
    */
   addBlock(transactions) {
-    /* START PROBLEM
-    // Your code here
-
-    END PROBLEM */
     // start solution
     const block = new Block(transactions, this.getHeadBlock().hash);
     this.blocks.push(block);
-    // END SOLUTION
   }
 
   /**
@@ -152,10 +121,6 @@ class Blockchain {
    *   we make the blockchain mineable later.
    */
   getBalance(publicKey) {
-    /* START PROBLEM
-    // Your code here
-
-    END PROBLEM */
     // start solution
     return this.blocks.reduce((balance, block) => {
       return balance + block.transactions.reduce((sum, transaction) => {
@@ -168,7 +133,6 @@ class Blockchain {
         return sum;
       }, 0);
     }, 0);
-    // END SOLUTION
   }
 }
 

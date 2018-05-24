@@ -11,7 +11,6 @@ const PREFIXES = {
   OFFER: '03'
 };
 
-// START SOLUTION
 Object.keys(PREFIXES).forEach(p => { PREFIXES[p] = NAMESPACE + PREFIXES[p]; });
 
 // Returns a hex-string SHA-512 hash sliced to a particular length
@@ -19,7 +18,6 @@ const hash = (str, length) => {
   return createHash('sha512').update(str).digest('hex').slice(0, length);
 };
 
-//END SOLUTION
 /**
  * A function that takes a public key and returns the correct collection
  * address.
@@ -33,13 +31,7 @@ const hash = (str, length) => {
  *   // '5f4d7600ecd7ef459ec82a01211983551c3ed82169ca5fa0703ec98e17f9b534ffb797'
  */
 const getCollectionAddress = publicKey => {
-  /* START PROBLEM
-  // Enter your solution here
-
-  END PROBLEM */
-  // START SOLUTION
   return PREFIXES.COLLECTION + hash(publicKey, 62);
-  // END SOLUTION
 };
 
 /**
@@ -47,13 +39,7 @@ const getCollectionAddress = publicKey => {
  * correct moji address.
  */
 const getMojiAddress = (ownerKey, dna) => {
-  /* START PROBLEM
-  // Your code here
-
-  END PROBLEM */
-  // START SOLUTION
   return PREFIXES.MOJI + hash(ownerKey, 8) + hash(dna, 54);
-  // END SOLUTION
 };
 
 /**
@@ -61,13 +47,7 @@ const getMojiAddress = (ownerKey, dna) => {
  * listing address.
  */
 const getSireAddress = ownerKey => {
-  /* START PROBLEM
-  // Your code here
-
-  END PROBLEM */
-  // START SOLUTION
   return PREFIXES.SIRE_LISTING + hash(ownerKey, 62);
-  // END SOLUTION
 };
 
 /**
@@ -82,11 +62,6 @@ const getSireAddress = ownerKey => {
  * dna strings.
  */
 const getOfferAddress = (ownerKey, addresses) => {
-  /* START PROBLEM
-  // Your code here
-
-  END PROBLEM */
-  // START SOLUTION
   if (!Array.isArray(addresses)) {
     addresses = [ addresses ];
   }
@@ -94,7 +69,6 @@ const getOfferAddress = (ownerKey, addresses) => {
   return PREFIXES.OFFER
     + hash(ownerKey, 8)
     + hash(addresses.sort().join(''), 54);
-  // END SOLUTION
 };
 
 /**
@@ -106,15 +80,9 @@ const getOfferAddress = (ownerKey, addresses) => {
  *   console.log(isValid);  // false
  */
 const isValidAddress = address => {
-  /* START PROBLEM
-  // Your code here
-
-  END PROBLEM */
-  // START SOLUTION
   const pattern = `^${NAMESPACE}[0-9a-f]{64}$`;
 
   return new RegExp(pattern).test(address);
-  // END SOLUTION
 };
 
 module.exports = {
