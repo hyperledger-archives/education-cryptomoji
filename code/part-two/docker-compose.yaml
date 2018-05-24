@@ -10,7 +10,7 @@ services:
     expose:
       - 80
     ports:
-      - '8000:80'
+      - '3000:80'
     depends_on:
       - rest-api
 
