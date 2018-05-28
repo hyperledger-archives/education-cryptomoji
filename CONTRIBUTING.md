@@ -40,10 +40,10 @@ anything labeled "help wanted" that you could tackle.
 ### Submitting Pull Requests
 
 While the fork to PR process is fairly standard, somewhat more unusual is that
-`master` is _not_ the branch to make a PR against. Here master is not the
-source of truth, but a collection of generated stub functions for students to
-fill out. The original source of this code is actually in the `staging` branch,
-and _all_ PRs should be made against staging.
+`master` is _not_ the branch to make a PR against. In this repo, master is not
+the source of truth, but a collection of generated stub functions for students
+to fill out. The original source of this code is actually in the `staging`
+branch, and _all_ PRs should be made against staging.
 
 The detailed process is as follows:
 
@@ -117,7 +117,12 @@ eslint ./
 
 ## Prompt Generation Syntax
 
-This repo uses special comment-based tags to differentiate between solution code and prompts. Later, these tags are used to separate the prompts into the `master` branch, and the solution code into the `solution` branch. The syntax is a slightly more opinionated version of [this problemify repo](LINK CAN GO HEAR PLS). A typical example might look this:
+This repo uses special comment-based tags to differentiate between solution
+code and prompts. Later, these tags are used to separate the prompts into the
+`master` branch, and the solution code into the `solution` branch. The syntax
+is a slightly more opinionated version of
+[problemify](https://github.com/bcmarinacci/problemify). A typical example
+might look this:
 
 ```javascript
 const hello = name => {
@@ -131,10 +136,10 @@ const hello = name => {
 };
 ```
 
-In the above code, the function signature will appear in both the prompts and
-the solution code, but the contents of the function will be very different:
+With the above stub function, the signature will appear in both the prompts and
+the solution code, but the body will be very different:
 
-`master`
+**master:**
 ```javascript
 const hello = name => {
   // Your code here
@@ -142,7 +147,7 @@ const hello = name => {
 };
 ```
 
-`solution`
+**solution:**
 ```javascript
 const hello = name => {
   console.log(`Hello, ${name}`);
@@ -179,10 +184,10 @@ file.
 ### Publishing Updates to `master` and `solution`
 
 Regular contributors need not worry about this, but for maintainers there is a
-`bin/publish` script which does the work of parsing all the tags and pushing
-the generated code to the appropriate branch. It should be run periodically, if
-possible after every PR is merged. Make sure your working directory is clean
-when you run it, and _never_ do any rebasing or force pushing to the upstream
-`master` or `solution` branches. This script pushes to them directly, and only
-ever makes additions. If there is a conflict, then something has gone wrong,
-and needs to be investigated.
+[bin/publish](bin/publish) script which does the work of parsing all the tags
+and pushing the generated code to the appropriate branch. It should be run
+periodically, if possible after every PR is merged. Make sure your working
+directory is clean when you run it, and _never_ do any rebasing or force
+pushing to `upstream master` or `upstream solution`. This script pushes to
+them directly, but only ever makes additions. If there is a conflict, then
+something has gone wrong, and needs to be investigated.
