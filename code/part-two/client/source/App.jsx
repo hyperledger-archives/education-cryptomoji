@@ -1,7 +1,8 @@
 /* SOLUTION FILE */
 import React from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
+import { NavBar } from './NavBar';
 import { SignupLogin } from './SignupLogin';
 
 import { Collection } from './Collection';
@@ -59,26 +60,8 @@ export class App extends React.Component {
     const publicKey = this.publicKey;
     return (
       <div>
-        <nav>
-          <Link to="/">Home</Link>&ensp;
-          {
-            publicKey &&
-            (
-              <Link to={'/collection/' + publicKey}>
-                Your Collection
-              </Link>
-            )
-          }
-
-          <Link to="/collection">View Collections</Link>&ensp;
-          <Link to="/offer">View Offers</Link>&ensp;
-
-          <Link to="/signup-login">
-            { publicKey ? 'View Private Key' : 'Sign Up/Login' }
-          </Link>&ensp;
-          { publicKey && <a href="#" onClick={this.logout}>Logout</a> }
-          { publicKey && <div>Public Key: <code>{publicKey}</code></div> }
-        </nav>
+        <NavBar publicKey={publicKey} logout={this.logout} />
+        {publicKey && <div>Public Key: <code>{publicKey}</code></div>}
         <br /><br />
         <Switch>
           <Route
