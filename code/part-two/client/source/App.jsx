@@ -6,7 +6,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { NavBar } from './NavBar';
-import { SignupLogin } from './SignupLogin';
+import { Auth } from './Auth';
 
 import { Collection } from './Collection';
 import { CollectionList } from './CollectionList';
@@ -69,10 +69,10 @@ export class App extends React.Component {
         <Switch>
           <Route
             exact
-            path="/signup-login"
+            path="/auth"
             render={(props) => {
               return (
-                <SignupLogin
+                <Auth
                   {...props}
                   privateKey={this.privateKey}
                   setPrivateKey={(key) => this.privateKey = key}

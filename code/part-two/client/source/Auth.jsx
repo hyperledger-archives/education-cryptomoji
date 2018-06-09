@@ -4,7 +4,7 @@ import React from 'react';
 import { createKeys, getPublicKey } from './services/signing';
 import { submitPayloads } from './services/requests';
 
-export class SignupLogin extends React.Component {
+export class Auth extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

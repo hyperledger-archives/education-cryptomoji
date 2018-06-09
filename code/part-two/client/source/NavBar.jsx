@@ -48,7 +48,7 @@ export function NavBar({ publicKey, logout }) {
 
           <NavLink
             exact
-            to="/signup-login"
+            to="/auth"
             className="nav-item nav-link"
             activeClassName="active"
           >
