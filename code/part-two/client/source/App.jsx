@@ -1,4 +1,7 @@
 /* SOLUTION FILE */
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
@@ -59,7 +62,7 @@ export class App extends React.Component {
   render() {
     const publicKey = this.publicKey;
     return (
-      <div>
+      <div className="container">
         <NavBar publicKey={publicKey} logout={this.logout} />
         {publicKey && <div>Public Key: <code>{publicKey}</code></div>}
         <br /><br />
