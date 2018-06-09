@@ -49,8 +49,8 @@ Before you start on building this section make sure you have reviewed the
 [Sawtooth Curriculum](../README.md#the-curriculum), in particular the sections
 on global state, and the transaction processor tutorial. Also be familiar with
 the [Design](../README.md#the-design) of the Cryptomoji app. Although it
-applies to the client too, the lion's share of implementing this design will
-happen here, in the transaction processor.
+applies to the client too, most of the actual implementation of this design
+will happen here, in the transaction processor.
 
 ### The Apply Method
 
@@ -133,10 +133,10 @@ copy/paste useful code between the two modules.
 In addition to those repeats, the processor has a `getPrng` function. This
 takes a seed, and returns a pseudo-random number generator function. That
 function will return a seemingly random integers, _but_ two PRNGs that start
-with the same seed, will always generate the exact same set of numbers. This
-will be very important for creating pseudo-random effects (like generating new
-cryptomoji), that will still be _deterministic_. Every blockchain node
-validating these transactions will get the exact same results.
+with the same seed, will always generate the same set of numbers. This will be
+important for creating pseudo-random effects (like generating new cryptomoji),
+that will still be _deterministic_. Every blockchain node validating these
+transactions will get the exact same results.
 
 Oh, and we've already done `getPrng` for you. You're welcome.
 
