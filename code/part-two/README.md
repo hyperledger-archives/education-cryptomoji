@@ -324,78 +324,49 @@ for a namespace for the transaction family, allowing many families to coexist
 on the same blockchain. The remaining 64 characters are up to each family to
 define.
 
-We will follow this convention with a six character namespace, and some
-sensible rules about how the remaining 64 characters of our state addresses
-should be divvied up.
-
-#### Namespace
-
-For the six character namespace, we'll use the first six characters of a
-SHA-512 hash of the application name, _“cryptomoji”_:
-
-```
-5f4d76
-```
-
-#### Resource Prefix
-
-The next a one byte (two characters) will be a short prefix designating what
-type of resource is stored at the address:
-
-- **Collection:** `00`
-- **Cryptomoji:** `01`
-- **Sire Listing:** `02`
+We will follow this convention with a six character namespace, `5f4d76`,
+generated from the first six characters of a SHA-512 hash of the family name
+_“cryptomoji”_. Each state entity will have their own scheme for how they use
+the remaining 64 characters of their address.
 
 #### Collection
 
-The final 62 characters of a collection’s address will be the first 62
-characters of a SHA-512 hash of its public key.
+| Namespace (6) | Type prefix (2) | Identifier hash (62)
+| ------------- | --------------- | --------------------
+| `5f4d76`      | `00`            | `1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb`
 
-So for a collection with a public key of
-`034f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa`, we get
-a SHA-512 hash, slice off the first 62 characters, combine with our namespace
-prefix above, and end up with:
-
-```
-5f4d76 00 1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb
-```
-
-_Note that we have added spaces for readability. Actual addresses have no
-spaces._
-
-#### Collection Prefix
-
-For both cryptomoji and offers (see [extra credit](#extra-credit)), the next
-eight characters are a prefix for the collection they belong to. These are
-generated from the first eight characters of a SHA-512 hash of the collection’s
+A collection will be stored first under a one byte type prefix: `00`. The
+remaining 62 characters are the first 62 characters of a SHA-512 hash of its
 public key.
 
-So, for the same public key above:
+For example, the hash used to create the address above might be generated like
+this:
 
-```
-1b96dbb5
+```javascript
+createHash('sha512').update('034f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa').digest('hex');
+// 1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cbee2e9e5c5df5bb65c282f1aaf516cf7cc5a2f7ff592a80cf920e1abaab8d29279f
 ```
 
 #### Cryptomoji
 
-The final 54 characters of a cryptomoji’s address is the first 54 characters of
-a SHA-512 hash of their DNA string. So the address of a cryptomoji with the
-dna `c44b22d96246b0980954f7818567f453039a` would be:
+| Namespace (6) | Type prefix (2) | Collection prefix (8) | Identifier hash (54)
+| ------------- | --------------- | --------------------- | --------------------
+| `5f4d76`      | `01`            | `1b96dbb5`            | `0c8514ab2a7cf361062601716bcd762097e41f9011a5e6f8ff6c5f`
 
-```
-5f4d76 01 1b96dbb5 0c8514ab2a7cf361062601716bcd762097e41f9011a5e6f8ff6c5f
-```
+Cryptomoji need to be divvied up by who owns them. That way you can query a
+partial address to get all of the cryptomoji owned by a public key. So after a
+type prefix of `01` a collection has the first eight characters from a SHA-512
+hash of the owner's public key. The final 54 characters of a cryptomoji’s
+address will the first 54 characters of a SHA-512 hash of their DNA string.
 
 #### Sire Listing
 
-Like collections, the last 62 characters of a sire listing’s address are the
-first 62 characters of a SHA-512 hash of a public key, the sire's owner in this
-case. So our example address would be identical to our example collection, but
-with a different resource prefix:
+| Namespace (6) | Type prefix (2) | Identifier hash (62)
+| ------------- | --------------- | --------------------
+| `5f4d76`      | `02`            | `1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb`
 
-```
-5f4d76 02 1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb
-```
+Since collections are only allowed one sire listing, they can be stored under a
+nearly identical address. The only difference will be the type prefix: `02`.
 
 ### Payloads
 
@@ -495,15 +466,25 @@ Which collection is required to approve a response is listed under the
 
 #### Offer
 
-An offer's address begins the same way as any other, with the cryptomoji
-namespace and a type prefix (`03` in this case). Afterwards, it uses the same
-eight character owner prefix that cryptomoji do. The final 54 characters are
-also the first 54 characters of a SHA-512 hash. In this case, the hash is
-generated from a string created by sorting the addresses of the cryptomoji
-being offered, and then concatenating them with no spaces.
+| Namespace (6) | Type prefix (2) | Collection prefix (8) | Identifier hash (54)
+| ------------- | --------------- | --------------------- | --------------------
+| `5f4d76`      | `03`            | `1b96dbb5`            | `f0b9646d76c0e89bb8024d7ff2f7b4cde935f91c703f1a1a888e4a`
 
-```
-5f4d76 03 1b96dbb5 f365bcdd7f317faeebc49daf2cc7a3f5bf169a19010197c51f32a0
+Like cryptomoji, offers are owned by a collection. In addition to their type
+prefix (`03`), they have an eight character prefix, the first eight characters
+of a SHA-512 hash of the owner's public key. The final 54 characters are the
+first 54 characters of a SHA-512 hash. In this case, the hash is generated from
+a string created by sorting the addresses of the cryptomoji being offered, and
+then concatenating them with no spaces.
+
+For example, we might generate the hash for the address above like this:
+
+```javascript
+const moji1 = '5f4d76011b96dbb50c8514ab2a7cf361062601716bcd762097e41f9011a5e6f8ff6c5f';
+const moji2 = '5f4d7601bddce3731459230a5a425d9e71ad0110f0e5a76ed88b8cfc1c087b10682492';
+
+createHash('sha512').update(moji1 + moji2).digest('hex');
+// f0b9646d76c0e89bb8024d7ff2f7b4cde935f91c703f1a1a888e4a8f6c62ad9a97664eb27bb981021c30d02e3417e03948d7fae7a13ba080e9bf2b421818a80b
 ```
 
 ### Payloads
