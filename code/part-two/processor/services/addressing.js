@@ -12,7 +12,10 @@ const PREFIXES = {
 };
 
 // START SOLUTION
-Object.keys(PREFIXES).forEach(p => { PREFIXES[p] = NAMESPACE + PREFIXES[p]; });
+const FULL_PREFIXES = Object.keys(PREFIXES).reduce((prefixes, key) => {
+  prefixes[key] = NAMESPACE + PREFIXES[key];
+  return prefixes;
+}, {});
 
 // Returns a hex-string SHA-512 hash sliced to a particular length
 const hash = (str, length) => {
@@ -38,7 +41,7 @@ const getCollectionAddress = publicKey => {
 
   END PROBLEM */
   // START SOLUTION
-  return PREFIXES.COLLECTION + hash(publicKey, 62);
+  return FULL_PREFIXES.COLLECTION + hash(publicKey, 62);
   // END SOLUTION
 };
 
@@ -52,7 +55,7 @@ const getMojiAddress = (ownerKey, dna) => {
 
   END PROBLEM */
   // START SOLUTION
-  return PREFIXES.MOJI + hash(ownerKey, 8) + hash(dna, 54);
+  return FULL_PREFIXES.MOJI + hash(ownerKey, 8) + hash(dna, 54);
   // END SOLUTION
 };
 
@@ -66,7 +69,7 @@ const getSireAddress = ownerKey => {
 
   END PROBLEM */
   // START SOLUTION
-  return PREFIXES.SIRE_LISTING + hash(ownerKey, 62);
+  return FULL_PREFIXES.SIRE_LISTING + hash(ownerKey, 62);
   // END SOLUTION
 };
 
@@ -91,7 +94,7 @@ const getOfferAddress = (ownerKey, addresses) => {
     addresses = [ addresses ];
   }
 
-  return PREFIXES.OFFER
+  return FULL_PREFIXES.OFFER
     + hash(ownerKey, 8)
     + hash(addresses.sort().join(''), 54);
   // END SOLUTION
