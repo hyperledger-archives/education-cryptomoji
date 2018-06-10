@@ -68,7 +68,7 @@ export const createTransaction = (privateKey, payload) => {
  * and returns a signed Batch instance.
  *
  * Should accept both multiple transactions in an array, or just one
- * with no array.
+ * transaction with no array.
  */
 export const createBatch = (privateKey, transactions) => {
   /* START PROBLEM
@@ -98,8 +98,9 @@ export const createBatch = (privateKey, transactions) => {
  * A fairly simple function that takes a one or more Batch instances and
  * returns an encoded BatchList.
  *
- * Although it's simple, axios has a bug when POSTing the generated Buffer,
- * so we've implemented it for you.
+ * Although there isn't much to it, axios has a bug when POSTing the generated
+ * Buffer. We've implemented it for you, transforming the Buffer so axios
+ * can handle it.
  */
 export const encodeBatches = batches => {
   if (!Array.isArray(batches)) {
@@ -113,9 +114,10 @@ export const encodeBatches = batches => {
 };
 
 /**
- * A function that takes a private key and one or more payloads and returns
- * an encoded BatchList for submission. The Transactions for each payload
- * will be wrapped in a single Batch in a BatchList.
+ * A convenince function that takes a private key and one or more payloads and
+ * returns an encoded BatchList for submission. Each payload should be wrapped
+ * in a Transaction, which will be wrapped together in a Batch, and then
+ * finally wrapped in a BatchList.
  *
  * As with the other methods, it should handle both a single payload, or
  * multiple payloads in an array.

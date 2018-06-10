@@ -2,9 +2,9 @@
 
 /**
  * A function that takes any hex string as a seed, and returns a pseudo-random
- * number generator. This function will return a new seemingly random number
- * every time it is called, but will be identical to any other generator
- * created with the same seed.
+ * number generator. This generator function will return a semi-random number
+ * every time it is called. But the numbers generated will be identical to
+ * those from another generator created with the same seed.
  *
  * It is very important that all Sawtooth transactions are handled
  * deterministically. Functionality like creating new "random" moji cannot
@@ -22,8 +22,8 @@ const getPrng = hex => {
   }
 
   /**
-   * This PRNG takes an integer maximum and returns a pseudo-random integer
-   * from 0 up to that maximum.
+   * This PRNG function takes an integer maximum and returns a pseudo-random
+   * integer from 0 up to that maximum.
    *
    * Example:
    *   const prng = getPrng('5eed');

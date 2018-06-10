@@ -24,11 +24,11 @@ const hash = (str, length) => {
 
 //END SOLUTION
 /**
- * A function that takes a public key and returns the correct collection
+ * A function that takes a public key and returns the corresponding collection
  * address.
  *
- * Simpler than the client version, the public key is not optional so this
- * function should always always return a full address.
+ * This is simpler than the client version, as the public key is not optional.
+ * Processor addressing methods always return a full address.
  *
  * Example:
  *   const address = getCollectionAddress(publicKey);
@@ -47,7 +47,7 @@ const getCollectionAddress = publicKey => {
 
 /**
  * A function that takes a public key and a moji dna string, returning the
- * correct moji address.
+ * corresponding moji address.
  */
 const getMojiAddress = (ownerKey, dna) => {
   /* START PROBLEM
@@ -60,7 +60,7 @@ const getMojiAddress = (ownerKey, dna) => {
 };
 
 /**
- * A function that takes a public key, and returns the correct sire
+ * A function that takes a public key, and returns the corresponding sire
  * listing address.
  */
 const getSireAddress = ownerKey => {
@@ -79,7 +79,7 @@ const getSireAddress = ownerKey => {
  * Remove the `.skip` from line 184 of tests/01-Services.js to test.
  *
  * A function that takes a public key and one or more moji addresses,
- * returning the correct offer address.
+ * returning the corresponding offer address.
  *
  * Unlike the client version, moji may only be identified by addresses, not
  * dna strings.
@@ -102,7 +102,11 @@ const getOfferAddress = (ownerKey, addresses) => {
 
 /**
  * A function that takes an address and returns true or false depending on
- * whether or not it is a valid Cryptomoji address.
+ * whether or not it is a valid Cryptomoji address. It should reject an
+ * address if:
+ *   - it is not a string
+ *   - it is not 70 hex characters
+ *   - it does not start with the correct namespace
  *
  * Example:
  *   const isValid = isValidAddress('00000000');

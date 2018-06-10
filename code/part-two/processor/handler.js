@@ -20,7 +20,7 @@ const FAMILY_VERSION = '0.1';
 const NAMESPACE = '5f4d76';
 
 /**
- * A Cryptomoji specific version of the Sawtooth SDK's Transaction Handler.
+ * A Cryptomoji specific version of a Hyperledger Sawtooth Transaction Handler.
  */
 class MojiHandler extends TransactionHandler {
   /**
@@ -34,9 +34,10 @@ class MojiHandler extends TransactionHandler {
   }
 
   /**
-   * The apply method is where the vast majority of all the work a transaction
-   * processor does happens. It will be called for every transaction with two
-   * objects, a transaction request and a state context.
+   * The apply method is where the vast majority of all the work of a
+   * transaction processor happens. It will be called once for every
+   * transaction, passing two objects: a transaction process request ("txn" for
+   * short) and state context.
    *
    * Properties of `txn`:
    *   - txn.payload: the encoded payload sent from your client

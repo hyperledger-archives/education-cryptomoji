@@ -46,8 +46,8 @@ const createPrivateKey = () => {
  *   // '0202694593ddc71061e622222ed400f5373cfa7ea607ce106cca3f039b0f9a0123'
  *
  * Hint:
- *   Remember that the secp256k1 library expects raw bytes (i.e Node.js
- *   Buffers), not hex strings! You'll have to convert the private key.
+ *   Remember that the secp256k1-node library expects raw bytes (i.e Buffers),
+ *   not hex strings! You'll have to convert the private key.
  */
 const getPublicKey = privateKey => {
   /* START PROBLEM
