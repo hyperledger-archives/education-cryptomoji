@@ -12,6 +12,13 @@ const sha256 = msg => createHash('sha256').update(msg).digest();
 // Converts a hex string to a Buffer
 const toBytes = hex => Buffer.from(hex, 'hex');
 
+// Generate a random alphanumeric string with a random length
+const randomString = () => {
+  return randomBytes(Math.floor(Math.random() * 256))
+    .toString('base64')
+    .replace(/[\/\+=]/g, '');
+};
+
 describe('Signing module', function() {
 
   describe('createPrivateKey', function() {
@@ -59,7 +66,7 @@ describe('Signing module', function() {
   });
 
   describe('sign', function() {
-    const message = randomBytes(16);
+    const message = randomString();
     let publicKey = null;
     let signature = null;
 
@@ -85,7 +92,7 @@ describe('Signing module', function() {
   });
 
   describe('verify', function() {
-    const message = randomBytes(16);
+    const message = randomString();
     let publicKey = null;
     let signature = null;
 
@@ -112,7 +119,7 @@ describe('Signing module', function() {
     });
 
     it('should reject a signature with a mismatched message', function() {
-      const message = randomBytes(16);
+      const message = randomString();
       const isValid = signing.verify(publicKey, message, signature);
 
       expect(isValid).to.be.false;

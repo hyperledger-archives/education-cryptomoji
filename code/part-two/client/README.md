@@ -89,6 +89,11 @@ If you completed part one, this section should be pretty much done. Both
 Sawtooth and your DIY blockchain use Secp256k1 for signing, so you will be able
 to copy over most of your code.
 
+There is one slight difference to keep in mind. While you signed strings in
+part one, you will be signing encoded transactions in part two (i.e. Buffers).
+This _probably_ won't make much of a difference, but depending on how you
+implemented `sign` the first time, it may require some changes.
+
 ### 02 Encoding
 
 **Module:** [source/services/encoding.js](source/services/encoding.js)
