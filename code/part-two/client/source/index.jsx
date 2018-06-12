@@ -6,13 +6,18 @@ import { BrowserRouter } from 'react-router-dom';
 import { App } from './App';
 // END SOLUTION
 
+/* START PROBLEM
 ReactDOM.render((
   <BrowserRouter>
-    /* START PROBLEM
     <h1>Hello, Cryptomoji!</h1>
-    END PROBLEM */
-    // START SOLUTION
-    <App />
-    // END SOLUTION
   </BrowserRouter>
 ), document.getElementById('app'));
+END PROBLEM */
+
+// START SOLUTION
+ReactDOM.render((
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+), document.getElementById('app'));
+// END SOLUTION
