@@ -46,10 +46,6 @@ class Block {
   constructor(transactions, previousHash) {
     // Your code here
 
-    // start solution
-    this.transactions = transactions;
-    this.previousHash = previousHash;
-    this.calculateHash(0);
   }
 
   /**
@@ -90,9 +86,6 @@ class Blockchain {
   constructor() {
     // Your code here
 
-    // start solution
-    const genesis = new Block([], null);
-    this.blocks = [ genesis ];
   }
 
   /**
@@ -112,9 +105,6 @@ class Blockchain {
   addBlock(transactions) {
     // Your code here
 
-    // start solution
-    const block = new Block(transactions, this.getHeadBlock().hash);
-    this.blocks.push(block);
   }
 
   /**
@@ -129,18 +119,6 @@ class Blockchain {
   getBalance(publicKey) {
     // Your code here
 
-    // start solution
-    return this.blocks.reduce((balance, block) => {
-      return balance + block.transactions.reduce((sum, transaction) => {
-        if (transaction.recipient === publicKey) {
-          return sum + transaction.amount;
-        }
-        if (transaction.source === publicKey) {
-          return sum - transaction.amount;
-        }
-        return sum;
-      }, 0);
-    }, 0);
   }
 }
 
