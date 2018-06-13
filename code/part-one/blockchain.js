@@ -48,7 +48,6 @@ class Block {
    *   - hash: a unique hash string generated from the other properties
    */
   constructor(transactions, previousHash) {
-    // start solution
     this.transactions = transactions;
     this.previousHash = previousHash;
     this.calculateHash(0);
@@ -64,7 +63,6 @@ class Block {
    *   properties change.
    */
   calculateHash(nonce) {
-    // start solution
     const transactionString = this.transactions.map(t => t.signature).join('');
     const toHash = this.previousHash + transactionString + nonce;
 
@@ -88,7 +86,6 @@ class Blockchain {
    *   - blocks: an array of blocks, starts with one genesis block
    */
   constructor() {
-    // start solution
     const genesis = new Block([], null);
     this.blocks = [ genesis ];
   }
@@ -97,7 +94,6 @@ class Blockchain {
    * Simply returns the last block added to the chain.
    */
   getHeadBlock() {
-    // start solution
     return this.blocks[this.blocks.length - 1];
   }
 
@@ -106,7 +102,6 @@ class Blockchain {
    * adding it to the chain.
    */
   addBlock(transactions) {
-    // start solution
     const block = new Block(transactions, this.getHeadBlock().hash);
     this.blocks.push(block);
   }
@@ -121,7 +116,6 @@ class Blockchain {
    *   we make the blockchain mineable later.
    */
   getBalance(publicKey) {
-    // start solution
     return this.blocks.reduce((balance, block) => {
       return balance + block.transactions.reduce((sum, transaction) => {
         if (transaction.recipient === publicKey) {
