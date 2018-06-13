@@ -91,7 +91,8 @@ describe('Signing module', function() {
   });
 
   describe('sign', function() {
-    const message = randomBytes(16);
+    // Generate random bytes, mimicking an encoded transaction header
+    const message = randomBytes(Math.floor(Math.random() * 256));
     let publicKey = null;
     let signature = null;
 

@@ -1,7 +1,7 @@
 # Contributing
 
-Thanks for considering contributing to this project! Here are a few guidelines
-to help speed things up and unify development.
+Thanks for considering contributing to this project! Here are some guidelines
+to help speed and unify development.
 
 ## Reporting Bugs or Issues
 
@@ -30,20 +30,20 @@ detail as possible. For bugs or typos this might include:
 
 ## Making Code Contributions
 
-Like many projects on GitHub, contributions are submitted by creating a fork of
-the repo, making some changes there, and then submitting them back as a Pull
-Request for review. A detailed explanation of the workflow is provided below.
-While we are open to any help you'd like to give, if you are looking for a good
-place to start, you might checkout the _Issues_ page and see if there is
+Like many projects on GitHub, contributions should be submitted by creating a
+fork of the repo, making some changes there, and then submitting them back as a
+Pull Request for review. You will find a detailed explanation of this workflow
+below. While we are open to any help you'd like to give, if you are looking for
+a good place to start, you might checkout the _Issues_ page and see if there is
 anything labeled "help wanted" that you could tackle.
 
 ### Submitting Pull Requests
 
-While the fork to PR process is fairly standard, somewhat more unusual is that
-`master` is _not_ the branch to make a PR against. In this repo, master is not
+While the fork to PR process is common, somewhat more unusual is that `master`
+is _not_ the branch you should make a PR against. In this repo, master is not
 the source of truth, but a collection of generated stub functions for students
 to fill out. The original source of this code is actually in the `staging`
-branch, and _all_ PRs should be made against staging.
+branch, and you should submit _all_ PRs against this branch.
 
 The detailed process is as follows:
 
@@ -57,12 +57,12 @@ The detailed process is as follows:
 
 Pull requests can be merged once all requests for change have been addressed,
 and when approved by at least one project maintainer. The actual merge will be
-done by a maintainer as well.
+done by one of the maintainers as well.
 
 Note, maintainers should take care when merging to always use the
-_"Create a merge commit"_ option, as rebasing will result in important
-information about the commit history being lost later when the prompt and
-solution files are generated.
+_"Create a merge commit"_ option, as rebasing will cause important information
+about the commit history to be lost later when the prompt and solution files
+are generated.
 
 ### Commit Style
 
@@ -101,11 +101,10 @@ git commit -s
 
 This project follows a slightly modified version of the
 [Hack Reactor Style Guide](https://github.com/hackreactor-labs/eslint-config-hackreactor).
-An `.eslintrc.json` file with these rules is included in the root project
+There is an `.eslintrc.json` file with these rules in the root project
 directory. Any contributor writing JavaScript code should
 [install ESLint](https://eslint.org/docs/user-guide/getting-started) and run it
-on their code before submitting a PR. The easiest way to do this is simply to
-run:
+on their code before submitting a PR. The easiest way to do this is to run:
 
 ```bash
 npm install -g eslint
@@ -118,9 +117,9 @@ eslint ./
 ## Prompt Generation Syntax
 
 This repo uses special comment-based tags to differentiate between solution
-code and prompts. Later, these tags are used to separate the prompts into the
-`master` branch, and the solution code into the `solution` branch. The syntax
-is a slightly more opinionated version of
+code and prompts. Later, these tags will be used to separate the prompts into
+the `master` branch, and the solution code into the `solution` branch. The
+syntax is a slightly more opinionated version of
 [problemify](https://github.com/bcmarinacci/problemify). A typical example
 might look this:
 
@@ -154,13 +153,13 @@ const hello = name => {
 };
 ```
 
-Note that all of the comment-tags were removed from _both_ versions. Also note
-that the publishing script errs on the side of caution. You must write each tag
-_exactly_, on its own line, with the correct style of comment, and in all caps,
-or it will be ignored. Different indentation is the only variation that is
-supported.
+Note that the comment-tags were removed from _both_ versions. Also note that
+the publishing script errs on the side of caution. You must write each tag
+_exactly_, on its own line, with the correct style of comment, and in all caps.
+Otherwise, it will be ignored. Different indentation is the only supported
+variation on the above example.
 
-There is also a syntax to designate an entire file as solution code:
+There is also a syntax to mark an entire file as solution code:
 ```javascript
 /* SOLUTION FILE */
 'use strict';
@@ -170,9 +169,9 @@ const bar = require('./foo');
 // Do some stuff...
 ```
 
-This entire file would be removed from the `master` branch and only be
+This entire file would be removed from the `master` branch, only being
 published to `solution`. You can also use `/* PROBLEM FILE */` to get the
-opposite effect. As with the other tags, make sure it is entered exactly, same
+opposite effect. As with the other tags, make sure to enter it exactly, same
 comment syntax, capitalization, on its own line. Unlike the other tags, you may
 _not_ indent the file tags, and they _must_ appear on the first line of the
 file.
@@ -184,10 +183,10 @@ file.
 ### Publishing Updates to `master` and `solution`
 
 Regular contributors need not worry about this, but for maintainers there is a
-[bin/publish](bin/publish) script which does the work of parsing all the tags
-and pushing the generated code to the appropriate branch. It should be run
-periodically, if possible after every PR is merged. Make sure your working
+[bin/publish](bin/publish) script which does the work of parsing the tags and
+pushing the generated code to the appropriate branch. Run this script
+periodically, preferably after every PR is merged. Make sure your working
 directory is clean when you run it, and _never_ do any rebasing or force
-pushing to `upstream master` or `upstream solution`. This script pushes to
-them directly, but only ever makes additions. If there is a conflict, then
+pushing to `upstream master` or `upstream solution`. This script pushes to them
+directly, but should only ever make additions. If there is a conflict, then
 something has gone wrong, and needs to be investigated.

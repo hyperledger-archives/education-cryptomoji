@@ -4,9 +4,9 @@ What better way to learn about blockchains than to build your own? In this
 section you will construct your own simple blockchain in the vein of Bitcoin
 and other cryptocurrencies. Using cryptographic private/public key pairs, users
 will be able to create transactions sending funds from their public key to that
-of another user. Just like any other blockchain, these transactions will become
-a permanent immutable part of the ledger, protected by the hashes that link
-each block to the one that came before it in the chain.
+of another user. Like any other blockchain, these transactions will become a
+permanent immutable part of the ledger, protected by the hashes that link each
+block to the one that came before it in the chain.
 
 ## Contents
 
@@ -92,7 +92,7 @@ public key                   signature
 
 While no one will ever be able to deduce the original private key, they will be
 able to confirm that the public key and signature came from the _same_ private
-key, and that the message has not been altered. Not even a single byte. This
+key, and that the message was not altered. Not even a single byte. This
 powerful cryptographic tool is fundamental to how blockchains work.
 
 ```
@@ -103,7 +103,7 @@ public key -
    message -
 ```
 
-In this section you will build a simple signing API using Secp256k1, a common
+In this section, you will build a simple signing API using Secp256k1, a common
 cryptographic algorithm used by Bitcoin, Ethereum, and Hyperledger Sawtooth.
 The underlying math is rather complex, so we will be relying on the library
 [secp256k1-node](https://github.com/cryptocoinjs/secp256k1-node) to do the
@@ -133,7 +133,7 @@ You will be implementing four stub methods:
 Before you can understand the blockchain data structure itself, you need to be
 familiar with the concept of _hashing_: creating a deterministic digest of some
 arbitrary data. Importantly, while the same data will always produce the same
-hash, even a very small change in the underlying data will create a completely
+hash, even a small change in the underlying data will create a completely
 different digest:
 
 ```
@@ -147,11 +147,13 @@ best bet is probably to familiarize yourself with Node's crypto module, in
 particular using it to create SHA-512 hashes. This will come up later when you
 start working with Hyperledger Sawtooth.
 
-Now that you understand hashing, a blockchain should actually be actually
-fairly straightforward. You take some data, you gather it into a "block", you
-combine it with the hash of a previous block, and then you create a new hash.
-Now, when more data comes in, bundle it into a new block, combine it with the
-hash from your first block, and generate a new hash. Rinse and repeat.
+Now that you understand hashing, a blockchain should actually be rather
+straightforward. It's just bundles of data linked sequentially by hashes of
+that data. Start with a "genesis" block. This is the only block which won't be
+linked to a previous hash. Then, gather some data into a new block, combine it
+with the genesis hash, and create a new hash. Now, when more data comes in,
+repeat the process: bundle the data into a new block, combine it with the
+previous hash and generate a new hash.
 
 ```javascript
 [
@@ -172,12 +174,13 @@ hash from your first block, and generate a new hash. Rinse and repeat.
 ]
 ```
 
-Now all of our data is linked to our previous data, all the way back to our
-original "genesis block", which is the only block without a previous hash.
-Anyone attempting to modify one block, would also have to modify _every_ block
-that came afterward it in the chain.
+Now all of our data is linked all the way back to our original genesis block.
+If anyone attempts to tamper with the data in a block, the hashes will also
+have to change. Anyone checking the chain of hashes would immediately see that
+one does not match. In order to alter old data, you would have to modify not
+only the target block, but _every_ block that comes after it.
 
-Your blockchain will consist of three related ES6 classes:
+You will implement your blockchain with three related ES6 classes:
 - **Transaction**: A signed transfer of funds from one public key to another
 - **Block**: A hashed collection of transactions with a previous hash
 - **Blockchain**: An ordered collection of blocks, with a method to calculate
@@ -187,12 +190,10 @@ Your blockchain will consist of three related ES6 classes:
 
 **Module:** [validation.js](validation.js)
 
-There are as many ways to validate a blockchain as there are blockchains. It is
-a huge and varied topic. In fact, in Sawtooth the central component is named a
-"validator", and that is the vast majority what it does. For this section
-though, you get to be your own validator, and finally verify all that
-cryptographic boilerplate you've been including with your blocks and
-transactions.
+Blockchain validation is a huge and varied topic. In Sawtooth, validation is so
+important that the central component is named a "validator". For this section,
+you get to be your own validator and finally verify all of that cryptographic
+boilerplate you've been including with your blocks and transactions.
 
 You can use your `signing.verify` method to ensure none of your transactions
 have been tampered with. You should get a similar assurance for your blocks if
@@ -213,8 +214,8 @@ algorithms, and _Proof of Work_ in particular, you can feel free to move on to
 [part-two](../part-two/README.md) at this point. This section is strictly
 optional.
 
-In order to run the tests for this extra credit, remove the  `.skip` from the
-wrapping describe block on Line 14 of
+To run the tests for this extra credit, remove the  `.skip` from the wrapping
+`describe` block on Line 14 of
 [tests/04-ExtraCredit-Mining.js](tests/04-ExtraCredit-Mining.js#L14).
 
 ### 04 Mining
@@ -222,19 +223,19 @@ wrapping describe block on Line 14 of
 **Module:** [mining.js](mining.js)
 
 All this validation stuff is great, but what is to stop someone from coming in
-and just replacing huge sections of the blockchain with their own _valid_ blocks
-and transactions? That is where _consensus_ comes in. A good consensus
-algorithm like Proof of Work or
+and replacing huge sections of the blockchain with their own _valid_ blocks and
+transactions? That is where _consensus_ comes in. A good consensus algorithm
+like Proof of Work or
 [Proof of Elapsed Time](https://medium.com/kokster/understanding-hyperledger-sawtooth-proof-of-elapsed-time-e0c303577ec1)
 (one of the algorithms available to Sawtooth), feature _Byzantine
 Fault Tolerance_: they not only ensure correctness, but also prevent bad actors
 from taking over the system and rewriting large sections of the blockchain.
 Zulfikar Ramzan does an excellent job of
 [explaining how this works for Bitcoin](https://www.khanacademy.org/economics-finance-domain/core-finance/money-and-banking/bitcoin/v/bitcoin-proof-of-work),
-but the short version is, if you randomize who gets to create new blocks, and
-always select the longest chain available, a bad actor would need to take over
-51% of the network to be effective. In a highly decentralized network, this is
-likely impractical.
+but the short version is that if you randomize who gets to create new blocks,
+and always select the longest chain available, a bad actor would need to take
+over 51% of the network to be effective. In a highly decentralized network,
+this is hopefully impractical.
 
 So now it's your turn. You will create some tweaked versions of your original
 blockchain structure around a new method: `MineableChain.mine`. This method

@@ -20,7 +20,7 @@ const FAMILY_VERSION = '0.1';
 const NAMESPACE = '5f4d76';
 
 /**
- * A Cryptomoji specific version of the Sawtooth SDK's Transaction Handler.
+ * A Cryptomoji specific version of a Hyperledger Sawtooth Transaction Handler.
  */
 class MojiHandler extends TransactionHandler {
   /**
@@ -34,9 +34,10 @@ class MojiHandler extends TransactionHandler {
   }
 
   /**
-   * The apply method is where the vast majority of all the work a transaction
-   * processor does happens. It will be called for every transaction with two
-   * objects, a transaction request and a state context.
+   * The apply method is where the vast majority of all the work of a
+   * transaction processor happens. It will be called once for every
+   * transaction, passing two objects: a transaction process request ("txn" for
+   * short) and state context.
    *
    * Properties of `txn`:
    *   - txn.payload: the encoded payload sent from your client
@@ -62,12 +63,6 @@ class MojiHandler extends TransactionHandler {
 
     END PROBLEM */
     // START SOLUTION
-    // The Sawtooth SDK currently breaks if an error is thrown in this method,
-    // including an InvalidTransaction. This will be fixed in version 1.0.5,
-    // but for now, wrap everything in a try/catch and return rejected promise.
-    // Not indenting to avoid a giant git diff later.
-    try {
-
     let payload = null;
     try {
       payload = decode(txn.payload);
@@ -95,11 +90,6 @@ class MojiHandler extends TransactionHandler {
     } else {
       throw new InvalidTransaction('Unknown action: ' + action);
     }
-
-    } catch (err) {
-      return new Promise((_, reject) => reject(err))
-    }
-    // ^^^^^ End of workaround try/catch ^^^^^
     // END SOLUTION
   }
 }

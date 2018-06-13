@@ -6,12 +6,12 @@ general-purpose enterprise blockchain. This app, will allow users to collect,
 breed, and trade collectible _kaomoji_: strings of characters that look like
 faces, such as (ಠ_ಠ), ( ͡° ͜ʖ ͡°), and ᕕ( ᐛ )ᕗ.
 
-Powering your _cryptomoji_, will be a number of components, which will run in
+Powering your _cryptomoji_ will be a number of components which run in
 individual "containers" using
 [Docker](https://www.docker.com/community-edition).
 After cloning this repo and installing [Node](https://nodejs.org/), follow the
-instructions specific to your OS to install and run whatever components are
-required to use `docker` and `docker-compose` from your command line.
+instructions specific to your OS to setup whatever tools you need to run
+`docker` and `docker-compose` from your command line.
 
 ## Contents
 
@@ -57,21 +57,20 @@ required to use `docker` and `docker-compose` from your command line.
 
 ## Using Docker
 
-Docker is a virtualization tool that makes it much easier to deploy code in a
-variety of environments, with minimum effort. Dockerfiles create "images" with
-all of the dependencies your code needs ready to go. From these images,
-individual "containers" can be created, run, and destroyed at will. This is in
-effect like having every component running on it's own virtual computer, which
-you can reset to factory settings at any time, in a matter of seconds. It's a
-profoundly useful tool, which takes a little getting used to, but is worth
-getting familiar with.
+Docker is a virtualization tool that makes it easy to deploy code in a variety
+of environments. Dockerfiles create "images" with all the dependencies your
+code needs installed. From these images, you can create, run, and destroy
+individual "containers" at will. This is in effect like having every component
+running on it's own virtual computer which you can reset to factory settings at
+any time. It's a profoundly useful tool which takes a little getting used to,
+but is worth getting familiar with.
 
 ### Components
 
 Included in this directory is a [docker-compose](docker-compose.yaml) file. It
-includes all of the instructions Docker needs to start up multiple components
-and network them together. This includes some custom components built from your
-source code, and some prepackaged Sawtooth components downloaded from
+includes the instructions Docker needs to start up multiple components and
+network them together. This includes both custom components built from your
+source code and some prepackaged Sawtooth components downloaded from
 [DockerHub](https://hub.docker.com/search/?isAutomated=0&isOfficial=0&page=1&pullCount=0&q=sawtooth&starCount=0):
 
 | Name          | Endpoint              | Source    | Description
@@ -86,10 +85,10 @@ source code, and some prepackaged Sawtooth components downloaded from
 ### Start/Stop Commands
 
 First you will use the `docker-compose up` command to start all components.
-This will take quite awhile the first time, but afterwards should be very fast,
-no more than a minute. If you are in the same directory as the compose file, it
-will find it by default and you won't need to provide it with any other
-parameters:
+Note that this might take as long as 30 minutes the first time you run it
+(later runs will be much faster, more like 30 seconds). If you are in the same
+directory as the `docker-compose.yaml` file, the `up` command will find it by
+default and you won't need to provide any other parameters:
 
 ```bash
 cd code/part-two/
@@ -108,10 +107,10 @@ docker-compose down -v
 That is really all you need. These commands are the start/stop buttons for your
 app. You can develop just fine by starting things up, making some changes,
 tearing everything down, and then starting it all up again. However, if you
-want fine-grained control, it is possible to leave everything else running but
-stop, start, or restart an individual component using its container name
-(listed in the table above). For example, with our transaction processor we
-could open a new terminal window and run one of these commands:
+want fine-grained control, you can leave everything else running but stop,
+start, or restart individual components using their container name listed in
+the table above. For example, with our transaction processor we could open a
+new terminal window and run one of these commands:
 
 ```bash
 docker stop processor
@@ -135,10 +134,10 @@ docker exec -it shell bash
 
 An important note! When you are within a container, you cannot use "localhost"
 for networking. Remember how each container is like its own little computer?
-Well it is complete with it's own localhost. Thankfully, Docker provide the
-service names from the compose file as URLs. So for example, if you were inside
-the shell container and wanted to get the blocks from the REST API, you would
-run:
+Well, it comes complete with its own localhost. For networking to _other_
+containers, Docker provides the service names from the compose file as URLs. So
+for example, if you were inside the shell container and wanted to fetch the
+blocks from the REST API, you would run:
 
 ```bash
 curl http://rest-api:8008/blocks
@@ -154,8 +153,8 @@ exit
 
 ### Cryptomoji Lecture
 
-Eventually there will be a video lecture included with this repo, but it has
-not been completed yet. Watch this space.
+There will be a video lecture included with this repo, but it has not been
+uploaded yet. Watch this space.
 
 ### Sawtooth Documentation
 
@@ -177,22 +176,22 @@ working with Javascript, start with these documents:
 When building an application on Sawtooth, much of the nitty gritty of running
 and validating a blockchain is handled for you. You won't have to verify
 signatures or hashes, or validate blocks, or confirm consensus. Instead, you
-must consider how the logic of your application can be broken up into discrete
-transaction payloads, and how those payloads will alter state data. The typical
-workflow looks something like this:
+must consider how you can break up the functionality of your application into
+discrete transaction payloads, and how these payloads will alter state data.
+The typical Sawtooth workflow looks something like this:
 
-1. The user initializes some action, i.e. _"set 'a' to 1"_.
-2. The client takes that action and:
-    - encodes it in a payload, maybe simply `{"a": 1}`
-    - wraps the payload in a transaction and a batch
+1. The user initializes some action (i.e. _"set 'a' to 1"_)
+2. The _client_ takes that action and:
+    - encodes it in a payload (maybe simply `{"a": 1}`)
+    - wraps that payload in a signed transaction and batch
     - submits it to the validator
-3. The validator confirms the transaction and batch are valid for you
-4. The transaction processor gets the payload and:
+3. The validator confirms the transaction and batch are valid
+4. The _transaction processor_ receives the payload and:
     - decodes it
-    - verifies it is a valid action ('a' _can_ be set to 1)
+    - verifies it is a valid action (i.e. 'a' _can_ be set to 1)
     - modifies state in a way that satisfies the action
-      (i.e. address _aaaaaa..._ becomes _000001_)
-5. Later, the client might read that state, and decodes it for display
+      (perhaps address _...000000a_ becomes `1`)
+5. Later, the client might read that state, and decode it for display
 
 So all you are responsible for building two components (the client and the
 transaction processor), and for keeping those components in agreement on how to
@@ -202,8 +201,8 @@ in Sawtooth with the general term: "transaction family".
 For Cryptomoji, the client and processor are each in their own directory, with
 their own tests, and their own READMEs. There is no particular order they need
 to be built in, but we recommended you develop them in parallel based on
-functionality. For example, implement "collection" creation on _both_ the
-client and the processor before moving on to "sire" selection on _either_.
+functionality. For example, implement "collection creation" on _both_ the
+client and the processor before moving on to "sire selection" on _either_.
 
 For the broad transaction family design, continue reading [below](#the-design).
 
@@ -237,7 +236,7 @@ transaction family:
 - What does data stored in state look like?
 - What addresses in state is that data stored under?
 
-So let's answer these questions for _Cryptomoji_.
+Let's answer these questions for _Cryptomoji_.
 
 ### Encoding Data
 
@@ -245,11 +244,11 @@ For simplicity and familiarity we are going to encode both payloads and state
 data as JSON. To be clear, JSON would _not_ be a great choice in production. It
 is not space efficient, and worse, it is not _deterministic_. Determinism is
 very important when writing state to the blockchain. Many many nodes will be
-attempting to the write the same state, and if it is even slightly different
-(like say, the keys are in a different order), they will think the transactions
-are invalid.
+attempting to the write the same state. If that state is even slightly
+different (like say, the keys are in a different order), the validators will
+think the transactions are invalid.
 
-But JSON is easy and accessible, especially in Javascript, and it is possible
+But JSON is easy and accessible, especially in Javascript. And it is possible
 to [create sorted JSON strings](https://stackoverflow.com/a/16168003/4284401),
 which should solve the determinism issue (at least well enough for our
 purposes). Of course, JSON itself isn't quite enough, because we need _raw
@@ -269,6 +268,9 @@ JSON.parse(dataBytes.toString())
 ```
 
 ### State Entities
+
+There are a number entities your transaction processor will be writing to state
+in order to make the Cryptomoji app work.
 
 #### Cryptomoji
 
@@ -300,7 +302,7 @@ produced, either in the role of a breeder or a sire (bred/sired).
 ```
 
 A collection of cryptomoji owned by a public key. Each new collection will be
-created with three new "generation 0" moji with no breeders or sires.
+created with three new "generation 0" cryptomoji with no breeders or sires.
 
 #### Sire Listing
 
@@ -311,83 +313,71 @@ created with three new "generation 0" moji with no breeders or sires.
 }
 ```
 
-Each collection is allowed to select one cryptomoji as their sire. This makes
-it publicly available for other collection to use for breeding.
+Each collection may select one cryptomoji as their sire. This makes it publicly
+available for other collection to use for breeding.
 
 ### Addressing
 
 All state addresses in Sawtooth are 35 bytes long, typically expressed as 70
 hexadecimal characters. By convention, the first six characters are reserved
 for a namespace for the transaction family, allowing many families to coexist
-on the same blockchain. The remaining 64 characters can be used however that
-family prefers.
+on the same blockchain. The remaining 64 characters are up to each family to
+define.
 
-#### Namespace
-
-For the six character namespace, we'll use the first six characters of a
-SHA-512 hash of the application name, _“cryptomoji”_:
-
-```
-5f4d76
-```
-
-#### Resource Prefix
-
-The next a one byte (two characters) will be a short prefix designating what
-type of resource is stored at the address:
-
-- **Collection:** `00`
-- **Cryptomoji:** `01`
-- **Sire Listing:** `02`
+We will follow this convention with a six character namespace, `5f4d76`,
+generated from the first six characters of a SHA-512 hash of the family name
+_“cryptomoji”_. Each state entity will have their own scheme for how they use
+the remaining 64 characters of their address.
 
 #### Collection
 
-The final 62 characters of a collection’s address are the first 62 characters
-of a SHA-512 hash of its public key.
+| Namespace (6) | Type prefix (2) | Identifier hash (62)
+| ------------- | --------------- | --------------------
+| `5f4d76`      | `00`            | `1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb`
 
-```
-5f4d76 00 1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb
-```
-
-_Note that spaces have been added for readability. Actual addresses have no
-spaces._
-
-#### Collection Prefix
-
-For both cryptomoji and offers (see [extra credit](#extra-credit)), the next
-eight characters are a prefix for the collection they belong to. These are
-generated from the first eight characters of a SHA-512 hash of the collection’s
+A collection will be stored first under a one byte type prefix: `00`. The
+remaining 62 characters are the first 62 characters of a SHA-512 hash of its
 public key.
 
-```
-1b96dbb5
+For example, the hash used to create the address above might be generated like
+this:
+
+```javascript
+createHash('sha512').update('034f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa').digest('hex');
+// 1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cbee2e9e5c5df5bb65c282f1aaf516cf7cc5a2f7ff592a80cf920e1abaab8d29279f
 ```
 
 #### Cryptomoji
 
-The final 54 characters of a cryptomoji’s address is the first 54 characters of
-a SHA-512 hash of their DNA string.
+| Namespace (6) | Type prefix (2) | Collection prefix (8) | Identifier hash (54)
+| ------------- | --------------- | --------------------- | --------------------
+| `5f4d76`      | `01`            | `1b96dbb5`            | `0c8514ab2a7cf361062601716bcd762097e41f9011a5e6f8ff6c5f`
 
-```
-5f4d76 01 1b96dbb5 d1dd9beeb54338f0650588247d5b14af9609a59a9df42a61cfa7b7
-```
+Cryptomoji need to be divvied up by who owns them. That way you can query a
+partial address to get all of the cryptomoji owned by a public key. So after a
+type prefix of `01`, the next eight characters of a cryptomoji's address are
+the collection prefix (the first eight characters from a SHA-512 hash of the
+owner's public key). The final 54 characters of a cryptomoji’s address will the
+first 54 characters from a SHA-512 hash of their DNA string.
 
 #### Sire Listing
 
-The last 62 characters of a Sire Listing’s address are the first 62 characters
-of a SHA-512 hash of the owner’s public key.
+| Namespace (6) | Type prefix (2) | Identifier hash (62)
+| ------------- | --------------- | --------------------
+| `5f4d76`      | `02`            | `1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb`
 
-```
-5f4d76 02 1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb
-```
+Since collections are only allowed one, sire listings can be stored under a
+nearly identical address as collections. The identifier hash is the same first
+62 characters of a SHA-512 hash of the owner's public key. The only difference
+between a collection's address and its sire listing's will be the type prefix:
+`02`.
 
 ### Payloads
 
 Cryptomoji payloads will be objects, each with an `"action"` key that
-designates what event should occur in the transaction processor. Each action
-will be spelled out by a specific string written in CONSTANT_CASE. Any
-additional data required, will be included in other keys particular to that
-payload.
+designates what event should occur in the transaction processor. Each action is
+designated by a specific string written in CONSTANT_CASE. Any additional data
+required will be included in other keys particular to that payload.
 
 #### Create Collection
 
@@ -472,23 +462,33 @@ creates the offer, and then other users add responses to it. When the offer
 owner sees a response they like, they can accept it, exchanging the cryptomoji.
 
 It is also possible for offer owners to request moji by adding responses to
-their own offer. These responses must then be approved by the moji's owner. Who
-is required to approve a response is stored for convenience on the response
-itself.
+their own offer. These responses would then be approved by the mojis' owner.
+Which collection is required to approve a response is listed under the
+"approver" key.
 
 ### Addressing
 
 #### Offer
 
-An offer's address begins the same way as any other, with the cryptomoji
-namespace and a type prefix (`03` in this case). Afterwards, it uses the same
-eight character owner prefix that cryptomoji do. The final 54 characters are
-also the first 54 characters of a SHA-512 hash. In this case, the hash is
-generated from a string created by sorting the addresses of the cryptomoji
-being offered, and then concatenating them with no spaces.
+| Namespace (6) | Type prefix (2) | Collection prefix (8) | Identifier hash (54)
+| ------------- | --------------- | --------------------- | --------------------
+| `5f4d76`      | `03`            | `1b96dbb5`            | `f0b9646d76c0e89bb8024d7ff2f7b4cde935f91c703f1a1a888e4a`
 
-```
-5f4d76 03 1b96dbb5 f365bcdd7f317faeebc49daf2cc7a3f5bf169a19010197c51f32a0
+Like cryptomoji, offers are owned by a collection. In addition to their type
+prefix (`03`), they have an eight character prefix, the first eight characters
+of a SHA-512 hash of the owner's public key. The final 54 characters are the
+first 54 characters of a SHA-512 hash. In this case, the hash is generated from
+a string created by sorting the addresses of the cryptomoji being offered, and
+then concatenating them with no spaces.
+
+For example, we might generate the hash for the address above like this:
+
+```javascript
+const moji1 = '5f4d76011b96dbb50c8514ab2a7cf361062601716bcd762097e41f9011a5e6f8ff6c5f';
+const moji2 = '5f4d7601bddce3731459230a5a425d9e71ad0110f0e5a76ed88b8cfc1c087b10682492';
+
+createHash('sha512').update(moji1 + moji2).digest('hex');
+// f0b9646d76c0e89bb8024d7ff2f7b4cde935f91c703f1a1a888e4a8f6c62ad9a97664eb27bb981021c30d02e3417e03948d7fae7a13ba080e9bf2b421818a80b
 ```
 
 ### Payloads
@@ -589,11 +589,11 @@ place.
 ## Nightmare Mode
 
 In the original Cryptokitties app on Ethereum, a good deal was done using
-timestamps. After breeding, sires would have a short refractory period, during
-which they could not be used to sire again. Meanwhile, breeders had breeders an
-exponentially increasing pregnancy time, only after which was the child
-created. Adding this gameplay feature to Cryptomoji will require understanding
-and utilizing Sawtooth's
+timestamps. After breeding, sires would have a short period of down-time,
+during which they could not be used to sire again. Meanwhile, breeders had an
+exponentially increasing pregnancy time, only after which was a child created.
+Adding this gameplay feature to Cryptomoji will require understanding and
+utilizing Sawtooth's
 [Block Info TP](https://sawtooth.hyperledger.org/docs/core/releases/1.0/transaction_family_specifications/blockinfo_transaction_family.html).
 
 Good luck.
