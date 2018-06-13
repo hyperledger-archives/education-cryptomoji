@@ -58,7 +58,7 @@ class Block {
     // Your code here
 
     END PROBLEM */
-    // start solution
+    // START SOLUTION
     this.transactions = transactions;
     this.previousHash = previousHash;
     this.calculateHash(0);
@@ -79,7 +79,7 @@ class Block {
     // Your code here
 
     END PROBLEM */
-    // start solution
+    // START SOLUTION
     const transactionString = this.transactions.map(t => t.signature).join('');
     const toHash = this.previousHash + transactionString + nonce;
 
@@ -108,7 +108,7 @@ class Blockchain {
     // Your code here
 
     END PROBLEM */
-    // start solution
+    // START SOLUTION
     const genesis = new Block([], null);
     this.blocks = [ genesis ];
     // END SOLUTION
@@ -122,7 +122,7 @@ class Blockchain {
     // Your code here
 
     END PROBLEM */
-    // start solution
+    // START SOLUTION
     return this.blocks[this.blocks.length - 1];
     // END SOLUTION
   }
@@ -136,7 +136,7 @@ class Blockchain {
     // Your code here
 
     END PROBLEM */
-    // start solution
+    // START SOLUTION
     const block = new Block(transactions, this.getHeadBlock().hash);
     this.blocks.push(block);
     // END SOLUTION
@@ -156,7 +156,7 @@ class Blockchain {
     // Your code here
 
     END PROBLEM */
-    // start solution
+    // START SOLUTION
     return this.blocks.reduce((balance, block) => {
       return balance + block.transactions.reduce((sum, transaction) => {
         if (transaction.recipient === publicKey) {
