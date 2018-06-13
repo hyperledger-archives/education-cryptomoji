@@ -25,7 +25,7 @@ export const getPublicKey = privateKey => {
 
 /**
  * This convenience function did not exist in part-one's signing module, but
- * should be simple to implement. It creates both a private and public key,
+ * should be simple to implement. It creates both private and public keys,
  * returning them in an object with two properties:
  *   - privateKey: the hex private key
  *   - publicKey: the matching hex public key

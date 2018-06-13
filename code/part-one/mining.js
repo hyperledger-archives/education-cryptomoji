@@ -9,13 +9,13 @@ const { Block, Blockchain } = require('./blockchain');
  * A slightly modified version of a transaction. It should work mostly the
  * the same as the non-mineable version, but now recipient is optional,
  * allowing the creation of transactions that will reward miners by creating
- * new amounts for their balances.
+ * new funds for their balances.
  */
 class MineableTransaction {
   /**
-   * If recipient is omitted, the _source_ for this transaction should be
-   * `null`, while the _recipient_ becomes the public key of the signer.
-   * We're creating something out of nothing.
+   * If recipient is omitted, this is a reward transaction. The _source_ should
+   * then be set to `null`, while the _recipient_ becomes the public key of the
+   * signer.
    */
   constructor(privateKey, recipient = null, amount) {
     // Enter your solution here
@@ -46,9 +46,9 @@ class MineableBlock extends Block {
  */
 class MineableChain extends Blockchain {
   /**
-   * In addition initializing a blocks array with a genesis block, this will
-   * store hard coded difficulty and reward properties. These are settings
-   * used by the mining method.
+   * In addition to initializing a blocks array with a genesis block, this will
+   * create hard-coded difficulty and reward properties. These are settings
+   * which will be used by the mining method.
    *
    * Properties:
    *   - blocks: an array of mineable blocks
@@ -75,7 +75,7 @@ class MineableChain extends Blockchain {
 
   /**
    * Instead of blocks, we add pending transactions. This method should take a
-   * mineable transaction and store it until it can be mined.
+   * mineable transaction and simply store it until it can be mined.
    */
   addTransaction(transaction) {
     // Your code here

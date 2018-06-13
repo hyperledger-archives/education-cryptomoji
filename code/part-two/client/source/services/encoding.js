@@ -1,5 +1,5 @@
 /**
- * A function that takes an object and returns it encoded as JSON Buffer.
+ * A function that takes an object and returns it encoded as a JSON Buffer.
  * Should work identically to the processor version. Feel free to copy and
  * paste any work you did there.
  *
@@ -19,11 +19,12 @@ export const encode = object => {
 };
 
 /**
- * A function that takes a base64 string and decodes it into an object.
+ * A function that takes a base64 string and decodes it into an object. This is
+ * different from the processor version, which works on Buffers directly.
  *
  * Hint:
- *   Although you encoded it as a Buffer originally, the REST API will send
- *   any binary data as a base64 string. So you will need to go from
+ *   Although state is encoded as a Buffer, the REST API will send
+ *   any binary data as a base64 string. You will need to go from
  *   base64 string -> Buffer -> JSON string -> object
  */
 export const decode = base64Str => {

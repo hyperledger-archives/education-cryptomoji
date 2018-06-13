@@ -21,12 +21,8 @@ const encode = object => {
 };
 
 /**
- * A function that takes a JSON Buffer and decodes it into an object.
- *
- * Hint:
- *   Although you encoded it as a Buffer originally, the REST API will send
- *   any binary data as a base64 string. So you will need to go from
- *   base64 string -> Buffer -> JSON string -> object
+ * A function that takes a JSON Buffer and decodes it into an object. Unlike
+ * the client version, there is no need to handle base64 strings.
  */
 const decode = buffer => {
   // Your code here

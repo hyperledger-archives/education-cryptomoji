@@ -2,15 +2,17 @@
 
 /**
  * A function that takes any hex string as a seed, and returns a pseudo-random
- * number generator. This function will return a new seemingly random number
- * every time it is called, but will be identical to any other generator
- * created with the same seed.
+ * number generator. This generator function will return a (seemingly) random
+ * number every time it is called. However, the exact same sequence of
+ * (seemingly) random numbers can be reproduced from a different generator
+ * function created with the same seed.
  *
- * It is very important that all Sawtooth transactions are handled
+ * This deliberately pseudo-random approach is very important when building a
+ * Sawtooth transaction processor, where all transactions *must* be handled
  * deterministically. Functionality like creating new "random" moji cannot
- * actually be random, or multiple validators will not be able to agree on
- * state. This PNRG gives us an appearance of randomness without losing
- * determinism.
+ * actually be random, or different validators will not be able to agree on
+ * blockchain state. This PNRG gives us an appearance of randomness without
+ * losing determinism.
  *
  * Based on this github gist by @blixit:
  * gist.github.com/blixt/f17b47c62508be59987b
@@ -22,8 +24,8 @@ const getPrng = hex => {
   }
 
   /**
-   * This PRNG takes an integer maximum and returns a pseudo-random integer
-   * from 0 up to that maximum.
+   * This PRNG function takes an integer maximum and returns a pseudo-random
+   * integer from 0 up to that maximum.
    *
    * Example:
    *   const prng = getPrng('5eed');

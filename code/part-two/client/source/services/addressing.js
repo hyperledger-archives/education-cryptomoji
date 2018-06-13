@@ -12,9 +12,10 @@ const PREFIXES = {
  * A function which optionally takes a public key, and returns a full or
  * partial collection address.
  *
- * Should work similarly to the processor version, but if the public key is
- * omitted, returns the 8 character prefix which will fetch all collections
- * from the REST API, otherwise returns the full 70 character address.
+ * Works similarly to the processor version, but if the public key is omitted,
+ * returns the 8 character prefix which can be used to fetch all collections
+ * from the REST API. If the public key is provided, returns the full
+ * 70 character address.
  *
  * Example:
  *   const prefix = getCollectionAddress();
@@ -33,7 +34,7 @@ export const getCollectionAddress = (publicKey = null) => {
  * a full or partial moji address.
  *
  * If called with no arguments, returns the 8-char moji prefix. If called with
- * just a public key, returns the 16-char owner prefix which will return all
+ * just a public key, returns the 16-char owner prefix which can fetch all
  * moji owned by this key. Passing in the dna as well returns a full address.
  *
  * Example:

@@ -8,3 +8,4 @@ ReactDOM.render((
     <h1>Hello, Cryptomoji!</h1>
   </BrowserRouter>
 ), document.getElementById('app'));
+

@@ -24,17 +24,14 @@ their work.
 
 ## Prerequisites
 
-Using this project and running its components requires
-[Node 8](https://nodejs.org/) and
+This project requires [Node 8](https://nodejs.org/) and
 [Docker](https://www.docker.com/community-edition).
-
-( ◡‿◡ *)
 
 
 ## Sections
 
-The curriculum is broken up into two parts. Although they build on one another,
-if you are already familiar with blockchain basics you can likely skip part
+This curriculum is broken into two parts. Although they build on one another,
+if you are already familiar with blockchain basics you can probably skip part
 one. For detailed instructions on each section, head to their individual
 READMEs.
 
@@ -83,14 +80,15 @@ application ready to be deployed on a Sawtooth blockchain.
 ### Solution Code
 
 In addition to the prompts and stub functions in the `master` branch, this repo
-includes a `solution` branch with completed versions of both sections. This is
-intended primarily as a way for students to check their work, and become
-familiar with current best practices. If your intention is to complete the
-sprint, we recommended that you do not use this solution code as a way to
-get yourself unstuck. At least attempt every prompt, and if necessary, seek
-additional guidance from resources like
+includes a `solution` branch with completed versions of both sections. This
+branch is a way for students to check their work and become familiar with
+current best practices. If your intention is to complete the sprint, we
+recommended that you do _not_ use the solution code as a way to get yourself
+unstuck. At least attempt every prompt. If necessary, seek guidance from
+resources like
 [Stack Overflow](https://stackoverflow.com/questions/tagged/hyperledger-sawtooth)
-or Sawtooth's [official chat](https://chat.hyperledger.org/channel/sawtooth).
+or Sawtooth's [official chat](https://chat.hyperledger.org/channel/sawtooth),
+before resorting to looking in the back of the book for the answers.
 
 ( ╯°□°)╯ ┻━━┻
 
@@ -98,9 +96,11 @@ or Sawtooth's [official chat](https://chat.hyperledger.org/channel/sawtooth).
 ## Contributing
 
 This is an ongoing project, and we always appreciate involvement from outside
-contributors. We use GitHub Issues to track bugs, so if you have a problem to
+contributors. We use GitHub Issues to track bugs. If you have a problem to
 report, like a typo, a confusing lesson, or something not working as expected,
-just click on the _Issues_ tab above, and then the _New Issue_ button.
+please click on the _Issues_ tab above, and then the
+[New Issue](https://github.com/hyperledger/education-cryptomoji/issues/new)
+button.
 
 If you would like to go a step further and contribute code, consider giving our
 [Contributing Guide](CONTRIBUTING.md) a quick read to familiarize yourself with

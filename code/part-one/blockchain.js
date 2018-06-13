@@ -15,11 +15,11 @@ class Transaction {
    * to set a number of properties, including a Secp256k1 signature.
    *
    * Properties:
-   *   - source: the public key derived from the passed in private key
-   *   - recipient: the passed public key for the recipient
-   *   - amount: the passed in number
+   *   - source: the public key derived from the provided private key
+   *   - recipient: the provided public key for the recipient
+   *   - amount: the provided amount
    *   - signature: a unique signature generated from a combination of the
-   *     other properties, signed by the passed in private key
+   *     other properties, signed with the provided private key
    */
   constructor(privateKey, recipient, amount) {
     // Enter your solution here
@@ -50,7 +50,6 @@ class Block {
     this.transactions = transactions;
     this.previousHash = previousHash;
     this.calculateHash(0);
-    // END SOLUTION
   }
 
   /**
@@ -71,7 +70,6 @@ class Block {
 
     this.nonce = nonce;
     this.hash = createHash('sha512').update(toHash).digest('hex');
-    // END SOLUTION
   }
 }
 
@@ -82,12 +80,12 @@ class Block {
  */
 class Blockchain {
   /**
-   * Generates a new blockchain with a single genesis block. A genesis block
-   * is important so later blocks have something to build off of. It should
-   * have no transactions, and `null` for a previous hash.
+   * Generates a new blockchain with a single "genesis" block. This is the
+   * only block which may have no previous hash. It should have an empty
+   * transactions array, and `null` for the previous hash.
    *
    * Properties:
-   *   - blocks: an array of blocks, starts with one genesis block
+   *   - blocks: an array of blocks, starting with one genesis block
    */
   constructor() {
     // Your code here
@@ -95,7 +93,6 @@ class Blockchain {
     // start solution
     const genesis = new Block([], null);
     this.blocks = [ genesis ];
-    // END SOLUTION
   }
 
   /**
@@ -106,11 +103,10 @@ class Blockchain {
 
     // start solution
     return this.blocks[this.blocks.length - 1];
-    // END SOLUTION
   }
 
   /**
-   * Accepts an array of transactions, creating a new block with them, and
+   * Accepts an array of transactions, creating a new block with them and
    * adding it to the chain.
    */
   addBlock(transactions) {
@@ -119,15 +115,14 @@ class Blockchain {
     // start solution
     const block = new Block(transactions, this.getHeadBlock().hash);
     this.blocks.push(block);
-    // END SOLUTION
   }
 
   /**
-   * Accepts a public key and calculates its "balance" based on the amounts
-   * transfered in transactions stored in the chain.
+   * Accepts a public key, calculating its "balance" based on the amounts
+   * transferred in all transactions stored in the chain.
    *
    * Note:
-   *   There is currently no way to add value to the chain, so inevitably some
+   *   There is currently no way to create new funds on the chain, so some
    *   keys will have a negative balance. That's okay, we'll address it when
    *   we make the blockchain mineable later.
    */
@@ -146,7 +141,6 @@ class Blockchain {
         return sum;
       }, 0);
     }, 0);
-    // END SOLUTION
   }
 }
 
