@@ -50,7 +50,6 @@ class Block {
     this.transactions = transactions;
     this.previousHash = previousHash;
     this.calculateHash(0);
-    // END SOLUTION
   }
 
   /**
@@ -71,7 +70,6 @@ class Block {
 
     this.nonce = nonce;
     this.hash = createHash('sha512').update(toHash).digest('hex');
-    // END SOLUTION
   }
 }
 
@@ -95,7 +93,6 @@ class Blockchain {
     // start solution
     const genesis = new Block([], null);
     this.blocks = [ genesis ];
-    // END SOLUTION
   }
 
   /**
@@ -106,7 +103,6 @@ class Blockchain {
 
     // start solution
     return this.blocks[this.blocks.length - 1];
-    // END SOLUTION
   }
 
   /**
@@ -119,7 +115,6 @@ class Blockchain {
     // start solution
     const block = new Block(transactions, this.getHeadBlock().hash);
     this.blocks.push(block);
-    // END SOLUTION
   }
 
   /**
@@ -146,7 +141,6 @@ class Blockchain {
         return sum;
       }, 0);
     }, 0);
-    // END SOLUTION
   }
 }
 
