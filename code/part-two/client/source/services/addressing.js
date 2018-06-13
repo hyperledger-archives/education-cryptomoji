@@ -8,29 +8,6 @@ const PREFIXES = {
   SIRE_LISTING: '02',
   OFFER: '03'
 };
-// START SOLUTION
-const ADDRESS_LENGTH = 70;
-const FULL_PREFIXES = Object.keys(PREFIXES).reduce((prefixes, key) => {
-  prefixes[key] = NAMESPACE + PREFIXES[key];
-  return prefixes;
-}, {});
-
-// Returns a hex-string SHA-512 hash sliced to a particular length
-const hash = (str, length) => {
-  return createHash('sha512').update(str).digest('hex').slice(0, length);
-};
-
-/**
- * Takes an address returns a string corresponding to its type.
- */
-export const addressToType = (address = '') => {
-  const type = Object.keys(FULL_PREFIXES)
-    .find(type => FULL_PREFIXES[type] === address.slice(0, 8));
-
-  return type || null;
-};
-
-// END SOLUTION
 /**
  * A function which optionally takes a public key, and returns a full or
  * partial collection address.
@@ -48,17 +25,8 @@ export const addressToType = (address = '') => {
  *   // '5f4d7600ecd7ef459ec82a01211983551c3ed82169ca5fa0703ec98e17f9b534ffb797'
  */
 export const getCollectionAddress = (publicKey = null) => {
-  /* START PROBLEM
   // Enter your solution here
 
-  END PROBLEM */
-  // START SOLUTION
-  if (publicKey === null) {
-    return FULL_PREFIXES.COLLECTION;
-  }
-
-  return FULL_PREFIXES.COLLECTION + hash(publicKey, 62);
-  // END SOLUTION
 };
 
 /**
@@ -74,22 +42,8 @@ export const getCollectionAddress = (publicKey = null) => {
  *   console.log(ownerPrefix);  // '5f4d7601ecd7ef45'
  */
 export const getMojiAddress = (ownerKey = null, dna = null) => {
-  /* START PROBLEM
   // Your code here
 
-  END PROBLEM */
-  // START SOLUTION
-  if (ownerKey === null) {
-    return FULL_PREFIXES.MOJI;
-  }
-
-  const ownerPrefix = FULL_PREFIXES.MOJI + hash(ownerKey, 8);
-  if (dna === null) {
-    return ownerPrefix;
-  }
-
-  return ownerPrefix + hash(dna, 54);
-  // END SOLUTION
 };
 
 /**
@@ -100,17 +54,8 @@ export const getMojiAddress = (ownerKey = null, dna = null) => {
  * otherwise returns the full address.
  */
 export const getSireAddress = (ownerKey = null) => {
-  /* START PROBLEM
   // Your code here
 
-  END PROBLEM */
-  // START SOLUTION
-  if (ownerKey === null) {
-    return FULL_PREFIXES.SIRE_LISTING;
-  }
-
-  return FULL_PREFIXES.SIRE_LISTING + hash(ownerKey, 62);
-  // END SOLUTION
 };
 
 /**
@@ -126,32 +71,6 @@ export const getSireAddress = (ownerKey = null) => {
  * The identifiers may be either moji dna, or moji addresses.
  */
 export const getOfferAddress = (ownerKey = null, moji = null) => {
-  /* START PROBLEM
   // Your code here
 
-  END PROBLEM */
-  // START SOLUTION
-  if (ownerKey === null) {
-    return FULL_PREFIXES.OFFER;
-  }
-
-  const ownerPrefix = FULL_PREFIXES.OFFER + hash(ownerKey, 8);
-  if (moji === null) {
-    return ownerPrefix;
-  }
-
-  if (!Array.isArray(moji)) {
-    moji = [moji];
-  }
-
-  const addresses = moji.map(addressOrDna => {
-    if (addressOrDna.length === ADDRESS_LENGTH) {
-      return addressOrDna;
-    }
-
-    return getMojiAddress(ownerKey, addressOrDna);
-  });
-
-  return ownerPrefix + hash(addresses.sort().join(''), 54);
-  // END SOLUTION
 };
