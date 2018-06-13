@@ -149,11 +149,11 @@ start working with Hyperledger Sawtooth.
 
 Now that you understand hashing, a blockchain should actually be rather
 straightforward. It's just bundles of data linked sequentially by hashes of
-that data. Start with a "genesis block". This is the only block which won't linked
-to a previous hash. Then, gather some data into a new block, combine it with
-the genesis hash, and create a new hash. Now, when more data comes in, repeat
-the process. Bundle the data into a new block, combine it with a previous hash,
-generate a new hash.
+that data. Start with a "genesis" block. This is the only block which won't be
+linked to a previous hash. Then, gather some data into a new block, combine it
+with the genesis hash, and create a new hash. Now, when more data comes in,
+repeat the process: bundle the data into a new block, combine it with the
+previous hash and generate a new hash.
 
 ```javascript
 [
@@ -175,10 +175,10 @@ generate a new hash.
 ```
 
 Now all of our data is linked all the way back to our original genesis block.
-If anyone attempts to tamper with the data in a block, it will change the hash
-that gets generated. Anyone checking the chain of hashes would immediately see
-that one does not match. In order to alter old data, you would have to modify
-not only the target block, but _every_ block that came after it.
+If anyone attempts to tamper with the data in a block, the hashes will also
+have to change. Anyone checking the chain of hashes would immediately see that
+one does not match. In order to alter old data, you would have to modify not
+only the target block, but _every_ block that comes after it.
 
 You will implement your blockchain with three related ES6 classes:
 - **Transaction**: A signed transfer of funds from one public key to another
@@ -192,7 +192,7 @@ You will implement your blockchain with three related ES6 classes:
 
 Blockchain validation is a huge and varied topic. In Sawtooth, validation is so
 important that the central component is named a "validator". For this section,
-you get to be your own validator and finally verify all that cryptographic
+you get to be your own validator and finally verify all of that cryptographic
 boilerplate you've been including with your blocks and transactions.
 
 You can use your `signing.verify` method to ensure none of your transactions
@@ -215,7 +215,7 @@ algorithms, and _Proof of Work_ in particular, you can feel free to move on to
 optional.
 
 To run the tests for this extra credit, remove the  `.skip` from the wrapping
-describe block on Line 14 of
+`describe` block on Line 14 of
 [tests/04-ExtraCredit-Mining.js](tests/04-ExtraCredit-Mining.js#L14).
 
 ### 04 Mining

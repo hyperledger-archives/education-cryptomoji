@@ -19,7 +19,7 @@ class Transaction {
    *   - recipient: the provided public key for the recipient
    *   - amount: the provided amount
    *   - signature: a unique signature generated from a combination of the
-   *     other properties, signed with the passed in private key
+   *     other properties, signed with the provided private key
    */
   constructor(privateKey, recipient, amount) {
     /* START PROBLEM
@@ -144,7 +144,7 @@ class Blockchain {
 
   /**
    * Accepts a public key, calculating its "balance" based on the amounts
-   * transfered in all transactions stored in the chain.
+   * transferred in all transactions stored in the chain.
    *
    * Note:
    *   There is currently no way to create new funds on the chain, so some

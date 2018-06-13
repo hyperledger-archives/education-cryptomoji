@@ -62,7 +62,7 @@ of environments. Dockerfiles create "images" with all the dependencies your
 code needs installed. From these images, you can create, run, and destroy
 individual "containers" at will. This is in effect like having every component
 running on it's own virtual computer which you can reset to factory settings at
-any time. It's a profoundly useful tool, which takes a little getting used to,
+any time. It's a profoundly useful tool which takes a little getting used to,
 but is worth getting familiar with.
 
 ### Components
@@ -134,7 +134,7 @@ docker exec -it shell bash
 
 An important note! When you are within a container, you cannot use "localhost"
 for networking. Remember how each container is like its own little computer?
-Well it comes complete with it's own localhost. For networking to _other_
+Well, it comes complete with its own localhost. For networking to _other_
 containers, Docker provides the service names from the compose file as URLs. So
 for example, if you were inside the shell container and wanted to fetch the
 blocks from the REST API, you would run:
@@ -355,9 +355,10 @@ createHash('sha512').update('034f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab
 
 Cryptomoji need to be divvied up by who owns them. That way you can query a
 partial address to get all of the cryptomoji owned by a public key. So after a
-type prefix of `01` a collection has the first eight characters from a SHA-512
-hash of the owner's public key. The final 54 characters of a cryptomoji’s
-address will the first 54 characters of a SHA-512 hash of their DNA string.
+type prefix of `01`, the next eight characters of a cryptomoji's address are
+the collection prefix (the first eight characters from a SHA-512 hash of the
+owner's public key). The final 54 characters of a cryptomoji’s address will the
+first 54 characters from a SHA-512 hash of their DNA string.
 
 #### Sire Listing
 
@@ -365,8 +366,11 @@ address will the first 54 characters of a SHA-512 hash of their DNA string.
 | ------------- | --------------- | --------------------
 | `5f4d76`      | `02`            | `1b96dbb5322e410816dd41d93571801e751a4f0cc455d8bd58f5f8ad3d67cb`
 
-Since collections are only allowed one sire listing, they can be stored under a
-nearly identical address. The only difference will be the type prefix: `02`.
+Since collections are only allowed one, sire listings can be stored under a
+nearly identical address as collections. The identifier hash is the same first
+62 characters of a SHA-512 hash of the owner's public key. The only difference
+between a collection's address and its sire listing's will be the type prefix:
+`02`.
 
 ### Payloads
 
