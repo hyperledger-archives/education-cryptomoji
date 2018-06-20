@@ -60,12 +60,6 @@ class Block {
   calculateHash(nonce) {
     // Your code here
 
-    // start solution
-    const transactionString = this.transactions.map(t => t.signature).join('');
-    const toHash = this.previousHash + transactionString + nonce;
-
-    this.nonce = nonce;
-    this.hash = createHash('sha512').update(toHash).digest('hex');
   }
 }
 
@@ -94,8 +88,6 @@ class Blockchain {
   getHeadBlock() {
     // Your code here
 
-    // start solution
-    return this.blocks[this.blocks.length - 1];
   }
 
   /**
