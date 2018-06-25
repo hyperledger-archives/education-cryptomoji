@@ -10,6 +10,7 @@ export class Moji extends React.Component {
     super(props);
     this.state = {
       address: null,
+      isLoaded: false,
       moji: null,
       mojiView: null
     };
@@ -45,13 +46,21 @@ export class Moji extends React.Component {
       .catch(err => {
         console.error(`Fetch moji failed for ${address}`, err);
         this.setState({ moji: null });
+      })
+      .finally(() => {
+        this.setState({ isLoaded: true });
       });
   }
 
   render() {
     console.log('RENDERING: <Moji />');
-    const { address, moji, mojiView } = this.state;
-    if (!moji) {
+    const { address, isLoaded, moji, mojiView } = this.state;
+
+    if (!isLoaded) {
+      return <div></div>;
+    }
+
+    if (isLoaded && !moji) {
       return (
         <div>
           We can't find anything for a moji at <code>{address}</code>!
