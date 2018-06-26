@@ -94,7 +94,13 @@ export class App extends React.Component {
           <Route
             exact
             path="/moji/:address"
-            render={props => <Moji {...props} publicKey={this.publicKey} />}
+            render={props => (
+              <Moji
+                {...props}
+                publicKey={this.publicKey}
+                privateKey={this.privateKey}
+              />
+            )}
           />
           <Route
             exact

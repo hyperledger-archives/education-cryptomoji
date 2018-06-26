@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { getMoji } from './services/requests';
+import { getMoji, getSires, submitPayloads } from './services/requests';
 import { parseDna } from './services/parse_dna';
 
 export class Moji extends React.Component {
@@ -12,9 +12,11 @@ export class Moji extends React.Component {
       address: null,
       isLoaded: false,
       isOwner: false,
+      isSire: false,
       moji: null,
       mojiView: null
     };
+    this.selectSire = this.selectSire.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -24,6 +26,7 @@ export class Moji extends React.Component {
       address,
       isLoaded: false,
       isOwner: false,
+      isSire: false,
       moji: null,
       mojiView: null
     };
@@ -53,15 +56,42 @@ export class Moji extends React.Component {
           moji,
           mojiView: parseDna(moji.dna).view
         });
+        return getSires(moji.owner);
+      })
+      .then(sire => {
+        const isSire = sire.address === this.state.address;
+        if (isSire) {
+          this.setState(prevState => ({
+            mojiView: prevState.mojiView + ' 🎩'
+          }));
+        }
+        this.setState({ isSire });
+      })
+      .catch(err => {
+        console.error(`Fetch sire failed for ${this.state.moji.owner}`, err);
       })
       .finally(() => {
         this.setState({ isLoaded: true });
       });
   }
 
+  selectSire() {
+    return submitPayloads(this.props.privateKey, {
+      action: 'SELECT_SIRE',
+      sire: this.state.address
+    })
+      .then(() => this.setState(prevState => ({
+        isSire: true,
+        mojiView: prevState.mojiView + ' 🎩'
+      })))
+      .catch(err => {
+        alert('Something went wrong while trying to select a new sire:' + err);
+      });
+  }
+
   render() {
     console.log('RENDERING: <Moji />');
-    const { address, isLoaded, isOwner, moji, mojiView } = this.state;
+    const { address, isLoaded, isOwner, isSire, moji, mojiView } = this.state;
 
     if (!isLoaded) {
       return <div></div>;
@@ -75,8 +105,21 @@ export class Moji extends React.Component {
       );
     }
 
+    let actionButton = null;
+
+    if (isOwner && !isSire) {
+      actionButton = (
+        <button
+          type="button"
+          className="btn btn-primary float-right"
+          onClick={this.selectSire}
+        >Select as Sire</button>
+      );
+    }
+
     return (
       <div>
+        {actionButton}
         <h2>{mojiView}</h2>
         <table>
           <tbody>
