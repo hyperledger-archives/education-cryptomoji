@@ -51,13 +51,14 @@ export class Collection extends React.Component {
     return (
       <div>
         <h1>This is <code>{publicKey}</code>'s collection!</h1>
-        {collection.moji.map(address => (
-          <MojiItem
-            key={address}
-            address={address}
-            className="list-group"
-          />
-        ))}
+        <div className="list-group">
+          {collection.moji.map(address => (
+            <MojiItem
+              key={address}
+              address={address}
+            />
+          ))}
+        </div>
       </div>
     );
   }
