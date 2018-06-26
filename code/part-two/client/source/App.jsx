@@ -70,16 +70,14 @@ export class App extends React.Component {
           <Route
             exact
             path="/auth"
-            render={(props) => {
-              return (
-                <Auth
-                  {...props}
-                  privateKey={this.privateKey}
-                  setPrivateKey={(key) => this.privateKey = key}
-                  setPublicKey={(key) => this.publicKey = key}
-                />
-              )
-            }}
+            render={props => (
+              <Auth
+                {...props}
+                privateKey={this.privateKey}
+                setPrivateKey={(key) => this.privateKey = key}
+                setPublicKey={(key) => this.publicKey = key}
+              />
+            )}
           />
           <Route
             exact
