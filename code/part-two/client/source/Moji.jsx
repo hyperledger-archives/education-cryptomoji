@@ -20,7 +20,6 @@ export class Moji extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('GETDERIVEDSTATEFROMPROPS: <Moji />');
     const address = nextProps.match.params.address;
     return {
       address,
@@ -33,19 +32,16 @@ export class Moji extends React.Component {
   }
 
   componentDidMount() {
-    console.log('COMPONENTDIDMOUNT: <Moji />');
     this.fetchMoji(this.state.address);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('COMPONENTDIDUPDATE: <Moji />');
     if (this.state.address !== prevState.address) {
       this.fetchMoji(this.state.address);
     }
   }
 
   fetchMoji(address) {
-    console.log('fetchMoji');
     return getMoji(address)
       .catch(err => {
         console.error(`Fetch moji failed for ${address}`, err);
@@ -90,7 +86,6 @@ export class Moji extends React.Component {
   }
 
   render() {
-    console.log('RENDERING: <Moji />');
     const { address, isLoaded, isOwner, isSire, moji, mojiView } = this.state;
 
     if (!isLoaded) {

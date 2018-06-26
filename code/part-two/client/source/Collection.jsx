@@ -14,7 +14,6 @@ export class Collection extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('GETDERIVEDSTATEFROMPROPS: <Collection />');
     const publicKey = nextProps.match.params.publicKey;
     return {
       publicKey
@@ -22,19 +21,16 @@ export class Collection extends React.Component {
   }
 
   componentDidMount() {
-    console.log('COMPONENTDIDMOUNT: <Collection />');
     this.fetchCollection(this.state.publicKey);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('COMPONENTDIDUPDATE: <Collection />');
     if (this.state.publicKey !== prevState.publicKey) {
       this.fetchCollection(this.state.publicKey);
     }
   }
 
   fetchCollection(publicKey) {
-    console.log('fetchCollection');
     return getCollections(publicKey)
       .then(collection => this.setState({ collection }))
       .catch(err => {
@@ -44,7 +40,6 @@ export class Collection extends React.Component {
   }
 
   render() {
-    console.log('RENDERING: <Collection />');
     const { publicKey, collection } = this.state;
     if (!collection) {
       return (
