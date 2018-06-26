@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { BreedDropdownMenu } from './BreedDropdownMenu';
 import { getMoji, getSires, submitPayloads } from './services/requests';
 import { parseDna } from './services/parse_dna';
 
@@ -109,6 +110,15 @@ export class Moji extends React.Component {
           className="btn btn-primary float-right"
           onClick={this.selectSire}
         >Select as Sire</button>
+      );
+    } else if (isSire && this.props.publicKey) {
+      // if we're looking at a sire AND we're logged in
+      actionButton = (
+        <BreedDropdownMenu
+          privateKey={this.props.privateKey}
+          publicKey={this.props.publicKey}
+          sire={moji}
+        />
       );
     }
 
