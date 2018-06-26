@@ -60,6 +60,7 @@ export class Collection extends React.Component {
           <MojiItem
             key={address}
             address={address}
+            className="list-group"
           />
         ))}
       </div>
