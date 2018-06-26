@@ -94,7 +94,7 @@ export class App extends React.Component {
           <Route
             exact
             path="/moji/:address"
-            component={Moji}
+            render={props => <Moji {...props} publicKey={this.publicKey} />}
           />
           <Route
             exact

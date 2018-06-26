@@ -11,6 +11,7 @@ export class Moji extends React.Component {
     this.state = {
       address: null,
       isLoaded: false,
+      isOwner: false,
       moji: null,
       mojiView: null
     };
@@ -20,7 +21,11 @@ export class Moji extends React.Component {
     console.log('GETDERIVEDSTATEFROMPROPS: <Moji />');
     const address = nextProps.match.params.address;
     return {
-      address
+      address,
+      isLoaded: false,
+      isOwner: false,
+      moji: null,
+      mojiView: null
     };
   }
 
@@ -39,13 +44,15 @@ export class Moji extends React.Component {
   fetchMoji(address) {
     console.log('fetchMoji');
     return getMoji(address)
-      .then(moji => this.setState({
-        moji,
-        mojiView: parseDna(moji.dna).view
-      }))
       .catch(err => {
         console.error(`Fetch moji failed for ${address}`, err);
-        this.setState({ moji: null });
+      })
+      .then(moji => {
+        this.setState({
+          isOwner: moji.owner === this.props.publicKey,
+          moji,
+          mojiView: parseDna(moji.dna).view
+        });
       })
       .finally(() => {
         this.setState({ isLoaded: true });
@@ -54,7 +61,7 @@ export class Moji extends React.Component {
 
   render() {
     console.log('RENDERING: <Moji />');
-    const { address, isLoaded, moji, mojiView } = this.state;
+    const { address, isLoaded, isOwner, moji, mojiView } = this.state;
 
     if (!isLoaded) {
       return <div></div>;
@@ -77,7 +84,11 @@ export class Moji extends React.Component {
             <tr><td>dna</td><td>{moji.dna}</td></tr>
             <tr>
               <td>owner</td>
-              <td><Link to={'/collection/' + moji.owner}>{moji.owner}</Link></td>
+              <td>
+                <Link to={'/collection/' + moji.owner}>
+                  {isOwner ? 'you!' : moji.owner}
+                </Link>
+              </td>
             </tr>
             <tr>
               <td>sire</td>
