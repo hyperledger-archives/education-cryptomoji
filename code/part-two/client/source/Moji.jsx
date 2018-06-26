@@ -59,11 +59,6 @@ export class Moji extends React.Component {
       })
       .then(sire => {
         const isSire = sire.address === this.state.address;
-        if (isSire) {
-          this.setState(prevState => ({
-            mojiView: prevState.mojiView + ' 🎩'
-          }));
-        }
         this.setState({ isSire });
       })
       .catch(err => {
@@ -81,7 +76,6 @@ export class Moji extends React.Component {
     })
       .then(() => this.setState(prevState => ({
         isSire: true,
-        mojiView: prevState.mojiView + ' 🎩'
       })))
       .catch(err => {
         alert('Something went wrong while trying to select a new sire:' + err);
@@ -104,6 +98,15 @@ export class Moji extends React.Component {
     }
 
     let actionButton = null;
+    let sireIndicator = null;
+
+    if (isSire) {
+      sireIndicator = (
+        <React.Fragment>
+          🎩 <span className="badge badge-primary">sire</span>
+        </React.Fragment>
+      );
+    }
 
     if (isOwner && !isSire) {
       actionButton = (
@@ -127,7 +130,7 @@ export class Moji extends React.Component {
     return (
       <div>
         {actionButton}
-        <h2>{mojiView}</h2>
+        <h2>{mojiView} {sireIndicator}</h2>
         <table className="table">
           <tbody>
             <tr><td>address</td><td>{moji.address}</td></tr>
