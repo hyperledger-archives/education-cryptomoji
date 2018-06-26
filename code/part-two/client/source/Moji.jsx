@@ -3,6 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { BreedDropdownMenu } from './BreedDropdownMenu';
+import { MojiList } from './MojiList';
+import { MojiListItem } from './MojiListItem';
 import { getMoji, getSires, submitPayloads } from './services/requests';
 import { parseDna } from './services/parse_dna';
 
@@ -140,27 +142,31 @@ export class Moji extends React.Component {
             </tr>
             <tr>
               <td>sire</td>
-              <td><Link to={'/moji/' + moji.sire}>{moji.sire}</Link></td>
+              <td>{moji.sire
+                ? <MojiListItem address={moji.sire}/>
+                : 'none'
+              }</td>
             </tr>
             <tr>
               <td>breeder</td>
-              <td><Link to={'/moji/' + moji.breeder}>{moji.breeder}</Link></td>
+              <td>{moji.breeder
+                ? <MojiListItem address={moji.breeder} />
+                : 'none'
+              }</td>
             </tr>
             <tr>
               <td>sired</td>
-              <td>
-                {moji.sired.map(address => (
-                  <Link key={address} to={'/moji/' + address}>{address},</Link>
-                ))}
-              </td>
+              <td>{moji.sired.length
+                ? <MojiList moji={moji.sired} />
+                : 'none'
+              }</td>
             </tr>
             <tr>
               <td>bred</td>
-              <td>
-                {moji.bred.map(address => (
-                  <Link key={address} to={'/moji/' + address}>{address},</Link>
-                ))}
-              </td>
+              <td>{moji.bred.length
+                ? <MojiList moji={moji.bred} />
+                : 'none'
+              }</td>
             </tr>
           </tbody>
         </table>
