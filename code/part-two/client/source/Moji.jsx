@@ -128,7 +128,7 @@ export class Moji extends React.Component {
       <div>
         {actionButton}
         <h2>{mojiView}</h2>
-        <table>
+        <table className="table">
           <tbody>
             <tr><td>address</td><td>{moji.address}</td></tr>
             <tr><td>dna</td><td>{moji.dna}</td></tr>
