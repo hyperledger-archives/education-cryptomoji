@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { getMoji, getSires } from './services/requests';
 import { parseDna } from './services/parse_dna';
 
-export class MojiItem extends React.Component {
+export class MojiListItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

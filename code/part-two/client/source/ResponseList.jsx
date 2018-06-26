@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { MojiItem } from './MojiItem';
+import { MojiListItem } from './MojiListItem';
 
 export function ResponseList({ offer }) {
   console.log('RENDERING: <ResponseList />');
@@ -21,7 +21,7 @@ export function ResponseList({ offer }) {
           <ul>
             {response.moji.map(moji => (
               <li key={moji}>
-                <MojiItem address={moji} />
+                <MojiListItem address={moji} />
               </li>
             ))}
           </ul>

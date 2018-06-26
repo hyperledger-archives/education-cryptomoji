@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { MojiItem } from './MojiItem';
+import { MojiListItem } from './MojiListItem';
 
 import { getOffers } from './services/requests';
 
@@ -39,7 +39,7 @@ export class OfferList extends React.Component {
             {offer.owner} is offering the following moji and has
             <Link to={'/offer/' + offer.address}>{offer.responses.length}
               responses</Link>
-            {offer.moji.map(moji => <MojiItem key={moji} address={moji} />)}
+            {offer.moji.map(moji => <MojiListItem key={moji} address={moji} />)}
           </div>
         ))}
       </div>
