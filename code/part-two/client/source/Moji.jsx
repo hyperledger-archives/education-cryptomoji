@@ -101,11 +101,7 @@ export class Moji extends React.Component {
     let sireIndicator = null;
 
     if (isSire) {
-      sireIndicator = (
-        <React.Fragment>
-          🎩 <span className="badge badge-primary">sire</span>
-        </React.Fragment>
-      );
+      sireIndicator = <span className="badge badge-primary">🎩 sire</span>;
     }
 
     if (isOwner && !isSire) {
@@ -130,7 +126,7 @@ export class Moji extends React.Component {
     return (
       <div>
         {actionButton}
-        <h2>{mojiView} {sireIndicator}</h2>
+        <h2>{mojiView} {' '} {sireIndicator}</h2>
         <table className="table">
           <tbody>
             <tr><td>address</td><td>{moji.address}</td></tr>

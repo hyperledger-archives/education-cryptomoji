@@ -37,17 +37,17 @@ export class MojiListItem extends React.Component {
   render() {
     let sireIndicator = null;
     if (this.state.isSire) {
-      sireIndicator = (
-        <React.Fragment>
-          🎩  <span className="badge badge-primary">sire</span>
-        </React.Fragment>
-      );
+      sireIndicator = <span className="badge badge-primary">🎩 sire</span>;
     }
     return (
       <div className="card">
         <div className="card-body">
           <Link to={'/moji/' + this.props.address} className="card-title card-link">
-            {this.state.isLoaded && (this.state.mojiView || this.props.address)} {sireIndicator}
+            {this.state.isLoaded
+              && (this.state.mojiView || this.props.address)
+            }
+            {' '}
+            {sireIndicator}
           </Link>
         </div>
       </div>
