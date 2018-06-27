@@ -9,7 +9,7 @@ export class MojiList extends React.Component {
 
   render() {
     return (
-      <div className="list-group">
+      <div className="card-columns">
         {this.props.moji.map(address => (
           <MojiListItem
             key={address}

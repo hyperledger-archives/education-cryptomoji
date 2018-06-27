@@ -40,15 +40,13 @@ export class MojiListItem extends React.Component {
   }
 
   render() {
-    let className = 'list-group-item';
-    if (this.state.isSire) {
-      className += ' list-group-item-primary';
-    }
     return (
-      <div className={className}>
-        <Link to={'/moji/' + this.props.address}>
-          {this.state.isLoaded && (this.state.mojiView || this.props.address)}
-        </Link>
+      <div className="card">
+        <div className="card-body">
+          <Link to={'/moji/' + this.props.address} className="card-title card-link">
+            {this.state.isLoaded && (this.state.mojiView || this.props.address)}
+          </Link>
+        </div>
       </div>
     );
   }
