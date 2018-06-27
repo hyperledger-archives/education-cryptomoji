@@ -25,11 +25,6 @@ export class MojiListItem extends React.Component {
       })
       .then(sire => {
         const isSire = sire.address === this.props.address;
-        if (isSire) {
-          this.setState(prevState => ({
-            mojiView: prevState.mojiView + ' 🎩'
-          }));
-        }
         this.setState({ isSire });
       })
       .finally(() => {
@@ -40,11 +35,19 @@ export class MojiListItem extends React.Component {
   }
 
   render() {
+    let sireIndicator = null;
+    if (this.state.isSire) {
+      sireIndicator = (
+        <React.Fragment>
+          🎩  <span className="badge badge-primary">sire</span>
+        </React.Fragment>
+      );
+    }
     return (
       <div className="card">
         <div className="card-body">
           <Link to={'/moji/' + this.props.address} className="card-title card-link">
-            {this.state.isLoaded && (this.state.mojiView || this.props.address)}
+            {this.state.isLoaded && (this.state.mojiView || this.props.address)} {sireIndicator}
           </Link>
         </div>
       </div>
