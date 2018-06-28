@@ -70,16 +70,14 @@ export class App extends React.Component {
           <Route
             exact
             path="/auth"
-            render={(props) => {
-              return (
-                <Auth
-                  {...props}
-                  privateKey={this.privateKey}
-                  setPrivateKey={(key) => this.privateKey = key}
-                  setPublicKey={(key) => this.publicKey = key}
-                />
-              )
-            }}
+            render={props => (
+              <Auth
+                {...props}
+                privateKey={this.privateKey}
+                setPrivateKey={(key) => this.privateKey = key}
+                setPublicKey={(key) => this.publicKey = key}
+              />
+            )}
           />
           <Route
             exact
@@ -94,7 +92,13 @@ export class App extends React.Component {
           <Route
             exact
             path="/moji/:address"
-            component={Moji}
+            render={props => (
+              <Moji
+                {...props}
+                publicKey={this.publicKey}
+                privateKey={this.privateKey}
+              />
+            )}
           />
           <Route
             exact

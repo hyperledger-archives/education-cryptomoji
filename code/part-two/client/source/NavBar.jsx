@@ -28,7 +28,7 @@ export function NavBar({ publicKey, logout }) {
                 to={'/collection/' + publicKey}
                 className="nav-item nav-link"
                 activeClassName="active"
-              >Yours</NavLink>
+              >My Moji</NavLink>
             )
           }
 

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { getMoji } from './services/requests';
+import { getMoji, getSires, submitPayloads } from './services/requests';
 import { parseDna } from './services/parse_dna';
 
 export class Moji extends React.Component {
@@ -10,48 +10,89 @@ export class Moji extends React.Component {
     super(props);
     this.state = {
       address: null,
+      isLoaded: false,
+      isOwner: false,
+      isSire: false,
+      moji: null,
+      mojiView: null
+    };
+    this.selectSire = this.selectSire.bind(this);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const address = nextProps.match.params.address;
+    return {
+      address,
+      isLoaded: false,
+      isOwner: false,
+      isSire: false,
       moji: null,
       mojiView: null
     };
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('GETDERIVEDSTATEFROMPROPS: <Moji />');
-    const address = nextProps.match.params.address;
-    return {
-      address
-    };
-  }
-
   componentDidMount() {
-    console.log('COMPONENTDIDMOUNT: <Moji />');
     this.fetchMoji(this.state.address);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('COMPONENTDIDUPDATE: <Moji />');
     if (this.state.address !== prevState.address) {
       this.fetchMoji(this.state.address);
     }
   }
 
   fetchMoji(address) {
-    console.log('fetchMoji');
     return getMoji(address)
-      .then(moji => this.setState({
-        moji,
-        mojiView: parseDna(moji.dna).view
-      }))
       .catch(err => {
         console.error(`Fetch moji failed for ${address}`, err);
-        this.setState({ moji: null });
+      })
+      .then(moji => {
+        this.setState({
+          isOwner: moji.owner === this.props.publicKey,
+          moji,
+          mojiView: parseDna(moji.dna).view
+        });
+        return getSires(moji.owner);
+      })
+      .then(sire => {
+        const isSire = sire.address === this.state.address;
+        if (isSire) {
+          this.setState(prevState => ({
+            mojiView: prevState.mojiView + ' 🎩'
+          }));
+        }
+        this.setState({ isSire });
+      })
+      .catch(err => {
+        console.error(`Fetch sire failed for ${this.state.moji.owner}`, err);
+      })
+      .finally(() => {
+        this.setState({ isLoaded: true });
+      });
+  }
+
+  selectSire() {
+    return submitPayloads(this.props.privateKey, {
+      action: 'SELECT_SIRE',
+      sire: this.state.address
+    })
+      .then(() => this.setState(prevState => ({
+        isSire: true,
+        mojiView: prevState.mojiView + ' 🎩'
+      })))
+      .catch(err => {
+        alert('Something went wrong while trying to select a new sire:' + err);
       });
   }
 
   render() {
-    console.log('RENDERING: <Moji />');
-    const { address, moji, mojiView } = this.state;
-    if (!moji) {
+    const { address, isLoaded, isOwner, isSire, moji, mojiView } = this.state;
+
+    if (!isLoaded) {
+      return <div></div>;
+    }
+
+    if (isLoaded && !moji) {
       return (
         <div>
           We can't find anything for a moji at <code>{address}</code>!
@@ -59,8 +100,21 @@ export class Moji extends React.Component {
       );
     }
 
+    let actionButton = null;
+
+    if (isOwner && !isSire) {
+      actionButton = (
+        <button
+          type="button"
+          className="btn btn-primary float-right"
+          onClick={this.selectSire}
+        >Select as Sire</button>
+      );
+    }
+
     return (
       <div>
+        {actionButton}
         <h2>{mojiView}</h2>
         <table>
           <tbody>
@@ -68,7 +122,11 @@ export class Moji extends React.Component {
             <tr><td>dna</td><td>{moji.dna}</td></tr>
             <tr>
               <td>owner</td>
-              <td><Link to={'/collection/' + moji.owner}>{moji.owner}</Link></td>
+              <td>
+                <Link to={'/collection/' + moji.owner}>
+                  {isOwner ? 'you!' : moji.owner}
+                </Link>
+              </td>
             </tr>
             <tr>
               <td>sire</td>
