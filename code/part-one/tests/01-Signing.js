@@ -19,6 +19,9 @@ const randomString = () => {
     .replace(/[\/\+=]/g, '');
 };
 
+// Tests whether or not a string is a hex string
+const isHex = key => /^[\da-f]{64}$|^[\da-f]{66}$|^[\da-f]{128}$/i.test(key);
+
 describe('Signing module', function() {
 
   describe('createPrivateKey', function() {
@@ -29,7 +32,7 @@ describe('Signing module', function() {
     });
 
     it('should return a hex string', function() {
-      expect(privateKey).to.be.a.hexString;
+      expect(isHex(privateKey)).to.be.true;
     });
 
     it('should generate a valid Secp256k1 private key', function() {
@@ -48,7 +51,7 @@ describe('Signing module', function() {
     });
 
     it('should return a hex string', function() {
-      expect(publicKey).to.be.a.hexString;
+      expect(isHex(publicKey)).to.be.true;
     });
 
     it('should generate a valid Secp256k1 public key', function() {
@@ -77,7 +80,7 @@ describe('Signing module', function() {
     });
 
     it('should return a hex string', function() {
-      expect(signature).to.be.a.hexString;
+      expect(isHex(signature)).to.be.true;
     });
 
     it('should create a valid signature', function() {
