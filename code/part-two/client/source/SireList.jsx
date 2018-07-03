@@ -14,13 +14,17 @@ export class SireList extends React.Component {
 
   componentDidMount() {
     getSires()
-      .then(sires => this.setState({ sires }));
+      .then(sires => {
+        this.setState({
+          sires: sires.map(sire =>{
+            sire.isSire = true;
+            return sire;
+          })
+        });
+      });
   }
 
   render() {
-    // this.state.sires is an array of objects, not an array of addresses.
-    // MojiList expects a list of addresses, so the following line emphasizes
-    // code re-use over optimizing for a limited number of API calls.
-    return <MojiList moji={this.state.sires.map(({address}) => address)} />;
+    return <MojiList moji={this.state.sires} />;
   }
 }

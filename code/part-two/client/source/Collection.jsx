@@ -51,7 +51,7 @@ export class Collection extends React.Component {
     return (
       <div>
         <h1>This is <code>{publicKey}</code>'s collection!</h1>
-        <MojiList moji={collection.moji} />
+        <MojiList addresses={collection.moji} />
       </div>
     );
   }

@@ -156,14 +156,14 @@ export class Moji extends React.Component {
             <tr>
               <td>sired</td>
               <td>{moji.sired.length
-                ? <MojiList moji={moji.sired} />
+                ? <MojiList addresses={moji.sired} />
                 : 'none'
               }</td>
             </tr>
             <tr>
               <td>bred</td>
               <td>{moji.bred.length
-                ? <MojiList moji={moji.bred} />
+                ? <MojiList addresses={moji.bred} />
                 : 'none'
               }</td>
             </tr>
