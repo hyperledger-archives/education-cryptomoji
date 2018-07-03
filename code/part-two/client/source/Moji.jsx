@@ -74,9 +74,9 @@ export class Moji extends React.Component {
       action: 'SELECT_SIRE',
       sire: this.state.address
     })
-      .then(() => this.setState(prevState => ({
+      .then(() => this.setState({
         isSire: true,
-      })))
+      }))
       .catch(err => {
         alert('Something went wrong while trying to select a new sire:' + err);
       });
