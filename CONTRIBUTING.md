@@ -11,7 +11,7 @@ To create a new issue:
 
 1. Click on the
 [Issues tab](https://github.com/hyperledger/education-cryptobunnies/issues)
-underneath the name of this repo.
+underneath the name of this repo, above.
 2. Click on the
 [New Issue button](https://github.com/hyperledger/education-cryptobunnies/issues/new)
 on the right side of the page.
@@ -19,7 +19,7 @@ on the right side of the page.
 4. If applicable, select a label on the right side (such as "bug").
 5. Click _"Submit new issue"_.
 
-The title should be a short phrase that identifies the bug or feature. The
+The title should be a short label that identifies the bug or feature. The
 _"Leave a comment"_ section should contain a description with as much
 detail as possible. For bugs or typos, this description might include:
 
@@ -39,13 +39,13 @@ anything labeled "help wanted" that you could tackle.
 
 ### Submitting Pull Requests
 
-While the fork-to-PR process is common, it is somewhat unusual that `master`
-is _not_ the branch you should make a PR against. In this repo, master is not
-the source of truth, but a collection of generated stub functions for students
-to fill out. The original source of this code is actually in the `staging`
-branch, so you should submit _all_ PRs against this branch.
+While the fork-to-PR process is common, this repo is somewhat unusual because
+`master` is _not_ the branch you should make a PR against. In this repo, master
+is not the source of truth, but a collection of generated stub functions for
+students to fill out. The original source of this code is actually in the
+`staging` branch, so you should submit _all_ PRs against this branch.
 
-The PR process is as follows:
+The complete PR process is as follows:
 
 1. Create a personal fork of this repository.
 2. Starting from `staging`, create a topic branch for your changes.

@@ -67,9 +67,9 @@ but is worth getting familiar with.
 
 ### Components
 
-This directory includes a [docker-compose](docker-compose.yaml) file. It
-contains the instructions that Docker needs to start up multiple components and
-network them together. This includes both custom components built from your
+This `part-two` directory includes a [docker-compose](docker-compose.yaml) file
+that contains the instructions for Docker to start up multiple components
+and network them together. This includes both custom components built from your
 source code and some prepackaged Sawtooth components downloaded from
 [DockerHub](https://hub.docker.com/search/?isAutomated=0&isOfficial=0&page=1&pullCount=0&q=sawtooth&starCount=0):
 
@@ -77,7 +77,7 @@ source code and some prepackaged Sawtooth components downloaded from
 | ------------- | --------------------- | --------- | ------------------------
 | validator     | tcp://localhost:4004  | DockerHub | Validates blocks and transactions
 | rest-api      | http://localhost:8008 | DockerHub | Provides blockchain via HTTP/JSON
-| processor     | --                    | custom    | Your transaction processor (the core smart contract logic for your app)
+| processor     | --                    | custom    | The core smart contract logic for your app
 | client        | http://localhost:3000 | custom    | Your front end, served from `client/public/`
 | shell         | --                    | DockerHub | Environment for running Sawtooth commands
 | settings-tp   | --                    | DockerHub | Built-in Sawtooth transaction processor
@@ -96,9 +96,9 @@ docker-compose up
 ```
 
 This builds and starts _everything_ defined in your compose file. Once
-everything is running, you can then stop it all with the keyboard shortcut
-`ctrl-C`. If you want to stop _and_ destroy every container (they will be
-rebuilt on your next `up`), use this command:
+all the components are running, you can then stop it all with the keyboard
+shortcut `ctrl-C`. If you want to stop _and_ destroy every container (they will
+be rebuilt on your next `up`), use this command:
 
 ```bash
 docker-compose down -v
@@ -205,10 +205,10 @@ encode payloads and state. This application-wide logic is typically referred to
 in Sawtooth with the term "transaction family".
 
 For Cryptomoji, the client and processor are each in their own directory, with
-their own tests and their own READMEs. There is no particular order for building
-them, but we recommended that you develop them in parallel based on
-functionality. For example, implement collection creation on _both_ the
-client and the processor before moving on to sire selection on _either_.
+their own tests and their own READMEs. You should develop the components in
+parallel on a feature-by-feature basis. For example, implement collection
+creation on _both_ the client and the processor before moving on to sire
+selection on _either_.
 
 For the broad transaction family design, continue reading [below](#the-design).
 
@@ -248,7 +248,7 @@ Let's answer these questions for _Cryptomoji_.
 
 For simplicity and familiarity, we are going to encode both payloads and state
 data as JSON. To be clear, JSON would _not_ be a great choice in production. It
-is not efficient with space; worse, it is not _deterministic_. Determinism
+is not space efficient; worse, it is not _deterministic_. Determinism
 is very important when writing state to the blockchain. Many many nodes will
 attempt to the write the same state. If that state is even slightly
 different (like, say, the keys are in a different order), the validators will
@@ -256,12 +256,12 @@ think the transactions are invalid.
 
 But JSON is easy and accessible, especially in Javascript. And it is possible
 to [create sorted JSON strings](https://stackoverflow.com/a/16168003/4284401),
-which should solve the determinism issue (at least, well enough for our
+which should solve the determinism issue (at least, well enough for your
 purposes). Of course, JSON itself isn't quite enough, because we need _raw
 bytes_, not a string. For byte encoding, we are going to use Node's
 [Buffers](https://nodejs.org/api/buffer.html) again.
 
-So our encoding should look something like this:
+So your encoding should look something like this:
 
 ```javascript
 Buffer.from(JSON.stringify(dataObj, getSortedKeys(dataObj)))
@@ -292,10 +292,10 @@ several entities to state.
 ```
 
 Cryptomoji are unique, breedable critters. Each has a DNA string of 36 hex
-characters, which is converted into an adorable _kaomoji_ for display (this
-parsing tool is included with the client). Aside from storing the identity of
-the owner, the string will also include breeding information: the identities of
-the parents (breeder and sire), as well as the identities of any children
+characters, which is converted into an adorable _kaomoji_ for display (using a
+parsing tool that is included with the client). Aside from storing the identity
+of the owner, the string will also include breeding information: the identities
+of the parents (breeder and sire), as well as the identities of any children
 produced, either in the role of a breeder or a sire (bred/sired).
 
 #### Collection
