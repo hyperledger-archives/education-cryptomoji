@@ -20,8 +20,8 @@ instructions specific to your OS to setup whatever tools you need to run
     * [Start/Stop Commands](#startstop-commands)
     * [Entering a Container](#entering-a-container)
 - [The Curriculum](#the-curriculum)
-    * [Cryptomoji Lecture](#cryptomoji-lecture)
     * [Sawtooth Documentation](#sawtooth-documentation)
+    * [App Development Lecture](#app-development-lecture)
 - [The Project](#the-project)
     * [Client](#client)
     * [Transaction Processor](#transaction-processor)
@@ -151,11 +151,6 @@ exit
 
 ## The Curriculum
 
-### Cryptomoji Lecture
-
-There will be a video lecture included with this repo, but it has not been
-uploaded yet. Watch this space.
-
 ### Sawtooth Documentation
 
 Sawtooth has in-depth documentation covering many aspects of the platform. It
@@ -170,6 +165,17 @@ working with Javascript, start with these documents:
 - The Javascript SDK
     * [Building and Submitting Transactions](https://sawtooth.hyperledger.org/docs/core/releases/1.0/_autogen/sdk_submit_tutorial_js.html)
     * [Transaction Processor Tutorial](https://sawtooth.hyperledger.org/docs/core/releases/1.0/_autogen/sdk_TP_tutorial_js.html)
+
+### App Development Lecture
+
+Start with this lecture covering application development on the Sawtooth
+platform. Videos of the lecture will be available soon, but the slides are
+available now in a variety of formats:
+
+- [Sawtooth App Development (Google Doc)](https://docs.google.com/presentation/d/1vRGIli6bgXP0FwdfZG7KrEIGS6apANnSCBk3Sg-5btc/edit?usp=sharing)
+- [Sawtooth App Development (PPTX)](../../teaching/sawtooth_app_development.pptx)
+- [Sawtooth App Development (ODP)](../../teaching/sawtooth_app_development.odp)
+- [Sawtooth App Development (PDF)](../../teaching/sawtooth_app_development.pdf)
 
 ## The Project
 
