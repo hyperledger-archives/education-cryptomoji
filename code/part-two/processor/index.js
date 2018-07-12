@@ -14,9 +14,10 @@ const handler = new MojiHandler();
 // There is a bug in the Sawtooth SDK, which will cause the processor to crash
 // if an error is thrown outside of a Promise. This will be fixed in version
 // 1.0.5, but until then this workaround is necessary.
+const baseApply = handler.apply;
 handler.apply = (txn, context) => {
   try {
-    return handler.apply(txn, context);
+    return baseApply.call(handler, txn, context);
   } catch (err) {
     return new Promise((_, reject) => reject(err));
   }
