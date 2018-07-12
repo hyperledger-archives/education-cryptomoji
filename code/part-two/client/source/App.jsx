@@ -1,7 +1,11 @@
-import React from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { SignupLogin } from './SignupLogin';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+
+import { NavBar } from './NavBar';
+import { Auth } from './Auth';
 
 import { Collection } from './Collection';
 import { CollectionList } from './CollectionList';
@@ -57,42 +61,22 @@ export class App extends React.Component {
   render() {
     const publicKey = this.publicKey;
     return (
-      <div>
-        <nav>
-          <Link to="/">Home</Link>&ensp;
-          {
-            publicKey &&
-            (
-              <Link to={'/collection/' + publicKey}>
-                Your Collection
-              </Link>
-            )
-          }
-
-          <Link to="/collection">View Collections</Link>&ensp;
-          <Link to="/offer">View Offers</Link>&ensp;
-
-          <Link to="/signup-login">
-            { publicKey ? 'View Private Key' : 'Sign Up/Login' }
-          </Link>&ensp;
-          { publicKey && <a href="#" onClick={this.logout}>Logout</a> }
-          { publicKey && <div>Public Key: <code>{publicKey}</code></div> }
-        </nav>
+      <div className="container">
+        <NavBar publicKey={publicKey} logout={this.logout} />
+        {publicKey && <div>Public Key: <code>{publicKey}</code></div>}
         <br /><br />
         <Switch>
           <Route
             exact
-            path="/signup-login"
-            render={(props) => {
-              return (
-                <SignupLogin
-                  {...props}
-                  privateKey={this.privateKey}
-                  setPrivateKey={(key) => this.privateKey = key}
-                  setPublicKey={(key) => this.publicKey = key}
-                />
-              )
-            }}
+            path="/auth"
+            render={props => (
+              <Auth
+                {...props}
+                privateKey={this.privateKey}
+                setPrivateKey={(key) => this.privateKey = key}
+                setPublicKey={(key) => this.publicKey = key}
+              />
+            )}
           />
           <Route
             exact
@@ -107,7 +91,13 @@ export class App extends React.Component {
           <Route
             exact
             path="/moji/:address"
-            component={Moji}
+            render={props => (
+              <Moji
+                {...props}
+                publicKey={this.publicKey}
+                privateKey={this.privateKey}
+              />
+            )}
           />
           <Route
             exact

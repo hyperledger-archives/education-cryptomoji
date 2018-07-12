@@ -14,12 +14,10 @@ export class CollectionList extends React.Component {
   }
 
   componentDidMount() {
-    console.log('COMPONENTDIDMOUNT: <CollectionList />');
     this.fetchcollections();
   }
 
   fetchcollections(publicKey) {
-    console.log('fetchCollection');
     return getCollections()
       .then(collections => this.setState({ collections }))
       .catch(err => {
@@ -28,7 +26,6 @@ export class CollectionList extends React.Component {
   }
 
   render() {
-    console.log('RENDERING: <CollectionList />');
     const { collections } = this.state;
     if (!collections) {
       return <div>No collections found anywhere!</div>;

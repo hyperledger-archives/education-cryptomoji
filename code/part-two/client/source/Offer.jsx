@@ -16,7 +16,6 @@ export class Offer extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('GETDERIVEDSTATEFROMPROPS: <Offer />');
     const address = nextProps.match.params.address;
     return {
       address
@@ -24,19 +23,16 @@ export class Offer extends React.Component {
   }
 
   componentDidMount() {
-    console.log('COMPONENTDIDMOUNT: <Offer />');
     this.fetchOffer(this.state.address);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('COMPONENTDIDUPDATE: <Offer />');
     if (this.state.address !== prevState.address) {
       this.fetchOffer(this.state.address);
     }
   }
 
   fetchOffer(address) {
-    console.log('fetchOffer');
     return getOffers(address)
       .then(offer => this.setState({ offer }))
       .catch(err => {

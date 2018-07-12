@@ -9,8 +9,10 @@ const PREFIXES = {
   OFFER: '03'
 };
 const ADDRESS_LENGTH = 70;
-
-Object.keys(PREFIXES).forEach(p => { PREFIXES[p] = NAMESPACE + PREFIXES[p]; });
+const FULL_PREFIXES = Object.keys(PREFIXES).reduce((prefixes, key) => {
+  prefixes[key] = NAMESPACE + PREFIXES[key];
+  return prefixes;
+}, {});
 
 // Returns a hex-string SHA-512 hash sliced to a particular length
 const hash = (str, length) => {
@@ -21,8 +23,8 @@ const hash = (str, length) => {
  * Takes an address returns a string corresponding to its type.
  */
 export const addressToType = (address = '') => {
-  const type = Object.keys(PREFIXES)
-    .find(type => PREFIXES[type] === address.slice(0, 8));
+  const type = Object.keys(FULL_PREFIXES)
+    .find(type => FULL_PREFIXES[type] === address.slice(0, 8));
 
   return type || null;
 };
@@ -31,9 +33,10 @@ export const addressToType = (address = '') => {
  * A function which optionally takes a public key, and returns a full or
  * partial collection address.
  *
- * Should work similarly to the processor version, but if the public key is
- * omitted, returns the 8 character prefix which will fetch all collections
- * from the REST API, otherwise returns the full 70 character address.
+ * Works similarly to the processor version, but if the public key is omitted,
+ * returns the 8 character prefix which can be used to fetch all collections
+ * from the REST API. If the public key is provided, returns the full
+ * 70 character address.
  *
  * Example:
  *   const prefix = getCollectionAddress();
@@ -44,10 +47,10 @@ export const addressToType = (address = '') => {
  */
 export const getCollectionAddress = (publicKey = null) => {
   if (publicKey === null) {
-    return PREFIXES.COLLECTION;
+    return FULL_PREFIXES.COLLECTION;
   }
 
-  return PREFIXES.COLLECTION + hash(publicKey, 62);
+  return FULL_PREFIXES.COLLECTION + hash(publicKey, 62);
 };
 
 /**
@@ -55,7 +58,7 @@ export const getCollectionAddress = (publicKey = null) => {
  * a full or partial moji address.
  *
  * If called with no arguments, returns the 8-char moji prefix. If called with
- * just a public key, returns the 16-char owner prefix which will return all
+ * just a public key, returns the 16-char owner prefix which can fetch all
  * moji owned by this key. Passing in the dna as well returns a full address.
  *
  * Example:
@@ -64,10 +67,10 @@ export const getCollectionAddress = (publicKey = null) => {
  */
 export const getMojiAddress = (ownerKey = null, dna = null) => {
   if (ownerKey === null) {
-    return PREFIXES.MOJI;
+    return FULL_PREFIXES.MOJI;
   }
 
-  const ownerPrefix = PREFIXES.MOJI + hash(ownerKey, 8);
+  const ownerPrefix = FULL_PREFIXES.MOJI + hash(ownerKey, 8);
   if (dna === null) {
     return ownerPrefix;
   }
@@ -84,10 +87,10 @@ export const getMojiAddress = (ownerKey = null, dna = null) => {
  */
 export const getSireAddress = (ownerKey = null) => {
   if (ownerKey === null) {
-    return PREFIXES.SIRE_LISTING;
+    return FULL_PREFIXES.SIRE_LISTING;
   }
 
-  return PREFIXES.SIRE_LISTING + hash(ownerKey, 62);
+  return FULL_PREFIXES.SIRE_LISTING + hash(ownerKey, 62);
 };
 
 /**
@@ -104,10 +107,10 @@ export const getSireAddress = (ownerKey = null) => {
  */
 export const getOfferAddress = (ownerKey = null, moji = null) => {
   if (ownerKey === null) {
-    return PREFIXES.OFFER;
+    return FULL_PREFIXES.OFFER;
   }
 
-  const ownerPrefix = PREFIXES.OFFER + hash(ownerKey, 8);
+  const ownerPrefix = FULL_PREFIXES.OFFER + hash(ownerKey, 8);
   if (moji === null) {
     return ownerPrefix;
   }

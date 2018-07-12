@@ -14,12 +14,10 @@ export class OfferList extends React.Component {
   }
 
   componentDidMount() {
-    console.log('COMPONENTDIDMOUNT: <OfferList />');
     this.fetchOffers();
   }
 
   fetchOffers(publicKey) {
-    console.log('fetchCollection');
     return getOffers()
       .then(offers => this.setState({ offers }))
       .catch(err => {
@@ -28,7 +26,6 @@ export class OfferList extends React.Component {
   }
 
   render() {
-    console.log('RENDERING: <OfferList />');
     const { offers } = this.state;
     if (!offers) {
       return <div>No offers found anywhere!</div>;
