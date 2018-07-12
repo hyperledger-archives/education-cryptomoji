@@ -31,8 +31,8 @@ This project requires [Node 8](https://nodejs.org/) and
 ## Sections
 
 This curriculum is broken into two parts. Although they build on one another,
-if you are already familiar with blockchain basics you can probably skip part
-one. For detailed instructions on each section, head to their individual
+if you are already familiar with blockchain basics, you can probably skip part
+one. For detailed instructions for each part, head to their individual
 READMEs.
 
 ### Part One: DIY Blockchain
@@ -71,7 +71,7 @@ signing, consensus algorithms, and the blockchain data structure itself.
 
 Part two is the actual Cryptomoji app. It should give you a detailed
 understanding of how to build both clients and "transaction processors" on
-Hyperledger Sawtooth. When you're done you will have a working full-stack
+Hyperledger Sawtooth. When you're done, you will have a working full-stack
 application ready to be deployed on a Sawtooth blockchain.
 
 (づ￣ ³￣)づ
@@ -87,18 +87,18 @@ recommended that you do _not_ use the solution code as a way to get yourself
 unstuck. At least attempt every prompt. If necessary, seek guidance from
 resources like
 [Stack Overflow](https://stackoverflow.com/questions/tagged/hyperledger-sawtooth)
-or Sawtooth's [official chat](https://chat.hyperledger.org/channel/sawtooth),
-before resorting to looking in the back of the book for the answers.
+or Sawtooth's [official chat](https://chat.hyperledger.org/channel/sawtooth)
+before looking in the back of the book for the answers.
 
 ( ╯°□°)╯ ┻━━┻
 
 
 ## Contributing
 
-This is an ongoing project, and we always appreciate involvement from outside
-contributors. We use GitHub Issues to track bugs. If you have a problem to
-report, like a typo, a confusing lesson, or something not working as expected,
-please click on the _Issues_ tab above, and then the
+Hyperledger Cryptomoji is an ongoing project, and we always appreciate
+involvement from outside contributors. We use GitHub Issues to track bugs. If
+you have a problem to report (like a typo, a confusing lesson, or something not
+working as expected), please click on the _Issues_ tab above, and then on the
 [New Issue](https://github.com/hyperledger/education-cryptomoji/issues/new)
 button.
 
