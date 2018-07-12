@@ -19,28 +19,42 @@ ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
 CURR_BRANCH="$( git rev-parse --abbrev-ref HEAD )"
 
 # Pull new staging code
+# when testing, use `git checkout origin/staging`
+git checkout upstream/staging
+git branch -f staging
 git checkout staging
-git pull upstream staging
 HEAD="$( git rev-parse HEAD )"
 
 # Problemify code
 cd $ROOT_DIR
 bin/problemify -p code/
+rsync -rv --exclude=.git/ --exclude=node_modules/ ./ tmp/
+git checkout -f upstream/master
+git branch -f master
 git checkout master
+rsync -rv --exclude=.git/ --exclude=node_modules/ tmp/ ./
+rm -rf tmp/
 
 # Push to master
 git add .
 git commit -s -m "Problemified code generated from: $HEAD"
+# when testing, use `git push -f origin master`
 git push upstream master
 
 # Solutionify code
 git checkout staging
 bin/problemify -s code/
+rsync -rv --exclude=.git/ --exclude=node_modules/ ./ tmp/
+git checkout -f upstream/solution
+git branch -f solution
 git checkout solution
+rsync -rv --exclude=.git/ --exclude=node_modules/ tmp/ ./
+rm -rf tmp/
 
 # Push to solution
 git add .
 git commit -s -m "Solutionified code generated from: $HEAD"
+# when testing, use `git push -f origin solution`
 git push upstream solution
 
 # Reset environment
