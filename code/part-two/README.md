@@ -173,9 +173,9 @@ platform. Videos of the lecture will be available soon, but the slides are
 available now in a variety of formats:
 
 - [Sawtooth App Development (Google Doc)](https://docs.google.com/presentation/d/1vRGIli6bgXP0FwdfZG7KrEIGS6apANnSCBk3Sg-5btc/edit?usp=sharing)
-- [Sawtooth App Development (PPTX)](../../teaching/sawtooth_app_development.pptx)
-- [Sawtooth App Development (ODP)](../../teaching/sawtooth_app_development.odp)
-- [Sawtooth App Development (PDF)](../../teaching/sawtooth_app_development.pdf)
+- [Sawtooth App Development (PPTX)](../../teaching/slides/sawtooth_app_development.pptx)
+- [Sawtooth App Development (ODP)](../../teaching/slides/sawtooth_app_development.odp)
+- [Sawtooth App Development (PDF)](../../teaching/slides/sawtooth_app_development.pdf)
 
 ## The Project
 
