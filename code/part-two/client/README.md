@@ -133,7 +133,7 @@ In particular, be ready to use:
 
 **Module:** [source/services/addressing.js](source/services/addressing.js)
 
-The last module you will completing stub functions for is one to generate
+The last module you will complete stub functions for is one to generate
 addresses for entities in state. You will need these in order to fetch any data
 from the REST API.
 
