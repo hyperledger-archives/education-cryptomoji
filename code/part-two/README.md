@@ -168,14 +168,25 @@ working with Javascript, start with these documents:
 
 ### App Development Lecture
 
-Start with this lecture covering application development on the Sawtooth
-platform. Videos of the lecture will be available soon, but the slides are
-available now in a variety of formats:
+In addition to reviewing the official Sawtooth documentation, watch the
+Cryptomoji video lecture, which covers all the basics of Sawtooth application
+development in detail. It is broken into five parts, the first of which is a
+overview of blockchains generally, which you may have already watched in part
+one. Each part is available as an MP4 file:
+
+- [01a Blockchain Overview Lecture (MP4)](../../teaching/videos/01a_blockchain_lecture.m4v)
+- [01b Blockchain Overview Questions (MP4)](../../teaching/videos/01b_blockchain_qa.m4v)
+- [02 Sawtooth Overview (MP4)](../../teaching/videos/02_sawtooth_overview.m4v)
+- [03 Writing Transaction Processors (MP4)](../../teaching/videos/03_transaction_processors.m4v)
+- [04 Writing Clients (MP4)](../../teaching/videos/04_writing_clients.m4v)
+- [05 Sprint Design (MP4)](../../teaching/videos/05_sprint_design.m4v)
+
+The slides are also available in a variety of formats:
 
 - [Sawtooth App Development (Google Doc)](https://docs.google.com/presentation/d/1vRGIli6bgXP0FwdfZG7KrEIGS6apANnSCBk3Sg-5btc/edit?usp=sharing)
-- [Sawtooth App Development (PPTX)](../../teaching/sawtooth_app_development.pptx)
-- [Sawtooth App Development (ODP)](../../teaching/sawtooth_app_development.odp)
-- [Sawtooth App Development (PDF)](../../teaching/sawtooth_app_development.pdf)
+- [Sawtooth App Development (PPTX)](../../teaching/slides/sawtooth_app_development.pptx)
+- [Sawtooth App Development (ODP)](../../teaching/slides/sawtooth_app_development.odp)
+- [Sawtooth App Development (PDF)](../../teaching/slides/sawtooth_app_development.pdf)
 
 ## The Project
 
