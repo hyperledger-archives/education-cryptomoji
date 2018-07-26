@@ -12,6 +12,8 @@ block to the one that came before it in the chain.
 
 - [Getting Started and Running Tests](#getting-started-and-running-tests)
 - [The Curriculum](#the-curriculum)
+    * [Blockchain Lecture](#blockchain-lecture)
+    * [Zulfikar Ramzan: Bitcoin](#zulfikar-ramzan-bitcoin)
 - [The Project](#the-project)
     * [01 Signing](#01-signing)
     * [02 Blockchain](#02-blockchain)
@@ -42,8 +44,28 @@ clues to what you should do next.
 
 ## The Curriculum
 
-Before you begin the project, start with Zulfikar Ramzan's excellent lecture on
-Khan Academy about the inner workings of the Bitcoin protocol. While your
+### Blockchain Lecture
+
+The first part of the Cryptomoji lecture is a brief overview of the blockchain
+data structure and the technologies that power it: hashing, signatures, and
+consensus. The lecture itself is 15 minutes long with an additional 10 minutes
+of Q&A. They are included in this repo as two MP4 files:
+
+- [Blockchain Overview Lecture (MP4)](../../teaching/videos/01a_blockchain_lecture.m4v)
+- [Blockchain Overview Questions (MP4)](../../teaching/videos/01b_blockchain_qa.m4v)
+
+In addition to the video, the slides are available in a variety of formats. The
+general blockchain section is the first 8 slides:
+
+- [Sawtooth App Development (Google Doc)](https://docs.google.com/presentation/d/1vRGIli6bgXP0FwdfZG7KrEIGS6apANnSCBk3Sg-5btc/edit?usp=sharing)
+- [Sawtooth App Development (PPTX)](../../teaching/slides/sawtooth_app_development.pptx)
+- [Sawtooth App Development (ODP)](../../teaching/slides/sawtooth_app_development.odp)
+- [Sawtooth App Development (PDF)](../../teaching/slides/sawtooth_app_development.pdf)
+
+### Zulfikar Ramzan: Bitcoin
+
+For a deeper dive, follow up the lecture with Zulfikar Ramzan's excellent Khan
+Academy course about the inner workings of the Bitcoin protocol. While your
 blockchain will have some differences from Bitcoin (in particular the way
 "inputs" and "outputs" are handled), there will be a lot of overlap:
 - [Bitcoin: What is it?](https://www.khanacademy.org/economics-finance-domain/core-finance/money-and-banking/bitcoin/v/bitcoin-what-is-it)
