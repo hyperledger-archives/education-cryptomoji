@@ -174,12 +174,12 @@ development in detail. It is broken into five parts, the first of which is a
 overview of blockchains generally, which you may have already watched in part
 one. Each part is available as an MP4 file:
 
-- [01a Blockchain Overview Lecture (MP4)](../../teaching/videos/01a_blockchain_lecture.m4v)
-- [01b Blockchain Overview Questions (MP4)](../../teaching/videos/01b_blockchain_qa.m4v)
-- [02 Sawtooth Overview (MP4)](../../teaching/videos/02_sawtooth_overview.m4v)
-- [03 Writing Transaction Processors (MP4)](../../teaching/videos/03_transaction_processors.m4v)
-- [04 Writing Clients (MP4)](../../teaching/videos/04_writing_clients.m4v)
-- [05 Sprint Design (MP4)](../../teaching/videos/05_sprint_design.m4v)
+- [01a Blockchain Overview Lecture (MP4)](../../teaching/videos/01a_blockchain_lecture.mp4)
+- [01b Blockchain Overview Questions (MP4)](../../teaching/videos/01b_blockchain_qa.mp4)
+- [02 Sawtooth Overview (MP4)](../../teaching/videos/02_sawtooth_overview.mp4)
+- [03 Writing Transaction Processors (MP4)](../../teaching/videos/03_transaction_processors.mp4)
+- [04 Writing Clients (MP4)](../../teaching/videos/04_writing_clients.mp4)
+- [05 Sprint Design (MP4)](../../teaching/videos/05_sprint_design.mp4)
 
 The slides are also available in a variety of formats:
 

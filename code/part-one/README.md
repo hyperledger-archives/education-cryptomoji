@@ -51,8 +51,8 @@ data structure and the technologies that power it: hashing, signatures, and
 consensus. The lecture itself is 15 minutes long with an additional 10 minutes
 of Q&A. They are included in this repo as two MP4 files:
 
-- [Blockchain Overview Lecture (MP4)](../../teaching/videos/01a_blockchain_lecture.m4v)
-- [Blockchain Overview Questions (MP4)](../../teaching/videos/01b_blockchain_qa.m4v)
+- [Blockchain Overview Lecture (MP4)](../../teaching/videos/01a_blockchain_lecture.mp4)
+- [Blockchain Overview Questions (MP4)](../../teaching/videos/01b_blockchain_qa.mp4)
 
 In addition to the video, the slides are available in a variety of formats. The
 general blockchain section is the first 8 slides:
