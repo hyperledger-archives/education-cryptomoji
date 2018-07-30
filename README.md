@@ -9,6 +9,8 @@ Javascript. It follows a bootcamp "sprint" format, providing a stub
 application for students to implement themselves and extensive tests to guide
 their work.
 
+Created in collaboration with [Hack Reactor](https://www.hackreactor.com).
+
 ＼(＾▽＾)／
 
 ## Contents
