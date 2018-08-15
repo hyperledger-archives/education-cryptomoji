@@ -135,8 +135,11 @@ describe('Blockchain module', function() {
       blockchain.addBlock([transaction]);
 
       expect(blockchain.blocks).to.have.lengthOf(2);
-      expect(blockchain.getHeadBlock().transactions)
-        .to.deep.equal([transaction]);
+
+      const head = blockchain.getHeadBlock();
+      const genesis = blockchain.blocks[0];
+      expect(head.transactions).to.deep.equal([transaction]);
+      expect(head.previousHash).to.equal(genesis.hash);
     });
 
     it('should be able to get balance for an address', function() {
