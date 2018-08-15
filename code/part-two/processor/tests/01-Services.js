@@ -251,7 +251,7 @@ describe('Processor Services', function() {
       });
 
       it('should reject an address that is not hex', function() {
-        const address = '5f4d7702' + 'za' + randomBytes(30).toString('hex');
+        const address = '5f4d7602' + 'za' + randomBytes(30).toString('hex');
 
         expect(addressing.isValidAddress(address)).to.be.false;
       });
