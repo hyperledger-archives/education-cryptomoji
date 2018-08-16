@@ -36,10 +36,10 @@ export class BreedDropdownMenu extends React.Component {
       .then(userCollection => {
         this.setState({ userCollection });
         return Promise.all([
-          getSires(this.props.publicKey),
+          getSires(this.props.publicKey).catch(() => {}),
           ...userCollection.moji.map(getMoji)
         ]);
-      }).then(([sire, ...mojiList]) => {
+      }).then(([sire = {}, ...mojiList]) => {
         this.setState({
           userCollection: {
             moji: mojiList.map(moji => {
