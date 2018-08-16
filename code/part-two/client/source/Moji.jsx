@@ -2,6 +2,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { BreedDropdownMenu } from './BreedDropdownMenu';
+import { MojiList } from './MojiList';
+import { MojiListItem } from './MojiListItem';
 import { getMoji, getSires, submitPayloads } from './services/requests';
 import { parseDna } from './services/parse_dna';
 
@@ -56,11 +59,6 @@ export class Moji extends React.Component {
       })
       .then(sire => {
         const isSire = sire.address === this.state.address;
-        if (isSire) {
-          this.setState(prevState => ({
-            mojiView: prevState.mojiView + ' 🎩'
-          }));
-        }
         this.setState({ isSire });
       })
       .catch(err => {
@@ -76,10 +74,9 @@ export class Moji extends React.Component {
       action: 'SELECT_SIRE',
       sire: this.state.address
     })
-      .then(() => this.setState(prevState => ({
+      .then(() => this.setState({
         isSire: true,
-        mojiView: prevState.mojiView + ' 🎩'
-      })))
+      }))
       .catch(err => {
         alert('Something went wrong while trying to select a new sire:' + err);
       });
@@ -101,6 +98,11 @@ export class Moji extends React.Component {
     }
 
     let actionButton = null;
+    let sireIndicator = null;
+
+    if (isSire) {
+      sireIndicator = <span className="badge badge-primary">🎩 sire</span>;
+    }
 
     if (isOwner && !isSire) {
       actionButton = (
@@ -110,13 +112,22 @@ export class Moji extends React.Component {
           onClick={this.selectSire}
         >Select as Sire</button>
       );
+    } else if (isSire && this.props.publicKey) {
+      // if we're looking at a sire AND we're logged in
+      actionButton = (
+        <BreedDropdownMenu
+          privateKey={this.props.privateKey}
+          publicKey={this.props.publicKey}
+          sire={moji}
+        />
+      );
     }
 
     return (
       <div>
         {actionButton}
-        <h2>{mojiView}</h2>
-        <table>
+        <h2>{mojiView} {' '} {sireIndicator}</h2>
+        <table className="table">
           <tbody>
             <tr><td>address</td><td>{moji.address}</td></tr>
             <tr><td>dna</td><td>{moji.dna}</td></tr>
@@ -130,27 +141,31 @@ export class Moji extends React.Component {
             </tr>
             <tr>
               <td>sire</td>
-              <td><Link to={'/moji/' + moji.sire}>{moji.sire}</Link></td>
+              <td>{moji.sire
+                ? <MojiListItem address={moji.sire}/>
+                : 'none'
+              }</td>
             </tr>
             <tr>
               <td>breeder</td>
-              <td><Link to={'/moji/' + moji.breeder}>{moji.breeder}</Link></td>
+              <td>{moji.breeder
+                ? <MojiListItem address={moji.breeder} />
+                : 'none'
+              }</td>
             </tr>
             <tr>
               <td>sired</td>
-              <td>
-                {moji.sired.map(address => (
-                  <Link key={address} to={'/moji/' + address}>{address},</Link>
-                ))}
-              </td>
+              <td>{moji.sired.length
+                ? <MojiList addresses={moji.sired} />
+                : 'none'
+              }</td>
             </tr>
             <tr>
               <td>bred</td>
-              <td>
-                {moji.bred.map(address => (
-                  <Link key={address} to={'/moji/' + address}>{address},</Link>
-                ))}
-              </td>
+              <td>{moji.bred.length
+                ? <MojiList addresses={moji.bred} />
+                : 'none'
+              }</td>
             </tr>
           </tbody>
         </table>

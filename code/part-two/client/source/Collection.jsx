@@ -1,7 +1,7 @@
 /* SOLUTION FILE */
 import React from 'react';
 
-import { MojiItem } from './MojiItem';
+import { MojiList } from './MojiList';
 import { getCollections } from './services/requests';
 
 export class Collection extends React.Component {
@@ -51,14 +51,7 @@ export class Collection extends React.Component {
     return (
       <div>
         <h1>This is <code>{publicKey}</code>'s collection!</h1>
-        <div className="list-group">
-          {collection.moji.map(address => (
-            <MojiItem
-              key={address}
-              address={address}
-            />
-          ))}
-        </div>
+        <MojiList addresses={collection.moji} />
       </div>
     );
   }

@@ -2,8 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { MojiItem } from './MojiItem';
-
 import { getCollections } from './services/requests';
 
 export class CollectionList extends React.Component {
