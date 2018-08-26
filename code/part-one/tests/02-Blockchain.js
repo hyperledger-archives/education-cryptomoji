@@ -116,6 +116,21 @@ describe('Blockchain module', function() {
 
       expect(block.hash).to.not.equal(originalHash);
     });
+
+    it('should produce fixed-length digests for hashes', function() {
+      const block = new Block(transactions, previousHash);
+      block.calculateHash(0);
+      const originalHash = block.hash;
+
+      const signer = signing.createPrivateKey();
+      const recipient = signing.getPublicKey(signing.createPrivateKey());
+      const amount = Math.ceil(Math.random() * 100);
+      const newTransaction = new Transaction(signer, recipient, amount);
+      block.transactions.push(newTransaction);
+
+      block.calculateHash(0);
+      expect(block.hash.length).to.equal(originalHash.length);
+    });
   });
 
   describe('Blockchain', function() {
