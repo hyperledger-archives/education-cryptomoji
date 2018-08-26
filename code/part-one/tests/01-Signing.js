@@ -52,7 +52,7 @@ describe('Signing module', function() {
     });
 
     it('should generate a valid Secp256k1 public key', function() {
-      const isValid = secp256k1.privateKeyVerify(toBytes(privateKey));
+      const isValid = secp256k1.publicKeyVerify(toBytes(publicKey));
       expect(isValid).to.be.true;
     });
 
