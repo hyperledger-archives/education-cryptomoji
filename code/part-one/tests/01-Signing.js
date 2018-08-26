@@ -66,13 +66,14 @@ describe('Signing module', function() {
   });
 
   describe('sign', function() {
-    const message = randomString();
     let publicKey = null;
+    let message = null;
     let signature = null;
 
     beforeEach(function() {
       const privateKey = signing.createPrivateKey();
       publicKey = signing.getPublicKey(privateKey);
+      message = randomString();
       signature = signing.sign(privateKey, message);
     });
 
@@ -92,13 +93,14 @@ describe('Signing module', function() {
   });
 
   describe('verify', function() {
-    const message = randomString();
     let publicKey = null;
+    let message = null;
     let signature = null;
 
     beforeEach(function() {
       const privateKey = signing.createPrivateKey();
       publicKey = signing.getPublicKey(privateKey);
+      message = randomString();
       signature = secp256k1
         .sign(sha256(message), toBytes(privateKey))
         .signature
