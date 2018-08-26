@@ -147,6 +147,7 @@ describe.skip('Mining module', function() {
       ));
       blockchain.mine(miner);
 
+      // Check the new block does not contain a transaction from the old block
       const head = blockchain.getHeadBlock();
       expect(head.transactions).to.not.deep.include(transaction);
     });
