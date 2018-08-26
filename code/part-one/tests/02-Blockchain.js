@@ -68,6 +68,11 @@ describe('Blockchain module', function() {
       expect(block.nonce).to.equal(0);
     });
 
+    it('should calculate a hash when constructing a new block', function() {
+      const block = new Block(transactions, previousHash);
+      expect(block.hash).to.be.a('string').and.not.be.empty;
+    });
+
     it('should calculate the same hash with the same nonce', function() {
       const block = new Block(transactions, previousHash);
       block.calculateHash(0);
