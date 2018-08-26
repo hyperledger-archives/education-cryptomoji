@@ -16,17 +16,14 @@ const hash = (str, length) => {
 describe('Processor Services', function() {
 
   describe('prng', function() {
-    let prng = null;
-
-    beforeEach(function() {
-      prng = getPrng('5eed');
-    });
 
     it('should return a function from getPrng', function() {
+      const prng = getPrng('5eed');
       expect(prng).to.be.a('function');
     });
 
     it('should return an integer up to the passed max', function() {
+      const prng = getPrng('5eed');
       const result = prng(100);
 
       expect(result).to.be.a('number');
@@ -35,6 +32,7 @@ describe('Processor Services', function() {
     });
 
     it('should generate a different number each call', function() {
+      const prng = getPrng('5eed');
       const first = prng(100);
       const second = prng(100);
       const third = prng(100);
@@ -45,6 +43,7 @@ describe('Processor Services', function() {
     });
 
     it('should generate the same number when given the same seed', function() {
+      const prng = getPrng('5eed');
       const newPrng = getPrng('5eed');
       const first = prng(100);
       const second = newPrng(100);
@@ -54,6 +53,7 @@ describe('Processor Services', function() {
 
 
     it('should generate different numbers with different seeds', function() {
+      const prng = getPrng('5eed');
       const newPrng = getPrng('d1ff5eed');
       const first = prng(100);
       const second = newPrng(100);
@@ -65,23 +65,20 @@ describe('Processor Services', function() {
   describe('encoding', function() {
 
     describe('encode', function() {
-      const toEncode = { hello: 'world', foo: 'bar' };
-      let encoded = null;
-
-      beforeEach(function() {
-        encoded = encoding.encode(toEncode);
-      });
 
       it('should return a Buffer', function() {
+        const encoded = encoding.encode({ hello: 'world', foo: 'bar' });
         expect(encoded).to.be.an.instanceOf(Buffer);
       });
 
       it('should return a Buffer, parseable as a JSON string', function() {
+        const encoded = encoding.encode({ hello: 'world', foo: 'bar' });
         const stringified = encoded.toString();
         expect(() => JSON.parse(stringified)).to.not.throw();
       });
 
       it('should return a sorted JSON string', function() {
+        const encoded = encoding.encode({ hello: 'world', foo: 'bar' });
         const stringified = encoded.toString();
         const helloIndex = stringified.indexOf('hello');
         const fooIndex = stringified.indexOf('foo');
@@ -92,26 +89,28 @@ describe('Processor Services', function() {
       });
 
       it('should be parseable to the original object', function() {
+        const encoded = encoding.encode({ hello: 'world', foo: 'bar' });
         const decoded = JSON.parse(encoded.toString());
-        expect(decoded).to.deep.equal(toEncode);
+        expect(decoded).to.deep.equal({ hello: 'world', foo: 'bar' });
       });
 
     });
 
     describe('decode', function() {
       const toEncode = { hello: 'world', foo: 'bar' };
-      let decoded = null;
+      let encoded = null;
 
       beforeEach(function() {
-        const encoded = encoding.encode(toEncode);
-        decoded = encoding.decode(encoded);
+        encoded = encoding.encode(toEncode);
       });
 
       it('should take an encoded Buffer and return an object', function() {
+        const decoded = encoding.decode(encoded);
         expect(decoded).to.be.an('object');
       });
 
       it('should return an object that matches the encoded object', function() {
+        const decoded = encoding.decode(encoded);
         expect(decoded).to.deep.equal(toEncode);
       });
     });
