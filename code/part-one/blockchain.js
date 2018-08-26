@@ -70,9 +70,11 @@ class Block {
    * hash and nonce properties of the block accordingly.
    *
    * Hint:
-   *   The format of the hash is up to you. Remember that it needs to be
-   *   unique and deterministic, and must become invalid if any of the block's
-   *   properties change.
+   *   The tests don't care what hashing strategy you use, but they will fail
+   *   if your hashes are not unique, deterministic, and fixed-length, or if
+   *   they don't change when one of the block's properties change. We
+   *   recommend you take advantage of Node's createHash method, already
+   *   imported for you at the top of this file.
    */
   calculateHash(nonce) {
     /* START PROBLEM
