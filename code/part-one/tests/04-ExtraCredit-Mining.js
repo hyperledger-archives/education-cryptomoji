@@ -109,6 +109,8 @@ describe.skip('Mining module', function() {
       expect(head.hash).to.be.a('string').and.not.be.empty;
       expect(head.hash.slice(0, zeros.length)).to.equal(zeros);
 
+      // Because the calculate hash function is user defined and mutates
+      // the blockchain, to confirm it we must run the hash on a copy
       const copy = new MineableBlock(head.transactions, head.previousHash);
       copy.calculateHash(head.nonce);
       expect(copy.hash).to.equal(head.hash);
