@@ -41,6 +41,13 @@ export function NavBar({ publicKey, logout }) {
 
           <NavLink
             exact
+            to="/sire"
+            className="nav-item nav-link"
+            activeClassName="active"
+          >Sires</NavLink>
+
+          <NavLink
+            exact
             to="/offer"
             className="nav-item nav-link"
             activeClassName="active"

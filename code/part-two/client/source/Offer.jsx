@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { MojiItem } from './MojiItem';
+import { MojiListItem } from './MojiListItem';
 import { ResponseList } from './ResponseList';
 
 import { getOffers } from './services/requests';
@@ -54,7 +54,7 @@ export class Offer extends React.Component {
         <ul>
           {offer.moji.map(moji => (
             <li key={moji}>
-              <MojiItem address={moji} />
+              <MojiListItem address={moji} />
             </li>
           ))}
         </ul>

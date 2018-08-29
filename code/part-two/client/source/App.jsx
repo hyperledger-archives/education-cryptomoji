@@ -13,6 +13,7 @@ import { CollectionList } from './CollectionList';
 import { Moji } from './Moji';
 import { Offer } from './Offer';
 import { OfferList } from './OfferList';
+import { SireList } from './SireList';
 
 export class App extends React.Component {
   constructor(props) {
@@ -99,6 +100,11 @@ export class App extends React.Component {
                 privateKey={this.privateKey}
               />
             )}
+          />
+          <Route
+            exact
+            path="/sire"
+            component={SireList}
           />
           <Route
             exact
