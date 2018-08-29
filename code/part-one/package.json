@@ -4,7 +4,7 @@
   "description": "Intro sprint teaching basic blockchain practices and structure",
   "main": "blockchain-intro-prompt.js",
   "scripts": {
-    "test": "mocha tests"
+    "test": "mocha -b tests"
   },
   "repository": {
     "type": "git",

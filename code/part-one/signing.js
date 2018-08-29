@@ -69,8 +69,11 @@ const getPublicKey = privateKey => {
  *   // '4ae1f0b20382ad628804a5a66e09cc6bdf2c83fa64f8017e98d84cc75a1a71b52...'
  *
  * Hint:
- *   Remember that you need to sign a SHA-256 hash of the message,
- *   not the message itself!
+ *   If you dive into the Secp256k1-node docs (linked in the README), you will
+ *   see that secp256k1.sign only accepts messages that are 32-bytes in length.
+ *   Since your sign method is more flexible and can sign messages of any
+ *   length, you will need to find a way to make both very short and very long
+ *   messages exactly 32-bytes (extra hint: 256-bits === 32-bytes).
  */
 const sign = (privateKey, message) => {
   /* START PROBLEM
