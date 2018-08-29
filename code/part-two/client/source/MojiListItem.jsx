@@ -9,47 +9,18 @@ export class MojiListItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoaded: false,
       isSire: false,
       mojiView: null
     };
   }
 
-  componentDidMount() {
-    Promise.resolve(this.props.address)
-      .then(address => {
-        // if it's an address, then get the details
-        if (!!address) {
-          return getMoji(this.props.address);
-        }
-        // otherwise, the details were already passed in
-        return this.props.moji;
-      })
-      .then(moji => {
-        this.setState({
-          mojiView: parseDna(moji.dna).view
-        });
+  async componentDidMount() {
+    let moji = this.props.moji || await getMoji(this.props.address);
+    this.setState({ mojiView: parseDna(moji.dna).view });
 
-        if (moji.isSire) {
-          this.setState({ isSire: true, isLoaded: true });
-          // if we know moji is a sire, break out of the promise chain
-          return Promise.reject('This moji is a sire');
-        } else {
-          return getSires(moji.owner);
-        }
-      })
-      .then(sire => {
-        const isSire =
-          sire.address === (this.props.address || this.props.moji.address);
-        this.setState({ isSire, isLoaded: true });
-      })
-      .catch(err => {
-        if (err === 'This moji is a sire') {
-          // don't do anything bc it's not an actual error
-        } else {
-          console.error(err);
-        }
-      });
+    let address = moji.address;
+    var isSire = moji.isSire || (await getSires(moji.owner)).address === address;
+    this.setState({ isSire });
   }
 
   render() {
@@ -64,9 +35,7 @@ export class MojiListItem extends React.Component {
             to={'/moji/' + (this.props.address || this.props.moji.address)}
             className="card-title card-link"
           >
-            {this.state.isLoaded
-              && (this.state.mojiView || this.props.address)
-            }
+            {this.state.mojiView}
             {' '}
             {sireIndicator}
           </Link>
